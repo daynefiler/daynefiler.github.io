@@ -2,30 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Dayne L Filer</title>
-    <link>daynefiler.github.io/</link>
+    <link>https://daynefiler.github.io/</link>
     <description>Recent content on Dayne L Filer</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Tue, 24 Jul 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="daynefiler.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://daynefiler.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>About</title>
-      <link>daynefiler.github.io/about/</link>
+      <link>https://daynefiler.github.io/about/</link>
       <pubDate>Tue, 24 Jul 2018 00:00:00 +0000</pubDate>
       
-      <guid>daynefiler.github.io/about/</guid>
+      <guid>https://daynefiler.github.io/about/</guid>
       <description>I grew up in Boise, Idaho. After finishing college at The College of Idaho I moved to Durham, North Carolina for a research fellowship with the US EPA. In 2015 my wife and I decided to stay in Durham for the long-haul as I started at UNC in the MD/PhD program. I am currently working on my PhD in Bioinformatics and Computational Biology under the mentorship of Kirk Wilhelmsen at the Renaissance Computing Institute.</description>
     </item>
     
     <item>
       <title>Consulting</title>
-      <link>daynefiler.github.io/consulting/</link>
+      <link>https://daynefiler.github.io/consulting/</link>
       <pubDate>Mon, 23 Jul 2018 17:01:43 -0400</pubDate>
       
-      <guid>daynefiler.github.io/consulting/</guid>
+      <guid>https://daynefiler.github.io/consulting/</guid>
       <description>Over the last six years I have developed a strong computational toolkit for developing robust and reproducible analytics. While working with the US EPA National Center for Computational Toxicology I completely overhauled the analytic framework for storing and processing high-throughput chemical screening data, resulting in the tcpl R package. tcpl is efficient, scalable, user-friendly, and reproducible with complete transparency. The platform is now used across government, industry, and academia as the leading tool for processing and storing high-throughput and high-content chemical screening.</description>
     </item>
     

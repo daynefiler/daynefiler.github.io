@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>About on Dayne L Filer</title>
-    <link>daynefiler.github.io/categories/about/</link>
+    <link>https://daynefiler.github.io/categories/about/</link>
     <description>Recent content in About on Dayne L Filer</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Tue, 24 Jul 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="daynefiler.github.io/categories/about/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://daynefiler.github.io/categories/about/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>About</title>
-      <link>daynefiler.github.io/about/</link>
+      <link>https://daynefiler.github.io/about/</link>
       <pubDate>Tue, 24 Jul 2018 00:00:00 +0000</pubDate>
       
-      <guid>daynefiler.github.io/about/</guid>
+      <guid>https://daynefiler.github.io/about/</guid>
       <description>I grew up in Boise, Idaho. After finishing college at The College of Idaho I moved to Durham, North Carolina for a research fellowship with the US EPA. In 2015 my wife and I decided to stay in Durham for the long-haul as I started at UNC in the MD/PhD program. I am currently working on my PhD in Bioinformatics and Computational Biology under the mentorship of Kirk Wilhelmsen at the Renaissance Computing Institute.</description>
     </item>
     
