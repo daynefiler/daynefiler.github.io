@@ -20,5 +20,14 @@
       <description>I grew up in Boise, Idaho. After finishing college at The College of Idaho I moved to Durham, North Carolina for a research fellowship with the US EPA. In 2015 my wife and I decided to stay in Durham for the long-haul as I started at UNC in the MD/PhD program. I am currently working on my PhD in Bioinformatics and Computational Biology under the mentorship of Kirk Wilhelmsen at the Renaissance Computing Institute.</description>
     </item>
     
+    <item>
+      <title>Consulting</title>
+      <link>daynefiler.github.io/consulting/</link>
+      <pubDate>Mon, 23 Jul 2018 17:01:43 -0400</pubDate>
+      
+      <guid>daynefiler.github.io/consulting/</guid>
+      <description>Over the last six years I have developed a strong computational toolkit for developing robust and reproducible analytics. While working with the US EPA National Center for Computational Toxicology I completely overhauled the analytic framework for storing and processing high-throughput chemical screening data, resulting in the tcpl R package. tcpl is efficient, scalable, user-friendly, and reproducible with complete transparency. The platform is now used across government, industry, and academia as the leading tool for processing and storing high-throughput and high-content chemical screening.</description>
+    </item>
+    
   </channel>
 </rss>
