@@ -16,7 +16,6 @@
 
 <meta name="generator" content="Hugo 0.52" />
 
-<link rel="alternate" type="application/rss&#43;xml" href="https://daynefiler.github.io/categories/index.xml">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
 
@@ -41,66 +40,81 @@
 <div class="container">
 
 
-<section id="list-pane" class="row list">
-  <ul >
-    
-    <li class="list-entry">
-      <a class="list-entry-link" href="https://daynefiler.github.io/categories/genetics/">Genetics</a>
-      <p class="meta">
-         JUN 20, 2019 
-        <span class="category">
-        
-        </span>
-      </p>
-      <p class="excerpt">
+<header class="row text-left title">
+  <h1 class="title">Downloading gnomAD</h1>
+</header>
+<section id="category-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-left meta">
+        PUBLISHED ON JUN 20, 2019 
       
-      </p>
-    </li>
-    
-    <li class="list-entry">
-      <a class="list-entry-link" href="https://daynefiler.github.io/categories/blog/">Blog</a>
-      <p class="meta">
-        
-        <span class="category">
-        
-        </span>
-      </p>
-      <p class="excerpt">
       
-      </p>
-    </li>
-    
-    <li class="list-entry">
-      <a class="list-entry-link" href="https://daynefiler.github.io/categories/bioinformatics/">Bioinformatics</a>
-      <p class="meta">
-         JUN 20, 2019 
-        <span class="category">
-        
-        </span>
-      </p>
-      <p class="excerpt">
       
-      </p>
-    </li>
-    
-    <li class="list-entry">
-      <a class="list-entry-link" href="https://daynefiler.github.io/categories/about/">About</a>
-      <p class="meta">
-         JUL 24, 2018 
-        <span class="category">
-        
-        </span>
-      </p>
-      <p class="excerpt">
+      —
       
-      </p>
-    </li>
-    
-  </ul>
+      
+      <a class="meta" href="/categories/bioinformatics">BIOINFORMATICS</a>, 
+      
+      <a class="meta" href="/categories/genetics">GENETICS</a>
+      
+      
+      
+    </h6>
+  </div>
+  
+</section>
+<section id="content-pane" class="row">
+  <div class="col-md-12 text-justify content">
+    <p>Here is a concise guide to downloading <a href="https://gnomad.broadinstitute.org">gnomAD</a> using <a href="https://cloud.google.com/storage/docs/gsutil">gsutil</a>. I am typically working on a server, and (begrudgingly) use conda to manage software. gsutils, needed for accessing the gnomAD data, is buried within the &lsquo;google-cloud-sdk&rsquo; conda package, not to be confused with the numerous other &lsquo;google-cloud-&rsquo; packages. The Google Cloud SDK requires python v2, so I think it makes sense to create a dedicated conda environment:</p>
+
+<pre><code class="language-bash">conda create --name GoogleCloud python=2 google-cloud-sdk
+</code></pre>
+
+<p>You can now activate the new environment and use <code>gsutil</code> to download gnomAD data:</p>
+
+<pre><code class="language-bash">conda activate GoogleCloud
+gsutil ls gs://gnomad-public/release
+# gs://gnomad-public/release/
+# gs://gnomad-public/release/2.0.1/
+# gs://gnomad-public/release/2.0.2/
+# gs://gnomad-public/release/2.1.1/
+# gs://gnomad-public/release/2.1/
+</code></pre>
+
+<p>We can now download data from the desired release. Here, I will show how to download</p>
+
+<pre><code class="language-bash">mkdir -p gnomAD/r2.1.1
+gsutil -m cp gs://gnomad-public/release/2.1.1/liftover_grch38/vcf/exomes/gnomad.exomes.r2.1.1.sites.liftover_grch38* gnomAD/r2.1.1/
+gsutil -m cp gs://gnomad-public/release/2.1.1/liftover_grch38/vcf/genomes/gnomad.genomes.r2.1.1.sites.liftover_grch38* gnomAD/r2.1.1/
+</code></pre>
+
+<p><strong>Note: not all releases have the same subdirectory structure.</strong> Use the <code>-r</code> flag with the <code>gsutil</code> call to copy a whole subdirectory. Also, these take awhile, so submit it to the scheduler or use a screen session if you&rsquo;re working on a server.</p>
+
+  </div>
+</section>
+<section id="tag-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-right meta">
+      
+    </h6>
+  </div>
+  
 </section>
 
 
+
+
+
+
+
+
 <section id="menu-pane" class="row menu text-center">
+  
+  
+  
+  
   
   <h4 class="text-center"><a class="menu-item" href="https://daynefiler.github.io">home</a></h4>
 </section>
@@ -136,4 +150,5 @@ hljs.initHighlightingOnLoad();
 <script src="js/main.js"></script>
 </body>
 </html>
+
 

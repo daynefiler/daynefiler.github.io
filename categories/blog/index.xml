@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog on Dayne L Filer</title>
+    <link>https://daynefiler.github.io/categories/blog/</link>
+    <description>Recent content in Blog on Dayne L Filer</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="https://daynefiler.github.io/categories/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Blog</title>
+      <link>https://daynefiler.github.io/blog/</link>
+      <pubDate>Thu, 20 Jun 2019 14:30:16 -0400</pubDate>
+      
+      <guid>https://daynefiler.github.io/blog/</guid>
+      <description>Mostly brief tutorials on doing seemingly basic things that took me longer than I&amp;rsquo;d like to admit to figure out.</description>
+    </item>
+    
+  </channel>
+</rss>
