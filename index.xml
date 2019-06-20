@@ -22,6 +22,26 @@ conda create --name GoogleCloud python=2 google-cloud-sdk  You can now activate 
     </item>
     
     <item>
+      <title>Accessing NIH FTP</title>
+      <link>https://daynefiler.github.io/blog/accessingnihftp/</link>
+      <pubDate>Mon, 11 Feb 2019 11:11:05 -0500</pubDate>
+      
+      <guid>https://daynefiler.github.io/blog/accessingnihftp/</guid>
+      <description>This should be trivial, and it is with the right instructions. Unfortunately, those are not listed in the disclaimer given when connecting to the NIH FTP site. The NIH gives the instructions here. The NIH FTP offers a standard anonymous connection. Anonymous connections use &amp;ldquo;anonymous&amp;rdquo; as the user and the connecting user&amp;rsquo;s email as the password. Briefly, follow the command in a Unix terminal:
+ftp ftp.ncbi.nih.gov  You should receive a prompt that looks like &amp;ldquo;Name (ftp.</description>
+    </item>
+    
+    <item>
+      <title>G-indexing in VCF files</title>
+      <link>https://daynefiler.github.io/blog/gindexing/</link>
+      <pubDate>Mon, 30 Jul 2018 13:09:45 -0400</pubDate>
+      
+      <guid>https://daynefiler.github.io/blog/gindexing/</guid>
+      <description>The gnomAD VCF files give information about the observed genotype counts, eg &amp;ldquo;GC_EAS&amp;rdquo; gives the genotype counts for individuals of East Asian decent as a comma-separated string. The order of the counts is determined by genotype-indexing. The above link gives an excellent discussion of getting the genotype index for the general case, regardless of ploidy number. Below is a brief discussion of haploid and diploid indices.
+Genotype-indexing works by first indexing the reference and alternative alleles, starting with the reference allele at 0.</description>
+    </item>
+    
+    <item>
       <title>About</title>
       <link>https://daynefiler.github.io/about/</link>
       <pubDate>Tue, 24 Jul 2018 00:00:00 +0000</pubDate>

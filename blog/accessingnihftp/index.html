@@ -16,7 +16,6 @@
 
 <meta name="generator" content="Hugo 0.52" />
 
-<link rel="alternate" type="application/rss&#43;xml" href="https://daynefiler.github.io/categories/bioinformatics/index.xml">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
 
@@ -41,86 +40,67 @@
 <div class="container">
 
 
-<section id="list-pane" class="row list">
-  <ul >
-    
-    <li class="list-entry">
-      <a class="list-entry-link" href="https://daynefiler.github.io/blog/downloadgnomad/">Downloading gnomAD</a>
-      <p class="meta">
-         JUN 20, 2019 
-        <span class="category">
-        
-        
-        
-        —
-        
-        
-        <a class="category" href="/categories/bioinformatics">BIOINFORMATICS</a>, 
-        
-        <a class="category" href="/categories/genetics">GENETICS</a>
-        
-        
-        
-        </span>
-      </p>
-      <p class="excerpt">
+<header class="row text-left title">
+  <h1 class="title">Accessing NIH FTP</h1>
+</header>
+<section id="category-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-left meta">
+        PUBLISHED ON FEB 11, 2019 
       
-      </p>
-    </li>
-    
-    <li class="list-entry">
-      <a class="list-entry-link" href="https://daynefiler.github.io/blog/accessingnihftp/">Accessing NIH FTP</a>
-      <p class="meta">
-         FEB 11, 2019 
-        <span class="category">
-        
-        
-        
-        —
-        
-        
-        <a class="category" href="/categories/bioinformatics">BIOINFORMATICS</a>
-        
-        
-        
-        </span>
-      </p>
-      <p class="excerpt">
       
-      </p>
-    </li>
-    
-    <li class="list-entry">
-      <a class="list-entry-link" href="https://daynefiler.github.io/blog/gindexing/">G-indexing in VCF files</a>
-      <p class="meta">
-         JUL 30, 2018 
-        <span class="category">
-        
-        
-        
-        —
-        
-        
-        <a class="category" href="/categories/bioinformatics">BIOINFORMATICS</a>, 
-        
-        <a class="category" href="/categories/genetics">GENETICS</a>, 
-        
-        <a class="category" href="/categories/vcf">VCF</a>
-        
-        
-        
-        </span>
-      </p>
-      <p class="excerpt">
       
-      </p>
-    </li>
-    
-  </ul>
+      —
+      
+      
+      <a class="meta" href="/categories/bioinformatics">BIOINFORMATICS</a>
+      
+      
+      
+    </h6>
+  </div>
+  
+</section>
+<section id="content-pane" class="row">
+  <div class="col-md-12 text-justify content">
+    <p>This should be trivial, and it is with the right instructions. Unfortunately, those are not listed in the disclaimer given when connecting to the NIH FTP site. The NIH gives the instructions <a href="https://www.ncbi.nlm.nih.gov/projects/Sequin/download/ftp_example.html">here</a>. The NIH FTP offers a standard anonymous connection. Anonymous connections use &ldquo;anonymous&rdquo; as the user and the connecting user&rsquo;s email as the password. Briefly, follow the command in a Unix terminal:</p>
+
+<pre><code class="language-bash">ftp ftp.ncbi.nih.gov
+</code></pre>
+
+<p>You should receive a prompt that looks like &ldquo;Name (ftp.ncbi.nih.gov:dfiler):&rdquo; where &ldquo;dfiler&rdquo; is your username. Enter &ldquo;anonymous&rdquo; into the prompt. Then, you get a message asking for your email to serve as a password. Enter a valid email and you have access to the site. You can then use standard <a href="https://kb.iu.edu/d/aenq">FTP commands</a> to navigate and download the files you need.</p>
+
+  </div>
+</section>
+<section id="tag-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-right meta">
+      
+    </h6>
+  </div>
+  
 </section>
 
 
+
+
+
+
+
+
 <section id="menu-pane" class="row menu text-center">
+  
+  
+  <span><a class="menu-item" href="https://daynefiler.github.io/blog/gindexing/">&lt; prev | </a></span>
+  
+  
+  <span><a class="menu-item" href="/blog">blog</a></span>
+  
+  
+  <span><a class="menu-item" href="https://daynefiler.github.io/blog/downloadgnomad/"> | next &gt;</a></span>
+  
   
   <h4 class="text-center"><a class="menu-item" href="https://daynefiler.github.io">home</a></h4>
 </section>
@@ -156,4 +136,5 @@ hljs.initHighlightingOnLoad();
 <script src="js/main.js"></script>
 </body>
 </html>
+
 

@@ -21,5 +21,15 @@
 conda create --name GoogleCloud python=2 google-cloud-sdk  You can now activate the new environment and use gsutil to download gnomAD data:</description>
     </item>
     
+    <item>
+      <title>G-indexing in VCF files</title>
+      <link>https://daynefiler.github.io/blog/gindexing/</link>
+      <pubDate>Mon, 30 Jul 2018 13:09:45 -0400</pubDate>
+      
+      <guid>https://daynefiler.github.io/blog/gindexing/</guid>
+      <description>The gnomAD VCF files give information about the observed genotype counts, eg &amp;ldquo;GC_EAS&amp;rdquo; gives the genotype counts for individuals of East Asian decent as a comma-separated string. The order of the counts is determined by genotype-indexing. The above link gives an excellent discussion of getting the genotype index for the general case, regardless of ploidy number. Below is a brief discussion of haploid and diploid indices.
+Genotype-indexing works by first indexing the reference and alternative alleles, starting with the reference allele at 0.</description>
+    </item>
+    
   </channel>
 </rss>
