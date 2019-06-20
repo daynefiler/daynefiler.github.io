@@ -66,7 +66,7 @@
 </section>
 <section id="content-pane" class="row">
   <div class="col-md-12 text-justify content">
-    <p>Here is a concise guide to downloading <a href="https://gnomad.broadinstitute.org">gnomAD</a> using <a href="https://cloud.google.com/storage/docs/gsutil">gsutil</a>. I am typically working on a server, and (begrudgingly) use conda to manage software. gsutils, needed for accessing the gnomAD data, is buried within the &lsquo;google-cloud-sdk&rsquo; conda package, not to be confused with the numerous other &lsquo;google-cloud-&rsquo; packages. The Google Cloud SDK requires python v2, so I think it makes sense to create a dedicated conda environment:</p>
+    <p>Here is a concise guide to downloading <a href="https://gnomad.broadinstitute.org">gnomAD</a> using <a href="https://cloud.google.com/storage/docs/gsutil">gsutil</a>. I am typically working on a server, and (begrudgingly) use conda to manage software. gsutil, needed for accessing the gnomAD data, is buried within the &lsquo;google-cloud-sdk&rsquo; conda package, not to be confused with the numerous other &lsquo;google-cloud-&rsquo; conda packages. (A conda search for gsutil will not, at the time of writing, find the correct google-cloud-sdk package.) The Google Cloud SDK requires python v2, so I think it makes sense to create a dedicated conda environment:</p>
 
 <pre><code class="language-bash">conda create --name GoogleCloud python=2 google-cloud-sdk
 </code></pre>
