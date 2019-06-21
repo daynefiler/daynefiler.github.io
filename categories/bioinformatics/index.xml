@@ -17,7 +17,7 @@
       <pubDate>Thu, 20 Jun 2019 14:30:16 -0400</pubDate>
       
       <guid>https://daynefiler.github.io/blog/downloadgnomad/</guid>
-      <description>Here is a concise guide to downloading gnomAD using gsutil. I am typically working on a server, and (begrudgingly) use conda to manage software. gsutil, needed for accessing the gnomAD data, is buried within the &amp;lsquo;google-cloud-sdk&amp;rsquo; conda package, not to be confused with the numerous other &amp;lsquo;google-cloud-&amp;rsquo; conda packages. (A conda search for gsutil will not, at the time of writing, find the correct google-cloud-sdk package.) The Google Cloud SDK requires python v2, so I think it makes sense to create a dedicated conda environment:</description>
+      <description>Here is a concise guide to downloading gnomAD using gsutil. I am typically working on a server, and (begrudgingly) use conda to manage software. The only real trick here is getting the conda environment setup &amp;ndash; I could have easily called this &amp;ldquo;Using gsutil with conda.&amp;rdquo; &amp;ndash; the actual gsutil utility is pretty easy to use. gsutil, needed for accessing the gnomAD data, is buried within the &amp;lsquo;google-cloud-sdk&amp;rsquo; conda package, not to be confused with the numerous other &amp;lsquo;google-cloud-&amp;rsquo; conda packages.</description>
     </item>
     
     <item>
