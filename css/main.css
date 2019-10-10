@@ -281,3 +281,5 @@ pre > code {
   margin-left: -0.36em;
   margin-right: -0.15em;
 }
+
+code.has-jax {font: inherit; font-size: 100%; background: inherit; border: inherit;}

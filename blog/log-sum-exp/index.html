@@ -20,7 +20,6 @@
 
 <meta name="generator" content="Hugo 0.52" />
 
-<link rel="alternate" type="application/rss&#43;xml" href="https://daynefiler.github.io/categories/vcf/index.xml">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
 
@@ -45,40 +44,129 @@
 <div class="container">
 
 
-<section id="list-pane" class="row list">
-  <ul >
-    
-    <li class="list-entry">
-      <a class="list-entry-link" href="https://daynefiler.github.io/blog/gindexing/">G-indexing in VCF files</a>
-      <p class="meta">
-         JUL 30, 2018 
-        <span class="category">
-        
-        
-        
-        —
-        
-        
-        <a class="category" href="/categories/bioinformatics">BIOINFORMATICS</a>, 
-        
-        <a class="category" href="/categories/genetics">GENETICS</a>, 
-        
-        <a class="category" href="/categories/vcf">VCF</a>
-        
-        
-        
-        </span>
-      </p>
-      <p class="excerpt">
+<header class="row text-left title">
+  <h1 class="title">Log-Sum-Exp trick for getting posterior probabilities from small likelihoods.</h1>
+</header>
+<section id="category-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-left meta">
+        PUBLISHED ON OCT 10, 2019 
       
-      </p>
-    </li>
-    
-  </ul>
+    </h6>
+  </div>
+  
+</section>
+<section id="content-pane" class="row">
+  <div class="col-md-12 text-justify content">
+    <p>To formulate the problem, consider calculating the posterior probability given a series of weighted likelihoods.
+Let</p>
+
+<div>
+$$
+x_i
+$$
+</div>
+
+<p>be the likelihood for observation <em>i</em>. We wish to calculate the posterior probability as:</p>
+
+<div>
+$$
+p_i = \frac{x_i}{\sum_j x_j}
+$$
+</div>
+
+<p>As Robert Eisele very nicely discusses in <a href="https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/">his blog post</a>, we can run into underflow issues. Suppose you have the following vector of logged likelihoods.</p>
+
+<pre><code class="language-r">x &lt;- c(-9000, -3000, -1000)
+exp(x)/sum(exp(x))
+# [1] NaN NaN NaN
+</code></pre>
+
+<p>As we can see, all the values will be zero. However, consider making the calculation in log-space.</p>
+
+<div>
+$$
+\begin{align}
+\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &= \text{log}x_i - \text{log}\sum_j x_j \\
+&= \text{log}x_i - \text{log}\sum_j e^{\text{log}x_j} \\
+
+\end{align}
+$$
+</div>
+
+<p>Given the proof from Robert Eisele, we know:</p>
+
+<div>
+$$
+\text{log}\sum_i e^{y_i} = \text{log}\sum_i e^{y_i - a} + a
+$$
+</div>
+
+<p>for arbitrary <em>a</em>. Let <em>a</em> be the maximum log-likelihood value, and we get:</p>
+
+<div>
+$$
+\begin{align}
+\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &= \text{log}x_i -
+\left(\text{log}\sum_j e^{\text{log}x_j - \operatorname{max}_j(\text{log}x_j)} +
+\operatorname{max}_j(\text{log}x_j) \right) \\
+p_i & = \text{exp}\left\{
+  \text{log}x_i -
+  \left(\text{log}\sum_j e^{\text{log}x_j - \operatorname{max}_j(\text{log}x_j)} +
+  \operatorname{max}_j(\text{log}x_j) \right)
+\right\}
+\end{align}
+$$
+</div>
+
+<p>Finally, a simple R function to do the work:</p>
+
+<pre><code class="language-r">getPost &lt;- function(l) {
+  ## l: vector of logged-likelihood values
+  exp(l - (log(sum(exp(l - max(l)))) + max(l)))
+}
+getPost(x)
+# [1] 0 0 1
+</code></pre>
+
+<p>and we see it gives the exact same values for tractable likelihoods:</p>
+
+<pre><code class="language-r">y &lt;- c(-9, -3, -1)
+exp(y)/sum(exp(y))
+# [1] 0.0002953872 0.1191677110 0.8805369018
+getPost(y)
+# [1] 0.0002953872 0.1191677110 0.8805369018
+</code></pre>
+
+  </div>
+</section>
+<section id="tag-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-right meta">
+      
+    </h6>
+  </div>
+  
 </section>
 
 
+
+
+
+
+
+
 <section id="menu-pane" class="row menu text-center">
+  
+  
+  <span><a class="menu-item" href="https://daynefiler.github.io/blog/downloadgnomad/">&lt; prev | </a></span>
+  
+  
+  <span><a class="menu-item" href="/blog">blog</a></span>
+  
+  
   
   <h4 class="text-center"><a class="menu-item" href="https://daynefiler.github.io">home</a></h4>
 </section>
@@ -117,4 +205,5 @@ hljs.initHighlightingOnLoad();
 <script src="js/main.js"></script>
 </body>
 </html>
+
 
