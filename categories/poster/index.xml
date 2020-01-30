@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Poster on Dayne L Filer</title>
+    <link>https://daynefiler.github.io/categories/poster/</link>
+    <description>Recent content in Poster on Dayne L Filer</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Wed, 22 Jan 2020 10:41:12 -0500</lastBuildDate>
+    
+	<atom:link href="https://daynefiler.github.io/categories/poster/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>SMFM Pregnancy Meeting 2020</title>
+      <link>https://daynefiler.github.io/blog/smfm2020/</link>
+      <pubDate>Wed, 22 Jan 2020 10:41:12 -0500</pubDate>
+      
+      <guid>https://daynefiler.github.io/blog/smfm2020/</guid>
+      <description>Hi, thank you for your interest in our prenatal genotyping work. You can find our poster from the SMFM Annual Pregnancy Meeting HERE. Please feel free to contact me regarding the work or potential collaborations. I am also happy to grab a coffee at the meeting if you would like to speak in person.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://daynefiler.github.io/blog/smfm2020/</loc>
+    <lastmod>2020-01-22T10:41:12-05:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://daynefiler.github.io/blog/log-sum-exp/</loc>
     <lastmod>2019-10-10T11:29:37-04:00</lastmod>
   </url>
@@ -51,7 +56,7 @@
   
   <url>
     <loc>https://daynefiler.github.io/blog/</loc>
-    <lastmod>2019-10-10T11:29:37-04:00</lastmod>
+    <lastmod>2020-01-22T10:41:12-05:00</lastmod>
   </url>
   
   <url>
@@ -61,14 +66,26 @@
   </url>
   
   <url>
+    <loc>https://daynefiler.github.io/categories/conference/</loc>
+    <lastmod>2020-01-22T10:41:12-05:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://daynefiler.github.io/</loc>
-    <lastmod>2019-10-10T11:29:37-04:00</lastmod>
+    <lastmod>2020-01-22T10:41:12-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://daynefiler.github.io/categories/genetics/</loc>
     <lastmod>2019-06-20T14:30:16-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://daynefiler.github.io/categories/poster/</loc>
+    <lastmod>2020-01-22T10:41:12-05:00</lastmod>
     <priority>0</priority>
   </url>
   
