@@ -1,0 +1,347 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1.5cm, tmargin=1.5cm]{geometry}
+\usepackage{datetime}
+\usepackage{setspace}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{changepage}
+\usepackage{enumitem}
+\usepackage{mybibformat}
+\usepackage{soul}
+\usepackage[hidelinks]{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{lastpage}
+\usepackage{tabularx}
+\usepackage{needspace}
+
+%% Update bib file
+\immediate\write18{git submodule update --recursive --remote}
+
+%% Accent Color
+% \definecolor{ac1}{rgb}{0.2,0.5,0.25} %% old green color
+\definecolor{ac1}{rgb}{0.45,0.45,0.5}
+\definecolor{ac2}{rgb}{0.25,0.25,0.25}
+\DeclareTextFontCommand{\textbf}{\bfseries\color{ac2}}
+\DeclareTextFontCommand{\textit}{\itshape\color{ac2}}
+
+%% My itemsep
+\newcommand{\myitemsep}{\vspace{1ex}}
+
+%% Tabularx columns
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedleft\arraybackslash}X}
+
+%% Custom bullet
+\newcommand{\mybullet}{\textcolor{ac1}{\raisebox{.35ex}{\rule{0.8ex}{0.8ex}}}}
+\renewcommand{\labelitemi}{\mybullet}
+
+%% My Dot
+\newcommand{\mydot}{\,  $\textcolor{ac1}{\bullet}$ \,}
+
+%% Date Format
+\newdateformat{mydate}{\monthname~\THEYEAR}
+\begingroup
+  \makeatletter
+  \renewcommand*{\monthnameenglish}[1][\month]{%
+    \@orgargctr=#1\relax
+    \ifcase\@orgargctr
+      \PackageError{datetime}%
+        {Invalid Month number \the\@orgargctr}%
+        {Month numbers should go from 1 (January) to 12 (December)}%
+    \or JANUARY\or FEBRUARY\or MARCH\or APRIL\or MAY\or JUNE\or JULY%
+    \or AUGUST\or SEPTEMBER\or OCTOBER\or NOVEMBER\or DECEMBER%
+    \else
+      \PackageError{datetime}%
+        {Invalid Month number \the\@orgargctr}%
+        {Month numbers should go from 1 (January) to 12 (December)}%
+    \fi
+ }%
+%\newdateformat{mydate}{\monthname, \THEYEAR}
+\mydate
+
+%% Email style
+\DeclareUrlCommand\email{\urlstyle{rm}}
+
+% Header and footer
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead{}
+\lfoot{\textcolor{ac1}{\uppercase{\scriptsize{Curriculum Vitae: Dayne Lewis Filer}}}}
+\rfoot{\textcolor{ac1}{\textsc{\scriptsize{\thepage\,\,OF\,\,\pageref*{LastPage}}}}}
+\cfoot{\textcolor{ac1}{\textsc{\scriptsize{\mydate{\today}}}}}
+
+%% Contact Information
+\newcommand{\myphone}{(208) 861 8014} % Phone Number
+\newcommand{\myemail}{\email{dayne_filer@med.unc.edu}} % Email
+\newcommand{\mystreet}{100 Europa Drive, Suite 540} % Street
+\newcommand{\mycitystate}{Chapel Hill, NC} % City/State
+\newcommand{\myzip}{27517} % Zip
+\newcommand{\myweb}{daynefiler.com}
+
+% Bibliography formatting
+\bibliography{/Users/Dayne/Github/mybibs/myBib.bib}
+\DeclareNameAlias{sortname}{first-last}
+\boldname{Filer}{Dayne~Lewis}{D.~L.}
+% \newcommand{\mybibspacing}{1.2}
+
+%% Title
+\newcommand{\mytitle}{
+  \begin{center}
+  \begin{spacing}{1.25}
+  \small\MakeUppercase{\so{\mystreet}}\mydot 
+  \small\MakeUppercase{\so{\mycitystate}}\mydot
+  \small\MakeUppercase{\so{\myzip}} \\
+  \small\MakeUppercase{\so{\myphone}}\mydot
+  \small\myemail\mydot
+  \small\myweb
+  \end{spacing}
+  \end{center}
+  \center{\MakeUppercase{\Huge{\so{Dayne Lewis Filer}}}}\\
+  \vspace{8mm}
+}
+
+%% Section Header
+\newcommand{\mysectionhead}[1]{
+  \begin{minipage}{\linewidth}
+  \setstretch{0.25}
+  \center{\color{ac1}\noindent\rule{\textwidth}{0.8pt}}%
+  \center{\color{ac1}\textbf{\uppercase{#1}}}%
+  \center{\color{ac1}\noindent\rule{\textwidth}{0.8pt}}
+  \vspace{2mm}
+  \end{minipage}
+}
+
+\newcommand{\mysubtitle}[1]{
+  % \addvspace{.5em plus .2em minus .1em}\addpenalty{-1000}
+  \needspace{2em}
+  \textcolor{ac1}{{\MakeUppercase{\textbf{#1}}}}
+}
+
+\newcommand{\dateitem}[2]{
+  \hspace*{1.5mm} #1 \hfill \textit{#2} \newline
+}
+
+\newcounter{course}
+\renewcommand\thecourse{\arabic{course}.}
+\newcommand{\course}[3]{
+  \stepcounter{course}
+  \begin{tabularx}{\linewidth}{ >{\hsize=0.1\hsize}L >{\hsize=1.9\hsize}X >{\hsize=1.4\hsize}X >{\hsize=0.6\hsize}X }
+    \thecourse & #1 & #2 & \hfill \textit{#3}
+  \end{tabularx}
+}
+
+\newcounter{funding}
+\renewcommand\thefunding{\arabic{funding}.}
+\newcommand{\funding}[7]{
+  \stepcounter{funding}
+  %% Grant #, PI, org
+  \begin{tabularx}{\linewidth}{ >{\hsize=0.1\hsize}L >{\hsize=0.6\hsize}X >{\hsize=0.8\hsize}X >{\hsize=2.5\hsize}L }
+    \thefunding & #1 & PI: #2 & #3
+  \end{tabularx}
+  \nopagebreak
+  %% Grant name, dates
+  \begin{tabularx}{\linewidth}{ >{\hsize=0.075\hsize}L >{\hsize=2.225\hsize}X >{\hsize=0.7\hsize}L }
+     & #4 & \textit{#5}
+  \end{tabularx}
+  \nopagebreak
+  %% Role & $$
+  \begin{tabularx}{\linewidth}{ >{\hsize=0.075\hsize}L >{\hsize=0.825\hsize}X >{\hsize=2.1\hsize}L }
+     & Role: #6 & #7 
+  \end{tabularx}
+  \newline \vspace{0pt}
+}
+
+\newcommand{\bulletDateItem}[2]{
+  \begin{tabularx}{\linewidth}[t]{ c X } 
+    \mybullet & #1 \hfill \textit{#2}
+  \end{tabularx}
+}
+
+\newenvironment{mysection}[1]{
+  \raggedright
+  % \addvspace{0.5em plus .2em minus 0.1em}\addpenalty{-1000}
+  \needspace{2em}
+  \mysectionhead{#1}
+  \begin{adjustwidth}{2mm}{2mm}
+  \begin{spacing}{1.35}
+
+}{
+  \end{spacing}
+  \end{adjustwidth}
+}
+
+%% Education Section
+\newcommand{\educationsection}{
+  \begin{mysection}{education}
+    \textbf{UNC School of Medicine, Chapel Hill, NC} \newline
+    \dateitem{Doctor of Medicine}{2023 (expected)}
+    \dateitem{Doctor of Philosophy, Bioinformatics \& Computational Biology}{2021 (expected)}
+    \newline
+    \textbf{The College of Idaho, Caldwell, ID} \newline
+    \dateitem{B.S. Mathematics, Human Biology and Political Economy Minors (\textit{summa cum laude})}{2012} 
+  \end{mysection}
+}
+
+%% Experience Section
+\newcommand{\experiencesection}{
+\begin{mysection}{experience}
+  
+  \textbf{UNC School of Medicine, Chapel Hill, NC} \newline
+  \dateitem{Graduate Research Assistant, Wilhelmsen Laboratory}{2017 -- }
+  \dateitem{Graduate Rotation Student, Wilhelmsen Laboratory}{2016} 
+  \dateitem{Graduate Rotation Student, Juliano Laboratory}{2016} 
+  
+  \textbf{US EPA National Center for Computational Toxicology, Research Triangle Park, NC} \newline
+  \dateitem{ORISE Research Fellow}{2012 -- 2016} 
+  
+  \textbf{Mount Desert Island Biological Laboratory, Salisbury Cove, ME} \newline
+  \dateitem{REU Summer Fellow, Boyer Laboratory}{2011} 
+  
+  \textbf{The College of Idaho, Caldwell, ID}  \newline
+  \dateitem{Undergraduate Research Assistant, Heggland Laboratory}{2009 -- 2012} 
+  \dateitem{Mountain State Tumor Medical Research Institute Summer Fellow, Heggland Laboratory}{2010} 
+  \dateitem{Idaho INBRE Summer Research Summer Fellow, Heggland Laboratory}{2009} 
+\end{mysection}
+}
+
+\newcommand{\teachsection}{
+\begin{mysection}{teaching}
+  \course{Practical R for Scientists}{UNC School of Medicine}{Spring, 2020}
+  \course{How to Learn to Code}{UNC School of Medicine}{Summer, 2019}
+  \course{How to Learn to Code}{UNC School of Medicine}{Summer, 2018}
+  \course{How to Learn to Code}{UNC School of Medicine}{Summer, 2016} 
+  \course{MAT123, Applied Mathematics (TA)}{College of Idaho}{Spring, 2012}
+  \course{MAT152, Calculus II (TA)}{College of Idaho}{Fall, 2011}
+  \course{BIO330, Cell Biology (TA)}{College of Idaho}{Fall, 2011}
+  \course{MAT151, Calculus I (TA)}{College of Idaho}{Spring, 2011}
+  \course{BIO220, Freshman Biology II (TA)}{College of Idaho}{Spring, 2011}
+  \course{MAT151, Calculus I (TA)}{College of Idaho}{Fall, 2010}
+  \course{BIO120, Freshman Biology I (TA)}{College of Idaho}{Fall, 2010}
+\end{mysection}
+}
+
+\newcommand{\fundsection}{
+\begin{mysection}{funding}
+  
+  %\mysubtitle{current}
+  
+  \funding{550KR231934}{Vora}{North Carolina Translational and Clinical Sciences Institute}{Expanding the utility of non-invasive prenatal genetic testing}{05/2020 -- 05/2021}{Investigator}{\$50,000}
+  \funding{F30HD101228}{Filer}{National Institute of Child Health \& Human Development}{Expanding the utility of prenatal genetic testing}{11/2019 -- 10/2023}{Principal Investigator}{\$179,260}
+  \funding{Pilot Grant}{Filer}{Illumina, Inc. \& UNC High Throughput Sequencing Facility}{Expanding the utility of non-invasive prenatal genetic testing}{05/2019 -- 05/2021}{Principal Investigator}{\$6,687}
+  
+  %\setcounter{funding}{0}
+  %\mysubtitle{completed}
+  
+\end{mysection}
+}
+
+\newcommand{\servicesection}{
+\begin{mysection}{service and awards}
+  \bulletDateItem{Board of Directors for Come to the Table, Inc.}{2018 -- 2019}
+  \bulletDateItem{Emergency Department Volunteer, UNC Hospital, Chapel Hill, NC}{2013 -- 2014}
+  \bulletDateItem{Member, NIEHS 2013 Career Fair Planning Committee}{2012 -- 2013}
+  \bulletDateItem{Citizen Teacher, Citizen Schools, Durham, NC}{2012}
+  \bulletDateItem{Outstanding INBRE Student}{2012}
+  \bulletDateItem{Best Graduate/Undergraduate Oral Presentation, 54\textsuperscript{th} Idaho Academy of Science Meeting}{2012}
+  \bulletDateItem{Member, College Budget Committee}{2010 -- 2012}
+  \bulletDateItem{Member, Student Research Committee}{2010 -- 2012}
+  \bulletDateItem{Nel Tobias Travel Award}{2011}
+  \bulletDateItem{Member, Tenure Track Math Faculty Search Committee}{2010 -- 2011}
+  \bulletDateItem{Second-Year Calculus Student of the Year}{2009}
+  \bulletDateItem{College of Idaho Heritage Scholarship}{2008 -- 2012}
+  \bulletDateItem{College of Idaho Dean's List}{2008 -- 2012}
+\end{mysection}
+}
+
+%% Skills
+\newcommand{\skillssection}{
+\raggedright
+\mysectionhead{Skills}
+\begin{itemize}
+\item Programming in R
+\item Big data analysis and visualization
+\item Cell culture -- resurrecting, maintaining, and freezing cells
+\item Optimization of cell-based calorimetric and fluorometric assays
+\item Injecting, phlebotomizing, sacrificing, and dissecting fish
+\item Gel electrophoresis, column chromatography, fluorometric microscopy, and surface plasmon resonance
+\item MySQL
+\item Basic knowledge of Linux, \LaTeX\,and C++
+\end{itemize}
+}
+
+%% References
+\newcommand{\profrefsection}{
+\raggedright
+\mysectionhead{Professional References}
+\begin{adjustwidth}{2mm}{}
+\begin{spacing}{1.5}
+Kirk C. Wilhelmsen, MD, PhD\mydot UNC School of Medicine\mydot(919) 966 1373\mydot \email{kirk@med.unc.edu} \newline
+David M. Reif, PhD\mydot North Carolina State University\mydot(919) 513 5611\mydot \email{dmreif@ncsu.edu} \newline
+Richard S. Judson, PhD\mydot US EPA\mydot(919) 541 3085\mydot \email{judson.richard@epa.gov} \newline
+Sara J. Heggland, PhD\mydot The College of Idaho\mydot(208) 459 5063\mydot  \email{sheggland@collegeofidaho.edu} 
+\end{spacing}
+\end{adjustwidth}
+}
+
+% Selected Work
+\newcommand{\selectedwork}{
+\raggedright
+\mysectionhead{Selected Works}
+\begin{spacing}{\mybibspacing}
+\begin{itemize}
+\item \fullcite{dfcop2014}
+\item \fullcite{drest2014}
+\item \fullcite{kptox2013}
+\item \fullcite{dfsot2014}
+\item \fullcite{dfsot2013}
+\end{itemize}
+\end{spacing}
+}
+
+%% Truncated Version
+\newcommand{\truncated}{
+\begin{center}
+\textcolor{ac1}{\textbf{\#\# TRUNCATED VERSION \#\#}} \\
+\textcolor{ac1}{\textbf{Complete curriculum vitae available at: \url{daynefiler.com}}}
+\end{center}
+}
+
+%% Compete Work
+\newcommand{\completework}{
+\begin{mysection}{Complete Works}
+  \printbibliography[keyword=cv,keyword=article,title={Publications},heading=mybibhead] 
+  \leavevmode \\
+  \printbibliography[keyword=cv,keyword=software,title={Software},heading=mybibhead] 
+  \leavevmode \\
+  \printbibliography[keyword=cv,keyword=conference,title={Conference Abstracts},heading=mybibhead] 
+\end{mysection}
+}
+
+%% Create Document
+\begin{document}
+\mytitle
+\educationsection
+\experiencesection
+%\skillssection
+\servicesection
+%\selectedwork
+%\profrefsection
+%\truncated
+\teachsection
+\fundsection
+\completework
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,125 @@
+\usepackage{xpatch}% or use http://tex.stackexchange.com/a/40705
+\usepackage{kpfonts,dsfont}
+\usepackage[compact,small,sf,bf]{titlesec}
+\usepackage[sorting=ydnt,
+            bibstyle=authoryear-comp,
+            defernumbers=true,
+            maxnames=20,
+            giveninits=true,
+            terseinits=true,
+            uniquename=init,
+            dashed=false,
+            doi=false,
+            isbn=false,
+            backend=biber]{biblatex}
+
+%% Set-up for bold author https://tex.stackexchange.com/a/73246/56834
+\def\makenamesetup{%
+  \def\bibnamedelima{~}%
+  \def\bibnamedelimb{ }%
+  \def\bibnamedelimc{ }%
+  \def\bibnamedelimd{ }%
+  \def\bibnamedelimi{ }%
+  \def\bibinitperiod{.}%
+  \def\bibinitdelim{~}%
+  \def\bibinithyphendelim{.-}}    
+\newcommand*{\makename}[3]{\begingroup\makenamesetup\xdef#1{#2, #3}\endgroup}
+
+\newbibmacro*{name:bold}[2]{%
+  \makename{\currname}{#1}{#2}%
+  \makename{\findname}{\lastname}{\firstname}%
+  \makename{\findinit}{\lastname}{\firstinit}%
+  \ifboolexpr{ test {\ifdefequal{\currname}{\findname}}
+            or test {\ifdefequal{\currname}{\findinit}} }{\bfseries\color{ac2}}{}}
+
+\newcommand*{\boldname}[3]{%
+  \def\lastname{#1}%
+  \def\firstname{#2}%
+  \def\firstinit{#3}}
+\boldname{}{}{}
+
+\xpretobibmacro{name:family}{\begingroup\usebibmacro{name:bold}{#1}{#2}}{}{}
+\xpretobibmacro{name:given-family}{\begingroup\usebibmacro{name:bold}{#1}{#2}}{}{}
+\xpretobibmacro{name:family-given}{\begingroup\usebibmacro{name:bold}{#1}{#2}}{}{}
+\xpretobibmacro{name:delim}{\begingroup\normalfont}{}{}
+
+\xapptobibmacro{name:family}{\endgroup}{}{}
+\xapptobibmacro{name:given-family}{\endgroup}{}{}
+\xapptobibmacro{name:family-given}{\endgroup}{}{}
+\xapptobibmacro{name:delim}{\endgroup}{}{}
+%% Add period to end of \fullcite
+\newtoggle{bbx:urlbreak}
+
+% Set \finentrypunct unless the entry ends with an URL
+\xpretobibmacro{finentry}
+  {\iftoggle{bbx:urlbreak}
+     {\nopunct}
+     {\ifboolexpr{ test {\ifcitation} and not test {\iffootnote} }
+        {\finentrypunct}
+        {}}%
+   \global\togglefalse{bbx:urlbreak}}
+  {}{}
+
+\newbibmacro*{bbx:parunit}{%
+  \setunit{\bibpagerefpunct}\newblock
+  \usebibmacro{pageref}%
+  \clearlist{pageref}%
+  \setunit{%
+    \adddot\par\noindent\nobreak%
+    \global\toggletrue{bbx:urlbreak}}}
+
+
+%% Other formatting 
+\renewcommand{\bibpagespunct}{\ifentrytype{article}{\addcolon\addspace}{\addcomma\addspace}}
+\DeclareFieldFormat{url}{\url{#1}}
+\DeclareFieldFormat[article]{pages}{#1}
+\DeclareFieldFormat[inproceedings]{pages}{\lowercase{pp.}#1}
+\DeclareFieldFormat[incollection]{pages}{\lowercase{pp.}#1}
+\DeclareFieldFormat[article]{volume}{\mkbibbold{#1}}
+\DeclareFieldFormat[article]{number}{\mkbibparens{#1}}
+\DeclareFieldFormat[article]{title}{\MakeCapital{#1}}
+\DeclareFieldFormat[misc]{title}{#1}
+\DeclareFieldFormat[article]{url}{}
+\DeclareFieldFormat[inproceedings]{title}{#1}
+\DeclareFieldFormat{shorthandwidth}{#1}
+\DeclareFieldFormat{extradate}{}
+
+\DeclareLabeldate[software]{%
+  \field{date}
+  \field{year}
+  \field{eventdate}
+  \field{origdate}
+  \field{urldate}
+}
+
+%% No dot before number of articles
+\xpatchbibmacro{volume+number+eid}{\setunit*{\adddot}}{}{}{}
+
+%% Remove In: for an article.
+\renewbibmacro{in:}{%
+  \ifentrytype{article}{}{%
+  \printtext{\bibstring{in}\intitlepunct}}}
+
+\setlength{\bibitemsep}{2.5pt}
+\setlength{\bibhang}{.8cm}
+
+\defbibenvironment{bibliography}
+{\enumerate{}
+  {\setlength{\leftmargin}{\bibhang}%
+   \setlength{\itemindent}{-\leftmargin}%
+   \setlength{\itemsep}{\bibitemsep}%
+   \setlength{\parsep}{\bibparsep}}}
+{\endenumerate}
+{\item}
+
+%% Custom header format
+% \defbibheading{mybibhead}[\bibname]{
+% \textcolor{ac1}{\MakeUppercase{\textbf{#1}}}
+% \addcontentsline{toc}{subsection}{#1}
+% }
+\defbibheading{mybibhead}[\bibname]{
+  \mysubtitle{#1}
+}
+
+%% Add all papers in the bib file.
+\nocite{*}
