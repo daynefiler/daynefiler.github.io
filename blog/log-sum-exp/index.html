@@ -6,60 +6,86 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
-<meta name="description" content="Personal website for Dayne L Filer">
-<meta name="keywords" content="dayne,filer,mdphd,bioinformatics,consulting,data,science,statistics">
-<meta name="keywords" content="[likelihood,likelihoods,logsumexp,log,sum,exp,probability,posterior]">
 
 
-<title>DL Filer</title>
-
-<meta name="generator" content="Hugo 0.52" />
+  <meta name="description" content="Personal website for Dayne L Filer">
 
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+
+  <meta name="keywords" content="dayne,filer,mdphd,bioinformatics,consulting,data,science,statistics">
+
+
+<base href="https://daynefiler.github.io">
+
+<title>
+    DL Filer - Log-Sum-Exp trick for getting posterior probabilities from small likelihoods. 
+</title>
+
+<meta name="generator" content="Hugo 0.70.0" />
+
+
+
+  
 
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400|Roboto+Slab:400,700|Roboto:300,300i,400,400i,500,500i,700,700i">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
-<link rel="stylesheet" href="https://daynefiler.github.io/css/main.css">
+
+
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
 
 
 
 
-<link rel="apple-touch-icon" sizes="180x180" href="/img/df150.png">
-<link rel="icon" type="image/png" href="/img/df32.png" sizes="32x32">
-<link rel="icon" type="image/png" href="/img/df16.png" sizes="16x16">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/img/df.svg" color="#5bbad5">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/df150.png">
+
+
+  <link rel="icon" type="image/png" href="/img/df32.png" sizes="32x32">
+
+
+  <link rel="icon" type="image/png" href="/img/df16.png" sizes="16x16">
+
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="mask-icon" href="/img/df.svg" color="#5bbad5">
+
+
 <meta name="theme-color" content="#ffffff">
-
 </head>
+
 <body lang="en-US">
-<div class="container">
+<div class="container"> 
+
+ 
+<div class="topsep">
+</div>
 
 
-<header class="row text-left title">
-  <h1 class="title">Log-Sum-Exp trick for getting posterior probabilities from small likelihoods.</h1>
+<header>
+  <h1>Log-Sum-Exp trick for getting posterior probabilities from small likelihoods.</h1>
 </header>
-<section id="category-pane" class="row meta">
+
+<section id="category-pane" class="row">
   
   <div class="col-md-12">
-    <h6 class="text-left meta">
-        PUBLISHED ON OCT 10, 2019 
+    <h6 class="text-left">
+       PUBLISHED ON OCT 10, 2019 
       
       
       
       —
       
       
-      <a class="meta" href="/categories/bioinformatics">BIOINFORMATICS</a>, 
+      <a href="/categories/bioinformatics">BIOINFORMATICS</a>, 
       
-      <a class="meta" href="/categories/statistics">STATISTICS</a>
+      <a href="/categories/statistics">STATISTICS</a>
       
       
       
@@ -67,155 +93,139 @@
   </div>
   
 </section>
+
 <section id="content-pane" class="row">
-  <div class="col-md-12 text-justify content">
-    <p>To formulate the problem, consider calculating the posterior probability given a series of weighted likelihoods.
-Let</p>
-
+  <div class="col-md-12 padded20">
+    
+    <p>To formulate the problem, consider calculating the posterior probability given a series of weighted likelihoods. Let</p>
 <div>
-$$
+<p><span class="math display">\[
 x_i
-$$
+\]</span></p>
 </div>
-
 <p>be the likelihood for observation <em>i</em>. We wish to calculate the posterior probability as:</p>
-
 <div>
-$$
+<p><span class="math display">\[
 p_i = \frac{x_i}{\sum_j x_j}
-$$
+\]</span></p>
 </div>
-
 <p>As Robert Eisele very nicely discusses in <a href="https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/">his blog post</a>, we can run into underflow issues. Suppose you have the following vector of logged likelihoods.</p>
-
-<pre><code class="language-r">x &lt;- c(-9000, -3000, -1000)
-exp(x)/sum(exp(x))
-# [1] NaN NaN NaN
-</code></pre>
-
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">9000</span>, <span class="dv">-3000</span>, <span class="dv">-1000</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">exp</span>(x)<span class="op">/</span><span class="kw">sum</span>(<span class="kw">exp</span>(x))</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># [1] NaN NaN NaN</span></span></code></pre></div>
 <p>As we can see, all the values will be zero. However, consider making the calculation in log-space.</p>
-
 <div>
-$$
-\begin{align}
-\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &= \text{log}x_i - \text{log}\sum_j x_j \\
-&= \text{log}x_i - \text{log}\sum_j e^{\text{log}x_j} \\
+<p><span class="math display">\[\begin{align}
+\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &amp;= \text{log}x_i - \text{log}\sum_j x_j \\
+&amp;= \text{log}x_i - \text{log}\sum_j e^{\text{log}x_j} \\
 
-\end{align}
-$$
+\end{align}\]</span></p>
 </div>
-
 <p>Given the proof from Robert Eisele, we know:</p>
-
 <div>
-$$
+<p><span class="math display">\[
 \text{log}\sum_i e^{y_i} = \text{log}\sum_i e^{y_i - a} + a
-$$
+\]</span></p>
 </div>
-
 <p>for arbitrary <em>a</em>. Let <em>a</em> be the maximum log-likelihood value, and we get:</p>
-
 <div>
-$$
-\begin{align}
-\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &= \text{log}x_i -
+<p><span class="math display">\[\begin{align}
+\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &amp;= \text{log}x_i -
 \left(\text{log}\sum_j e^{\text{log}x_j - \operatorname{max}_j(\text{log}x_j)} +
 \operatorname{max}_j(\text{log}x_j) \right) \\
-p_i & = \text{exp}\left\{
+p_i &amp; = \text{exp}\left\{
   \text{log}x_i -
   \left(\text{log}\sum_j e^{\text{log}x_j - \operatorname{max}_j(\text{log}x_j)} +
   \operatorname{max}_j(\text{log}x_j) \right)
 \right\}
-\end{align}
-$$
+\end{align}\]</span></p>
 </div>
-
 <p>Finally, a simple R function to do the work:</p>
-
-<pre><code class="language-r">getPost &lt;- function(l) {
-  ## l: vector of logged-likelihood values
-  exp(l - (log(sum(exp(l - max(l)))) + max(l)))
-}
-getPost(x)
-# [1] 0 0 1
-</code></pre>
-
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>getPost &lt;-<span class="st"> </span><span class="cf">function</span>(l) {</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="co">## l: vector of logged-likelihood values</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="kw">exp</span>(l <span class="op">-</span><span class="st"> </span>(<span class="kw">log</span>(<span class="kw">sum</span>(<span class="kw">exp</span>(l <span class="op">-</span><span class="st"> </span><span class="kw">max</span>(l)))) <span class="op">+</span><span class="st"> </span><span class="kw">max</span>(l)))</span>
+<span id="cb2-4"><a href="#cb2-4"></a>}</span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="kw">getPost</span>(x)</span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co"># [1] 0 0 1</span></span></code></pre></div>
 <p>and we see it gives the exact same values for tractable likelihoods:</p>
-
-<pre><code class="language-r">y &lt;- c(-9, -3, -1)
-exp(y)/sum(exp(y))
-# [1] 0.0002953872 0.1191677110 0.8805369018
-getPost(y)
-# [1] 0.0002953872 0.1191677110 0.8805369018
-</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">9</span>, <span class="dv">-3</span>, <span class="dv">-1</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">exp</span>(y)<span class="op">/</span><span class="kw">sum</span>(<span class="kw">exp</span>(y))</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co"># [1] 0.0002953872 0.1191677110 0.8805369018</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="kw">getPost</span>(y)</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># [1] 0.0002953872 0.1191677110 0.8805369018</span></span></code></pre></div>
 
   </div>
 </section>
-<section id="tag-pane" class="row meta">
+
+
+
+
   
-  <div class="col-md-12">
-    <h6 class="text-right meta">
+
+
+<section id="menu-pane" class="menu-item text-center">
+  <div class="row">
+    <div class="col">
+      
+        
+          <a href="https://daynefiler.github.io/blog/downloadgnomad/">&lt; prev </a> |
+        
+        
+          <a href="/blog">blog</a>
+        
+        
+          | <a href="https://daynefiler.github.io/blog/smfm2020/"> next &gt;</a>
+        
+      
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <a href="https://daynefiler.github.io">home</a>
+    </div>
+  </div>
+  
+</section>
+
+
+<footer class="container padded20">
+  <hr />
+  <div class="row">
+    <h6 class="col text-center">
+      
+      <i class="far fa-copyright"></i> 2018-2020 Dayne Lewis Filer
       
     </h6>
   </div>
-  
-</section>
-
-
-
-
-
-
-
-
-<section id="menu-pane" class="row menu text-center">
-  
-  
-  <span><a class="menu-item" href="https://daynefiler.github.io/blog/downloadgnomad/">&lt; prev | </a></span>
-  
-  
-  <span><a class="menu-item" href="/blog">blog</a></span>
-  
-  
-  <span><a class="menu-item" href="https://daynefiler.github.io/blog/smfm2020/"> | next &gt;</a></span>
-  
-  
-  <h4 class="text-center"><a class="menu-item" href="https://daynefiler.github.io">home</a></h4>
-</section>
-
-
-
-<footer class="row text-center footer">
-  <hr />
-  
-  <h6 class="text-center copyright">© 2018-2020 Dayne Lewis Filer.</h6>
-  
-  <h6 class="text-center powered">I am not a web developer, and am indebted to <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/shenoybr/hugo-goa">Goa</a> for making this site possible.</h6>
-  
-  
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-  </script>
-  
 </footer>
 
-</div>
 
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  
+  
+  
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js//highlight.min.js"></script>
+    
+    
+    
+    <script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
   
 
-<script type="text/javascript">
-hljs.initHighlightingOnLoad();
-</script>
 
 
 
+  <script src="/js/math-code.js"></script>
+  <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
 <script src="js/main.js"></script>
+
+</div> 
+
 </body>
 </html>
-
 

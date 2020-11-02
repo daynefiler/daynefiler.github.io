@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>DL Filer</title>
@@ -6,7 +6,7 @@
     <description>Recent content on DL Filer</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Wed, 22 Jan 2020 10:41:12 -0500</lastBuildDate>
+    <lastBuildDate>Mon, 23 Jul 2018 17:01:43 -0400</lastBuildDate>
     
 	<atom:link href="https://daynefiler.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -18,9 +18,7 @@
       
       <guid>https://daynefiler.github.io/blog/smfm2020/</guid>
       <description>Hi, thank you for your interest in our prenatal genotyping work. You can find our poster from the SMFM Annual Pregnancy Meeting HERE. Please feel free to contact me regarding the work or potential collaborations. I am also happy to grab a coffee at the meeting if you would like to speak in person.
-&amp;nbsp;
-&amp;nbsp;
-Objective: Congenital abnormalities affect 3-4% of pregnancies and cause 20-30% of neonatal deaths worldwide. Non-invasive prenatal screening (NIPS) leverages the existence of cell-free fetal DNA (cffDNA) with next-generation sequencing to predict fetal presence of large chromosomal abnormalities and, recently, de novo or paternally-inherited dominant SNPs.</description>
+  Objective: Congenital abnormalities affect 3-4% of pregnancies and cause 20-30% of neonatal deaths worldwide. Non-invasive prenatal screening (NIPS) leverages the existence of cell-free fetal DNA (cffDNA) with next-generation sequencing to predict fetal presence of large chromosomal abnormalities and, recently, de novo or paternally-inherited dominant SNPs.</description>
     </item>
     
     <item>
@@ -30,9 +28,11 @@ Objective: Congenital abnormalities affect 3-4% of pregnancies and cause 20-30% 
       
       <guid>https://daynefiler.github.io/blog/log-sum-exp/</guid>
       <description>To formulate the problem, consider calculating the posterior probability given a series of weighted likelihoods. Let
- $$ x_i $$  be the likelihood for observation i. We wish to calculate the posterior probability as:
- $$ p_i = \frac{x_i}{\sum_j x_j} $$  As Robert Eisele very nicely discusses in his blog post, we can run into underflow issues. Suppose you have the following vector of logged likelihoods.
-x &amp;lt;- c(-9000, -3000, -1000) exp(x)/sum(exp(x)) # [1] NaN NaN NaN  As we can see, all the values will be zero.</description>
+ \[ x_i \]
+ be the likelihood for observation i. We wish to calculate the posterior probability as:
+ \[ p_i = \frac{x_i}{\sum_j x_j} \]
+ As Robert Eisele very nicely discusses in his blog post, we can run into underflow issues. Suppose you have the following vector of logged likelihoods.
+x &amp;lt;-c(-9000, -3000, -1000) exp(x)/sum(exp(x)) # [1] NaN NaN NaN As we can see, all the values will be zero.</description>
     </item>
     
     <item>
@@ -51,7 +51,7 @@ x &amp;lt;- c(-9000, -3000, -1000) exp(x)/sum(exp(x)) # [1] NaN NaN NaN  As we c
       
       <guid>https://daynefiler.github.io/blog/accessingnihftp/</guid>
       <description>This should be trivial, and it is with the right instructions. Unfortunately, those are not listed in the disclaimer given when connecting to the NIH FTP site. The NIH gives the instructions here. The NIH FTP offers a standard anonymous connection. Anonymous connections use &amp;ldquo;anonymous&amp;rdquo; as the user and the connecting user&amp;rsquo;s email as the password. Briefly, follow the command in a Unix terminal:
-ftp ftp.ncbi.nih.gov  You should receive a prompt that looks like &amp;ldquo;Name (ftp.</description>
+ftp ftp.ncbi.nih.gov You should receive a prompt that looks like &amp;ldquo;Name (ftp.</description>
     </item>
     
     <item>
@@ -62,15 +62,6 @@ ftp ftp.ncbi.nih.gov  You should receive a prompt that looks like &amp;ldquo;Nam
       <guid>https://daynefiler.github.io/blog/gindexing/</guid>
       <description>The gnomAD VCF files give information about the observed genotype counts, eg &amp;ldquo;GC_EAS&amp;rdquo; gives the genotype counts for individuals of East Asian decent as a comma-separated string. The order of the counts is determined by genotype-indexing. The above link gives an excellent discussion of getting the genotype index for the general case, regardless of ploidy number. Below is a brief discussion of haploid and diploid indices.
 Genotype-indexing works by first indexing the reference and alternative alleles, starting with the reference allele at 0.</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>https://daynefiler.github.io/about/</link>
-      <pubDate>Tue, 24 Jul 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://daynefiler.github.io/about/</guid>
-      <description>I grew up in Boise, Idaho. After finishing college at The College of Idaho I moved to Durham, North Carolina for a research fellowship with the US EPA. In 2015 my wife and I decided to stay in Durham for the long-haul as I started at UNC in the MD/PhD program. I am currently working on my PhD in Bioinformatics and Computational Biology under the mentorship of Kirk Wilhelmsen at the Renaissance Computing Institute.</description>
     </item>
     
     <item>

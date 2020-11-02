@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Statistics on DL Filer</title>
+    <title>statistics on DL Filer</title>
     <link>https://daynefiler.github.io/categories/statistics/</link>
-    <description>Recent content in Statistics on DL Filer</description>
+    <description>Recent content in statistics on DL Filer</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Thu, 10 Oct 2019 11:29:37 -0400</lastBuildDate>
@@ -18,9 +18,11 @@
       
       <guid>https://daynefiler.github.io/blog/log-sum-exp/</guid>
       <description>To formulate the problem, consider calculating the posterior probability given a series of weighted likelihoods. Let
- $$ x_i $$  be the likelihood for observation i. We wish to calculate the posterior probability as:
- $$ p_i = \frac{x_i}{\sum_j x_j} $$  As Robert Eisele very nicely discusses in his blog post, we can run into underflow issues. Suppose you have the following vector of logged likelihoods.
-x &amp;lt;- c(-9000, -3000, -1000) exp(x)/sum(exp(x)) # [1] NaN NaN NaN  As we can see, all the values will be zero.</description>
+ \[ x_i \]
+ be the likelihood for observation i. We wish to calculate the posterior probability as:
+ \[ p_i = \frac{x_i}{\sum_j x_j} \]
+ As Robert Eisele very nicely discusses in his blog post, we can run into underflow issues. Suppose you have the following vector of logged likelihoods.
+x &amp;lt;-c(-9000, -3000, -1000) exp(x)/sum(exp(x)) # [1] NaN NaN NaN As we can see, all the values will be zero.</description>
     </item>
     
   </channel>

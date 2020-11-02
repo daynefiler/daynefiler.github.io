@@ -6,62 +6,88 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
-<meta name="description" content="Personal website for Dayne L Filer">
-<meta name="keywords" content="dayne,filer,mdphd,bioinformatics,consulting,data,science,statistics">
-<meta name="keywords" content="[genotype-index,vcf,genotype,alternate allele,genotype index,genotype order,allele order]">
 
 
-<title>DL Filer</title>
-
-<meta name="generator" content="Hugo 0.52" />
+  <meta name="description" content="Personal website for Dayne L Filer">
 
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+
+  <meta name="keywords" content="dayne,filer,mdphd,bioinformatics,consulting,data,science,statistics">
+
+
+<base href="https://daynefiler.github.io">
+
+<title>
+    DL Filer - G-indexing in VCF files 
+</title>
+
+<meta name="generator" content="Hugo 0.70.0" />
+
+
+
+  
 
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400|Roboto+Slab:400,700|Roboto:300,300i,400,400i,500,500i,700,700i">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
-<link rel="stylesheet" href="https://daynefiler.github.io/css/main.css">
+
+
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
 
 
 
 
-<link rel="apple-touch-icon" sizes="180x180" href="/img/df150.png">
-<link rel="icon" type="image/png" href="/img/df32.png" sizes="32x32">
-<link rel="icon" type="image/png" href="/img/df16.png" sizes="16x16">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/img/df.svg" color="#5bbad5">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/df150.png">
+
+
+  <link rel="icon" type="image/png" href="/img/df32.png" sizes="32x32">
+
+
+  <link rel="icon" type="image/png" href="/img/df16.png" sizes="16x16">
+
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="mask-icon" href="/img/df.svg" color="#5bbad5">
+
+
 <meta name="theme-color" content="#ffffff">
-
 </head>
+
 <body lang="en-US">
-<div class="container">
+<div class="container"> 
+
+ 
+<div class="topsep">
+</div>
 
 
-<header class="row text-left title">
-  <h1 class="title">G-indexing in VCF files</h1>
+<header>
+  <h1>G-indexing in VCF files</h1>
 </header>
-<section id="category-pane" class="row meta">
+
+<section id="category-pane" class="row">
   
   <div class="col-md-12">
-    <h6 class="text-left meta">
-        PUBLISHED ON JUL 30, 2018 
+    <h6 class="text-left">
+       PUBLISHED ON JUL 30, 2018 
       
       
       
       —
       
       
-      <a class="meta" href="/categories/bioinformatics">BIOINFORMATICS</a>, 
+      <a href="/categories/bioinformatics">BIOINFORMATICS</a>, 
       
-      <a class="meta" href="/categories/genetics">GENETICS</a>, 
+      <a href="/categories/genetics">GENETICS</a>, 
       
-      <a class="meta" href="/categories/vcf">VCF</a>
+      <a href="/categories/vcf">VCF</a>
       
       
       
@@ -69,39 +95,31 @@
   </div>
   
 </section>
+
 <section id="content-pane" class="row">
-  <div class="col-md-12 text-justify content">
+  <div class="col-md-12 padded20">
+    
+    <nav id="TableOfContents"></nav>
+    
     <p>The gnomAD VCF files give information about the observed genotype counts, eg &ldquo;GC_EAS&rdquo; gives the genotype counts for individuals of East Asian decent as a comma-separated string. The order of the counts is determined by <a href="https://genome.sph.umich.edu/wiki/Relationship_between_Ploidy,_Alleles_and_Genotypes">genotype-indexing</a>. The above link gives an excellent discussion of getting the genotype index for the general case, regardless of ploidy number. Below is a brief discussion of haploid and diploid indices.</p>
-
-<p>Genotype-indexing works by first indexing the reference and alternative alleles, starting with the reference allele at 0. The order of the alternative alleles is given by the order listed under the ALT field in the VCF. Consider the following variant: A/B,C,D (where A is the reference allele, and B, C, and D represent the ordered alternative alleles.) Then, the <strong><em>allele</em></strong> indices are 0, 1, 2, and 3 (respectively).</p>
-
+<p>Genotype-indexing works by first indexing the reference and alternative alleles, starting with the reference allele at 0. The order of the alternative alleles is given by the order listed under the ALT field in the VCF. Consider the following variant: A/B,C,D (where A is the reference allele, and B, C, and D represent the ordered alternative alleles.) Then, the <em><strong>allele</strong></em> indices are 0, 1, 2, and 3 (respectively).</p>
 <p>For the haploid case, the genotype index equals the allele index, because there is only one allele per individual: <code>G(a_i) = a_i</code> where <code>a_i</code> is the allele index. For the diploid case, the equation is <code>G(a_i, a_j) = a_i + choose(a_j + 1, 2)</code> where <code>a_i</code> and <code>a_j</code> are the allele indices and <code>a_i &lt;= a_j</code>.</p>
-
 <p>A simple R function to calculate the diploid G-index based on the 0-based allele indices:</p>
-
-<pre><code class="language-R">G &lt;- function(i , j) {
-  stopifnot(i &lt;= j &amp;&amp; i %% 1 == 0 &amp;&amp; j %% 1 == 0)
-  i + choose(j + 1, 2)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-R" data-lang="R">G <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(i , j) {
+  <span style="color:#a6e22e">stopifnot</span>(i <span style="color:#f92672">&lt;=</span> j <span style="color:#f92672">&amp;&amp;</span> i <span style="color:#f92672">%%</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span> j <span style="color:#f92672">%%</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+  i <span style="color:#f92672">+</span> <span style="color:#a6e22e">choose</span>(j <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
 }
-</code></pre>
-
-<p><br/>
-To make things more simple, we can consider the ordering as building a triangle using the allele orders. For the above variant (A/B, C, D):
-<br/>
-<br/>
-<center></p>
-
+</code></pre></div><!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
-<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-<th align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A</th>
-<th align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B</th>
-<th align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C</th>
-<th align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D</th>
+<th>      </th>
+<th align="right">       A</th>
+<th align="right">       B</th>
+<th align="right">       C</th>
+<th align="right">       D</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td><strong>A</strong></td>
@@ -110,7 +128,6 @@ To make things more simple, we can consider the ordering as building a triangle 
 <td align="right">A/C</td>
 <td align="right">A/D</td>
 </tr>
-
 <tr>
 <td><strong>B</strong></td>
 <td align="right"></td>
@@ -118,7 +135,6 @@ To make things more simple, we can consider the ordering as building a triangle 
 <td align="right">B/C</td>
 <td align="right">B/D</td>
 </tr>
-
 <tr>
 <td><strong>C</strong></td>
 <td align="right"></td>
@@ -126,7 +142,6 @@ To make things more simple, we can consider the ordering as building a triangle 
 <td align="right">C/C</td>
 <td align="right">C/D</td>
 </tr>
-
 <tr>
 <td><strong>D</strong></td>
 <td align="right"></td>
@@ -136,26 +151,18 @@ To make things more simple, we can consider the ordering as building a triangle 
 </tr>
 </tbody>
 </table>
-
-<p></center></p>
-
-<p><br/>
-The ordering is then done by column, ie:
-<br/>
-<br/>
-<center></p>
-
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
-<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-<th align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A</th>
-<th align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B</th>
-<th align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C</th>
-<th align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D</th>
+<th>      </th>
+<th align="right">       A</th>
+<th align="right">       B</th>
+<th align="right">       C</th>
+<th align="right">       D</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td><strong>A</strong></td>
@@ -164,7 +171,6 @@ The ordering is then done by column, ie:
 <td align="right">03</td>
 <td align="right">06</td>
 </tr>
-
 <tr>
 <td><strong>B</strong></td>
 <td align="right"></td>
@@ -172,7 +178,6 @@ The ordering is then done by column, ie:
 <td align="right">04</td>
 <td align="right">07</td>
 </tr>
-
 <tr>
 <td><strong>C</strong></td>
 <td align="right"></td>
@@ -180,7 +185,6 @@ The ordering is then done by column, ie:
 <td align="right">05</td>
 <td align="right">08</td>
 </tr>
-
 <tr>
 <td><strong>D</strong></td>
 <td align="right"></td>
@@ -190,82 +194,79 @@ The ordering is then done by column, ie:
 </tr>
 </tbody>
 </table>
-
-<p></center></p>
-
+<!-- raw HTML omitted -->
 <p>Such that the final genotype ordering in the VCF would be: [A/A, A/B, B/B, A/C, B/C, C/C, A/D, B/D, C/D, D/D]. Ordering the genotypes in this format guarantees the same ordering despite the number of alleles.</p>
-
 <p>This lines up with the <code>G</code> function given above. Consider the B/D genotype with the G-index of 7:</p>
-
-<pre><code class="language-R">G(1, 3)
-## [1] 7
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-R" data-lang="R"><span style="color:#a6e22e">G</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>)
+<span style="color:#75715e">## [1] 7</span>
+</code></pre></div>
   </div>
 </section>
-<section id="tag-pane" class="row meta">
+
+
+
+
   
-  <div class="col-md-12">
-    <h6 class="text-right meta">
+
+
+<section id="menu-pane" class="menu-item text-center">
+  <div class="row">
+    <div class="col">
+      
+        
+        
+          <a href="/blog">blog</a>
+        
+        
+          | <a href="https://daynefiler.github.io/blog/accessingnihftp/"> next &gt;</a>
+        
+      
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <a href="https://daynefiler.github.io">home</a>
+    </div>
+  </div>
+  
+</section>
+
+
+<footer class="container padded20">
+  <hr />
+  <div class="row">
+    <h6 class="col text-center">
+      
+      <i class="far fa-copyright"></i> 2018-2020 Dayne Lewis Filer
       
     </h6>
   </div>
-  
-</section>
-
-
-
-
-
-
-
-
-<section id="menu-pane" class="row menu text-center">
-  
-  
-  
-  <span><a class="menu-item" href="/blog">blog</a></span>
-  
-  
-  <span><a class="menu-item" href="https://daynefiler.github.io/blog/accessingnihftp/"> | next &gt;</a></span>
-  
-  
-  <h4 class="text-center"><a class="menu-item" href="https://daynefiler.github.io">home</a></h4>
-</section>
-
-
-
-<footer class="row text-center footer">
-  <hr />
-  
-  <h6 class="text-center copyright">© 2018-2020 Dayne Lewis Filer.</h6>
-  
-  <h6 class="text-center powered">I am not a web developer, and am indebted to <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/shenoybr/hugo-goa">Goa</a> for making this site possible.</h6>
-  
-  
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-  </script>
-  
 </footer>
 
-</div>
 
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  
+  
+  
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js//highlight.min.js"></script>
+    
+    
+    
+    <script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
   
 
-<script type="text/javascript">
-hljs.initHighlightingOnLoad();
-</script>
 
 
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
 <script src="js/main.js"></script>
+
+</div> 
+
 </body>
 </html>
-
 
