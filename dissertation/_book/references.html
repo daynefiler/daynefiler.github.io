@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>References | Tools and statistical approaches for integrating DNA sequencing into clinical care</title>
+  <meta name="description" content="Dissertation by Dayne Filer for the degree of Doctorate of Philosophy in the UNC School of Medicine Curriculum in Bioinformatics and Computational Biology." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="References | Tools and statistical approaches for integrating DNA sequencing into clinical care" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://daynefiler.com/dissertation/_book/" />
+  
+  <meta property="og:description" content="Dissertation by Dayne Filer for the degree of Doctorate of Philosophy in the UNC School of Medicine Curriculum in Bioinformatics and Computational Biology." />
+  <meta name="github-repo" content="daynefiler/dissertation" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="References | Tools and statistical approaches for integrating DNA sequencing into clinical care" />
+  
+  <meta name="twitter:description" content="Dissertation by Dayne Filer for the degree of Doctorate of Philosophy in the UNC School of Medicine Curriculum in Bioinformatics and Computational Biology." />
+  
+
+<meta name="author" content="Dayne Lewis Filer" />
+
+
+<meta name="date" content="2020-01-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"/>
+<link rel="next" href="r-code.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Front matter</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#copyright"><i class="fa fa-check"></i>Copyright</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#abstract"><i class="fa fa-check"></i>Abstract</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#dedication"><i class="fa fa-check"></i>Dedication</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#preface"><i class="fa fa-check"></i>Preface</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#outline"><i class="fa fa-check"></i><b>1.1</b> Outline</a></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#humGenPrime"><i class="fa fa-check"></i><b>1.2</b> Human Genetics Primer</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="intro.html"><a href="intro.html#dnaDiscover"><i class="fa fa-check"></i><b>1.2.1</b> Discovery of DNA and the central dogma</a></li>
+<li class="chapter" data-level="1.2.2" data-path="intro.html"><a href="intro.html#genVar"><i class="fa fa-check"></i><b>1.2.2</b> Genetic variation in humans</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#sequencing"><i class="fa fa-check"></i><b>1.3</b> DNA Sequencing</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="intro.html"><a href="intro.html#firstGen"><i class="fa fa-check"></i><b>1.3.1</b> First-generation sequencing</a></li>
+<li class="chapter" data-level="1.3.2" data-path="intro.html"><a href="intro.html#secGen"><i class="fa fa-check"></i><b>1.3.2</b> Second-generation sequencing</a></li>
+<li class="chapter" data-level="1.3.3" data-path="intro.html"><a href="intro.html#illumina"><i class="fa fa-check"></i><b>1.3.3</b> Illumina sequencing</a></li>
+<li class="chapter" data-level="1.3.4" data-path="intro.html"><a href="intro.html#seqData"><i class="fa fa-check"></i><b>1.3.4</b> Processing short-read sequencing data</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="intro.html"><a href="intro.html#medGen"><i class="fa fa-check"></i><b>1.4</b> Development of Medical Genetics</a></li>
+<li class="chapter" data-level="1.5" data-path="intro.html"><a href="intro.html#prob"><i class="fa fa-check"></i><b>1.5</b> Rationale</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html"><i class="fa fa-check"></i><b>2</b> A novel copy number variant algorithm</a><ul>
+<li class="chapter" data-level="2.1" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#introduction"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#methods"><i class="fa fa-check"></i><b>2.2</b> Methods</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#exome-sequencing"><i class="fa fa-check"></i><b>2.2.1</b> Exome sequencing</a></li>
+<li class="chapter" data-level="2.2.2" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#genome-sequencing"><i class="fa fa-check"></i><b>2.2.2</b> Genome sequencing</a></li>
+<li class="chapter" data-level="2.2.3" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#simulating-targeted-sequencing"><i class="fa fa-check"></i><b>2.2.3</b> Simulating targeted sequencing</a></li>
+<li class="chapter" data-level="2.2.4" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#mccnv-algorithm"><i class="fa fa-check"></i><b>2.2.4</b> mcCNV algorithm</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#results"><i class="fa fa-check"></i><b>2.3</b> Results</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#multiplexed-capture-reduces-inter-sample-variance"><i class="fa fa-check"></i><b>2.3.1</b> Multiplexed capture reduces inter-sample variance</a></li>
+<li class="chapter" data-level="2.3.2" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#multiplexed-capture-provides-controls-for-exomedepth"><i class="fa fa-check"></i><b>2.3.2</b> Multiplexed capture provides controls for ExomeDepth</a></li>
+<li class="chapter" data-level="2.3.3" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#mccnv-exomedepth-perform-comparably-in-simulation-study"><i class="fa fa-check"></i><b>2.3.3</b> mcCNV &amp; ExomeDepth perform comparably in simulation study</a></li>
+<li class="chapter" data-level="2.3.4" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#mccnv-exomedepth-perform-comparably-on-wgs-pool"><i class="fa fa-check"></i><b>2.3.4</b> mcCNV &amp; ExomeDepth perform comparably on WGS pool</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#discussion"><i class="fa fa-check"></i><b>2.4</b> Discussion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><i class="fa fa-check"></i><b>3</b> Shortcomings of exome sequencing in noninvasive prenatal genetics</a><ul>
+<li class="chapter" data-level="3.1" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#introduction-1"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#methods-1"><i class="fa fa-check"></i><b>3.2</b> Methods</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#participant-selection"><i class="fa fa-check"></i><b>3.2.1</b> Participant selection</a></li>
+<li class="chapter" data-level="3.2.2" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#exome-sequencing-and-analysis"><i class="fa fa-check"></i><b>3.2.2</b> Exome sequencing and analysis</a></li>
+<li class="chapter" data-level="3.2.3" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#genotyping-algorithm"><i class="fa fa-check"></i><b>3.2.3</b> Genotyping algorithm</a></li>
+<li class="chapter" data-level="3.2.4" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#data-availability"><i class="fa fa-check"></i><b>3.2.4</b> Data availability</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#results-1"><i class="fa fa-check"></i><b>3.3</b> Results</a></li>
+<li class="chapter" data-level="3.4" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#discussion-1"><i class="fa fa-check"></i><b>3.4</b> Discussion</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="r-code.html"><a href="r-code.html"><i class="fa fa-check"></i><b>A</b> R Code</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Tools and statistical approaches for integrating DNA sequencing into clinical care</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<!-- This line tells Pandoc to put the references here -->
+
+<div id="refs">
+<div id="ref-mendel:1866aa">
+<p>1. Mendel G. Versuche über pflanzenhybriden. <em>Verh Naturf Ver Brünn</em>. 1866;4:3—47.</p>
+</div>
+<div id="ref-miescher:1871aa">
+<p>2. Miescher F. Über die chemische zusammensetzung der eiterzellen. <em>Hoppe-Seyler’s Med Chem Unters</em>. 1871;4:441-460.</p>
+</div>
+<div id="ref-miescher:1874aa">
+<p>3. Miescher F. Das protamin, eine neue organische basis aus den samenfäden des rheinlachses. <em>Ber Deutsch Chem Ges</em>. 1874;7:376—379.</p>
+</div>
+<div id="ref-miescher:1874ab">
+<p>4. Miescher F. Die spermatozoen einiger wilbertiere. <em>Ein Beitrag zur histochemie Verh Naturf Ges</em>. 1874;6:138—208.</p>
+</div>
+<div id="ref-kossel:1893aa">
+<p>5. Kossel A, Neumann A. Über das thymin, ein spaltungsprodukt der nukleinsäure. <em>Ber Deutsch Chem Ges</em>. 1893;26:2753—2756.</p>
+</div>
+<div id="ref-flemming:1878aa">
+<p>6. Flemming W. Zur kenntniss der zelle und ihrer theilungs-erscheinungen. <em>Schriften des Naturwissenschaftlichen Vereins für Schleswig-Holstein</em>. 1878;3:23—27.</p>
+</div>
+<div id="ref-boveri:1902aa">
+<p>7. Boveri TH. Über mehrpolige mitosen als mittel zur analyse des zellkerns. <em>Verh Phys Med Ges Vürzb</em>. 1902;35:60-90.</p>
+</div>
+<div id="ref-boveri:1903aa">
+<p>8. Boveri TH. Über die konstitution der chromatischen kernsubstanz. <em>Verh Deutsch Zool Ges Würzb</em>. 1903;13(10–33).</p>
+</div>
+<div id="ref-sutton:1903aa">
+<p>9. Sutton WS. The chromosomes in heredity. <em>Biol Bull (Woods Hole)</em>. 1903;4:231-251.</p>
+</div>
+<div id="ref-avery:1944aa">
+<p>10. Avery OT, Macleod CM, McCarty M. STUDIES on the chemical nature of the substance inducing transformation of pneumococcal types : INDUCTION of transformation by a desoxyribonucleic acid fraction isolated from pneumococcus type iii. <em>J Exp Med</em>. 79(2):137-158.</p>
+</div>
+<div id="ref-chargaff:1949aa">
+<p>11. Chargaff E, Vischer E, Doniger R, Green C, Misani F. The composition of the desoxypentose nucleic acids of thymus and spleen. <em>J Biol Chem</em>. 177(1):405-416.</p>
+</div>
+<div id="ref-franklin:1953aa">
+<p>12. FRANKLIN RE, GOSLING RG. Molecular configuration in sodium thymonucleate. <em>Nature</em>. 171(4356):740-741.</p>
+</div>
+<div id="ref-watson:1953aa">
+<p>13. WATSON JD, CRICK FH. Molecular structure of nucleic acids; a structure for deoxyribose nucleic acid. <em>Nature</em>. 171(4356):737-738.</p>
+</div>
+<div id="ref-crick:1958aa">
+<p>14. CRICK FH. On protein synthesis. <em>Symp Soc Exp Biol</em>. 1958;12:138-163.</p>
+</div>
+<div id="ref-crick:1970aa">
+<p>15. Crick F. Central dogma of molecular biology. <em>Nature</em>. 227(5258):561-563.</p>
+</div>
+<div id="ref-tjio:1956aa">
+<p>16. TJIO JH, LEVAN A. THE chromosome number of man. <em>Hereditas</em>. 1956;42(1‐2):1-6.</p>
+</div>
+<div id="ref-lander:2001aa">
+<p>17. Lander ES, Linton LM, Birren B, et al. Initial sequencing and analysis of the human genome. <em>Nature</em>. 409(6822):860-921.</p>
+</div>
+<div id="ref-gu:2008aa">
+<p>18. Gu W, Zhang F, Lupski JR. Mechanisms for human genomic rearrangements. <em>Pathogenetics</em>. 1(1):4.</p>
+</div>
+<div id="ref-sanger:1975aa">
+<p>19. Sanger F, Coulson AR. A rapid method for determining sequences in dna by primed synthesis with dna polymerase. <em>J Mol Biol</em>. 94(3):441-448.</p>
+</div>
+<div id="ref-maxam:1977aa">
+<p>20. Maxam AM, Gilbert W. A new method for sequencing dna. <em>Proc Natl Acad Sci U S A</em>. 74(2):560-564.</p>
+</div>
+<div id="ref-sanger:1977aa">
+<p>21. Sanger F, Nicklen S, Coulson AR. DNA sequencing with chain-terminating inhibitors. <em>Proc Natl Acad Sci U S A</em>. 74(12):5463-5467.</p>
+</div>
+<div id="ref-nyren:1985aa">
+<p>22. Nyrén P, Lundin A. Enzymatic method for continuous monitoring of inorganic pyrophosphate synthesis. <em>Anal Biochem</em>. 151(2):504-509.</p>
+</div>
+<div id="ref-ronaghi:1998aa">
+<p>23. Ronaghi M, Uhlén M, Nyrén P. A sequencing method based on real-time pyrophosphate. <em>Science</em>. 281(5375):363, 365.</p>
+</div>
+<div id="ref-li:2003aa">
+<p>24. Li Z, Bai X, Ruparel H, Kim S, Turro NJ, Ju J. A photocleavable fluorescent nucleotide for dna sequencing and analysis. <em>Proc Natl Acad Sci U S A</em>. 100(2):414-419.</p>
+</div>
+<div id="ref-fedurco:2006aa">
+<p>25. Fedurco M, Romieu A, Williams S, Lawrence I, Turcatti G. BTA, a novel reagent for dna attachment on glass and efficient generation of solid-phase amplified dna colonies. <em>Nucleic Acids Res</em>. 34(3):e22.</p>
+</div>
+<div id="ref-turcatti:2008aa">
+<p>26. Turcatti G, Romieu A, Fedurco M, Tairi A-P. A new class of cleavable fluorescent nucleotides: Synthesis and optimization as reversible terminators for dna sequencing by synthesis. <em>Nucleic Acids Res</em>. 36(4):e25.</p>
+</div>
+<div id="ref-pearson:1988aa">
+<p>27. Pearson WR, Lipman DJ. Improved tools for biological sequence comparison. <em>Proc Natl Acad Sci U S A</em>. 85(8):2444-2448.</p>
+</div>
+<div id="ref-cock:2010aa">
+<p>28. Cock PJA, Fields CJ, Goto N, Heuer ML, Rice PM. The sanger fastq file format for sequences with quality scores, and the solexa/illumina fastq variants. <em>Nucleic Acids Res</em>. 38(6):1767-1771.</p>
+</div>
+<div id="ref-li:2009aa">
+<p>29. Li H, Handsaker B, Wysoker A, et al. The sequence alignment/map format and samtools. <em>Bioinformatics</em>. 25(16):2078-2079.</p>
+</div>
+<div id="ref-smith:1981aa">
+<p>30. Smith TF, Waterman MS. Identification of common molecular subsequences. <em>J Mol Biol</em>. 147(1):195-197.</p>
+</div>
+<div id="ref-needleman:1970aa">
+<p>31. Needleman SB, Wunsch CD. A general method applicable to the search for similarities in the amino acid sequence of two proteins. <em>J Mol Biol</em>. 48(3):443-453.</p>
+</div>
+<div id="ref-altschul:1990aa">
+<p>32. Altschul SF, Gish W, Miller W, Myers EW, Lipman DJ. Basic local alignment search tool. <em>J Mol Biol</em>. 215(3):403-410.</p>
+</div>
+<div id="ref-li:2010aa">
+<p>33. Li H, Homer N. A survey of sequence alignment algorithms for next-generation sequencing. <em>Brief Bioinform</em>. 11(5):473-483.</p>
+</div>
+<div id="ref-burrows:1994aa">
+<p>34. Burrows M, Wheeler DJ. <em>A Block-Sorting Lossless Data Compression Algorithm</em>.; 1994.</p>
+</div>
+<div id="ref-lam:2008aa">
+<p>35. Lam TW, Sung WK, Tam SL, Wong CK, Yiu SM. Compressed indexing and local alignment of dna. <em>Bioinformatics</em>. 24(6):791-797.</p>
+</div>
+<div id="ref-li:2010ab">
+<p>36. Li H, Durbin R. Fast and accurate long-read alignment with burrows-wheeler transform. <em>Bioinformatics</em>. 26(5):589-595.</p>
+</div>
+<div id="ref-mckenna:2010aa">
+<p>37. McKenna A, Hanna M, Banks E, et al. The genome analysis toolkit: A mapreduce framework for analyzing next-generation dna sequencing data. <em>Genome Res</em>. 20(9):1297-1303.</p>
+</div>
+<div id="ref-depristo:2011aa">
+<p>38. DePristo MA, Banks E, Poplin R, et al. A framework for variation discovery and genotyping using next-generation dna sequencing data. <em>Nat Genet</em>. 43(5):491-498.</p>
+</div>
+<div id="ref-li:2011aa">
+<p>39. Li H. A statistical framework for snp calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data. <em>Bioinformatics</em>. 27(21):2987-2993.</p>
+</div>
+<div id="ref-van-der-auwera:2013aa">
+<p>40. Van der Auwera GA, Carneiro MO, Hartl C, et al. From fastq data to high confidence variant calls: The genome analysis toolkit best practices pipeline. <em>Curr Protoc Bioinformatics</em>. 2013;43(1110):11.10.1-11.10.33.</p>
+</div>
+<div id="ref-poplin:2018aa">
+<p>41. Poplin R, Ruano-Rubio V, DePristo MA, et al. Scaling accurate genetic variant discovery to tens of thousands of samples. <em>bioRxiv</em>. Published online 2018.</p>
+</div>
+<div id="ref-garrison:2012aa">
+<p>42. Garrison E, Marth G. Haplotype-based variant detection from short-read sequencing. Published online 2012.</p>
+</div>
+<div id="ref-chen:2019aa">
+<p>43. Chen J, Li X, Zhong H, Meng Y, Du H. Systematic comparison of germline variant calling pipelines cross multiple next-generation sequencers. <em>Sci Rep</em>. 9(1):9345.</p>
+</div>
+<div id="ref-xu:2018aa">
+<p>44. Xu C. A review of somatic single nucleotide variant calling algorithms for next-generation sequencing data. <em>Comput Struct Biotechnol J</em>. 2018;16:15-24.</p>
+</div>
+<div id="ref-abyzov:2011aa">
+<p>45. Abyzov A, Urban AE, Snyder M, Gerstein M. CNVnator: An approach to discover, genotype, and characterize typical and atypical cnvs from family and population genome sequencing. <em>Genome Res</em>. 21(6):974-984.</p>
+</div>
+<div id="ref-plagnol:2012aa">
+<p>46. Plagnol V, Curtis J, Epstein M, et al. A robust model for read count data in exome sequencing experiments and implications for copy number variant calling. <em>Bioinformatics</em>. 28(21):2747-2754.</p>
+</div>
+<div id="ref-korbel:2007aa">
+<p>47. Korbel JO, Urban AE, Affourtit JP, et al. Paired-end mapping reveals extensive structural variation in the human genome. <em>Science</em>. 318(5849):420-426.</p>
+</div>
+<div id="ref-layer:2014aa">
+<p>48. Layer RM, Chiang C, Quinlan AR, Hall IM. LUMPY: A probabilistic framework for structural variant discovery. <em>Genome Biol</em>. 15(6):R84.</p>
+</div>
+<div id="ref-zhu:2012aa">
+<p>49. Zhu M, Need AC, Han Y, et al. Using erds to infer copy-number variants in high-coverage genomes. <em>Am J Hum Genet</em>. 91(3):408-421.</p>
+</div>
+<div id="ref-auton:2015aa">
+<p>50. Auton A, Brooks LD, Durbin RM, et al. A global reference for human genetic variation. <em>Nature</em>. 526(7571):68-74.</p>
+</div>
+<div id="ref-sherry:1999aa">
+<p>51. Sherry ST, Ward M, Sirotkin K. DbSNP-database for single nucleotide polymorphisms and other classes of minor genetic variation. <em>Genome Res</em>. 9(8):677-679.</p>
+</div>
+<div id="ref-mailman:2007aa">
+<p>52. Mailman MD, Feolo M, Jin Y, et al. The ncbi dbGaP database of genotypes and phenotypes. <em>Nat Genet</em>. 39(10):1181-1186.</p>
+</div>
+<div id="ref-landrum:2014aa">
+<p>53. Landrum MJ, Lee JM, Riley GR, et al. ClinVar: Public archive of relationships among sequence variation and human phenotype. <em>Nucleic Acids Res</em>. 42(Database issue):D980-5.</p>
+</div>
+<div id="ref-hubbard:2002aa">
+<p>54. Hubbard T, Barker D, Birney E, et al. The ensembl genome database project. <em>Nucleic Acids Res</em>. 30(1):38-41.</p>
+</div>
+<div id="ref-yates:2020aa">
+<p>55. Yates AD, Achuthan P, Akanni W, et al. Ensembl 2020. <em>Nucleic Acids Res</em>. 48(D1):D682-D688.</p>
+</div>
+<div id="ref-mclaren:2016aa">
+<p>56. McLaren W, Gil L, Hunt SE, et al. The ensembl variant effect predictor. <em>Genome Biol</em>. 17(1):122.</p>
+</div>
+<div id="ref-karczewski:2019aa">
+<p>57. Karczewski KJ, Francioli LC, Tiao G, et al. Variation across 141,456 human exomes and genomes reveals the spectrum of loss-of-function intolerance across human protein-coding genes. <em>bioRxiv</em>. Published online 2019.</p>
+</div>
+<div id="ref-adzhubei:2013aa">
+<p>58. Adzhubei I, Jordan DM, Sunyaev SR. Predicting functional effect of human missense mutations using polyphen-2. <em>Curr Protoc Hum Genet</em>. Chapter 7:Unit7.20.</p>
+</div>
+<div id="ref-jager:2014aa">
+<p>59. Jager M, Wang K, Bauer S, Smedley D, Krawitz P, Robinson PN. Jannovar: A java library for exome annotation. <em>Hum Mutat</em>. 35(5):548-555.</p>
+</div>
+<div id="ref-harper:2008aa">
+<p>60. Harper PS. <em>A Short History of Medical Genetics</em>. Oxford University Press USA - OSO</p>
+</div>
+<div id="ref-garrod:1902aa">
+<p>61. Garrod AE. THE incidence of alkaptonuria : A study in chemical individuality. <em>The Lancet</em>. 160(4137):1616-1620.</p>
+</div>
+<div id="ref-garrod:1923aa">
+<p>62. Garrod AE. <em>Inborn Errors of Metabolism</em>. Oxford University Press; 1923.</p>
+</div>
+<div id="ref-garrod:1931aa">
+<p>63. Garrod AE. <em>Inborn Factors of Disease: An Essay</em>. Clarendon Press; 1931.</p>
+</div>
+<div id="ref-rimoin:2004aa">
+<p>64. Rimoin DL, Hirschhorn K. A history of medical genetics in pediatrics. <em>Pediatr Res</em>. 56(1):150-159.</p>
+</div>
+<div id="ref-fisher:1919aa">
+<p>65. Fisher RA. XV.—The correlation between relatives on the supposition of mendelian inheritance. <em>Transactions of the Royal Society of Edinburgh</em>. 1919;52(2):399-433.</p>
+</div>
+<div id="ref-levan:1938aa">
+<p>66. LEVAN A. THE effect of colchicine on root mitoses in allium. <em>Hereditas</em>. 1938;24(4):471-486.</p>
+</div>
+<div id="ref-caspersson:1970aa">
+<p>67. Caspersson T, Zech L, Johansson C, Modest EJ. Identification of human chromosomes by dna-binding fluorescent agents. <em>Chromosoma</em>. 1970;30(2):215-227.</p>
+</div>
+<div id="ref-seabright:1971aa">
+<p>68. Seabright M. A rapid banding technique for human chromosomes. <em>Lancet</em>. 2(7731):971-972.</p>
+</div>
+<div id="ref-fan:1990aa">
+<p>69. Fan YS, Davis LM, Shows TB. Mapping small dna sequences by fluorescence in situ hybridization directly on banded metaphase chromosomes. <em>Proc Natl Acad Sci U S A</em>. 87(16):6223-6227.</p>
+</div>
+<div id="ref-danna:1971aa">
+<p>70. Danna K, Nathans D. Specific cleavage of simian virus 40 dna by restriction endonuclease of hemophilus influenzae. <em>Proc Natl Acad Sci U S A</em>. 68(12):2913-2917.</p>
+</div>
+<div id="ref-southern:1975aa">
+<p>71. Southern EM. Detection of specific sequences among dna fragments separated by gel electrophoresis. <em>J Mol Biol</em>. 98(3):503-517.</p>
+</div>
+<div id="ref-shine:1977aa">
+<p>72. Shine J, Seeburg PH, Martial JA, Baxter JD, Goodman HM. Construction and analysis of recombinant dna for human chorionic somatomammotropin. <em>Nature</em>. 270(5637):494-499.</p>
+</div>
+<div id="ref-botstein:1980aa">
+<p>73. Botstein D, White RL, Skolnick M, Davis RW. Construction of a genetic linkage map in man using restriction fragment length polymorphisms. <em>Am J Hum Genet</em>. 32(3):314-331.</p>
+</div>
+<div id="ref-mullis:1986aa">
+<p>74. Mullis K, Faloona F, Scharf S, Saiki R, Horn G, Erlich H. Specific enzymatic amplification of dna in vitro: The polymerase chain reaction. <em>Cold Spring Harb Symp Quant Biol</em>. 1986;51 Pt 1:263-273.</p>
+</div>
+<div id="ref-guthrie:1963aa">
+<p>75. GUTHRIE R, SUSI A. A simple phenylalanine method for detecting phenylketonuria in large populations of newborn infants. <em>Pediatrics</em>. 32:338-343.</p>
+</div>
+<div id="ref-jervis:1953aa">
+<p>76. JERVIS GA. Phenylpyruvic oligophrenia deficiency of phenylalanine-oxidizing system. <em>Proc Soc Exp Biol Med</em>. 82(3):514-515.</p>
+</div>
+<div id="ref-bickel:1953aa">
+<p>77. BICKEL H, GERRARD J, HICKMANS EM. Influence of phenylalanine intake on phenylketonuria. <em>Lancet</em>. 265(6790):812-813.</p>
+</div>
+<div id="ref-fuchs:1956aa">
+<p>78. FUCHS F, RIIS P. Antenatal sex determination. <em>Nature</em>. 177(4503):330.</p>
+</div>
+<div id="ref-steele:1966aa">
+<p>79. Steele MW, Breg WRJ. Chromosome analysis of human amniotic-fluid cells. <em>Lancet</em>. 1(7434):383-385.</p>
+</div>
+<div id="ref-walknowska:1969aa">
+<p>80. Walknowska J, Conte FA, Grumbach MM. Practical and theoretical implications of fetal-maternal lymphocyte transfer. <em>Lancet</em>. 1(7606):1119-1122.</p>
+</div>
+<div id="ref-mueller:1990aa">
+<p>81. Mueller UW, Hawes CS, Wright AE, et al. Isolation of fetal trophoblast cells from peripheral blood of pregnant women. <em>Lancet</em>. 336(8709):197-200.</p>
+</div>
+<div id="ref-bianchi:1990aa">
+<p>82. Bianchi DW, Flint AF, Pizzimenti MF, Knoll JH, Latt SA. Isolation of fetal dna from nucleated erythrocytes in maternal blood. <em>Proc Natl Acad Sci U S A</em>. 87(9):3279-3283.</p>
+</div>
+<div id="ref-lo:1997aa">
+<p>83. Lo YM, Corbetta N, Chamberlain PF, et al. Presence of fetal dna in maternal plasma and serum. <em>Lancet</em>. 350(9076):485-487.</p>
+</div>
+<div id="ref-scotchman:2020aa">
+<p>84. Scotchman E, Chandler NJ, Mellis R, Chitty LS. Noninvasive prenatal diagnosis of single-gene diseases: The next frontier. <em>Clin Chem</em>. 66(1):53-60.</p>
+</div>
+<div id="ref-marchuk:2018aa">
+<p>85. Marchuk DS, Crooks K, Strande N, et al. Increasing the diagnostic yield of exome sequencing by copy number variant analysis. <em>PLoS One</em>. 2018;13(12):e0209185.</p>
+</div>
+<div id="ref-retterer:2015aa">
+<p>86. Retterer K, Scuffins J, Schmidt D, et al. Assessing copy number from exome sequencing and exome array cgh based on cnv spectrum in a large clinical cohort. <em>Genet Med</em>. 17(8):623-629.</p>
+</div>
+<div id="ref-yao:2017aa">
+<p>87. Yao R, Zhang C, Yu T, et al. Evaluation of three read-depth based cnv detection tools using whole-exome sequencing data. <em>Mol Cytogenet</em>. 2017;10:30.</p>
+</div>
+<div id="ref-fromer:2012aa">
+<p>88. Fromer M, Moran JL, Chambert K, et al. Discovery and statistical genotyping of copy-number variation from whole-exome sequencing depth. <em>Am J Hum Genet</em>. 91(4):597-607.</p>
+</div>
+<div id="ref-jiang:2015aa">
+<p>89. Jiang Y, Oldridge DA, Diskin SJ, Zhang NR. CODEX: A normalization and copy number variation detection method for whole exome sequencing. <em>Nucleic Acids Res</em>. 43(6):e39.</p>
+</div>
+<div id="ref-krumm:2012aa">
+<p>90. Krumm N, Sudmant PH, Ko A, et al. Copy number variation detection and genotyping from exome sequence data. <em>Genome Res</em>. 22(8):1525-1532.</p>
+</div>
+<div id="ref-truty:2019aa">
+<p>91. Truty R, Paul J, Kennemer M, et al. Prevalence and properties of intragenic copy-number variation in mendelian disease genes. <em>Genet Med</em>. 21(1):114-123.</p>
+</div>
+<div id="ref-benjamini:2012aa">
+<p>92. Benjamini Y, Speed TP. Summarizing and correcting the gc content bias in high-throughput sequencing. <em>Nucleic Acids Res</em>. 40(10):e72.</p>
+</div>
+<div id="ref-kadalayil:2015aa">
+<p>93. Kadalayil L, Rafiq S, Rose-Zerilli MJJ, et al. Exome sequence read depth methods for identifying copy number changes. <em>Brief Bioinform</em>. 16(3):380-392.</p>
+</div>
+<div id="ref-chiang:2009aa">
+<p>94. Chiang DY, Getz G, Jaffe DB, et al. High-resolution mapping of copy-number alterations with massively parallel sequencing. <em>Nat Methods</em>. 6(1):99-103.</p>
+</div>
+<div id="ref-foreman:2013aa">
+<p>95. Foreman AKM, Lee K, Evans JP. The NCGENES project: Exploring the new world of genome sequencing. <em>N C Med J</em>. 74(6):500-504.</p>
+</div>
+<div id="ref-li:2013ab">
+<p>96. Li H. Aligning sequence reads, clone sequences and assembly contigs with bwa-mem. Published online 2013.</p>
+</div>
+<div id="ref-koster:2012aa">
+<p>97. Koster J, Rahmann S. Snakemake–a scalable bioinformatics workflow engine. <em>Bioinformatics</em>. 28(19):2520-2522.</p>
+</div>
+<div id="ref-trost:2018aa">
+<p>98. Trost B, Walker S, Wang Z, et al. A comprehensive workflow for read depth-based identification of copy-number variation from whole-genome sequence data. <em>Am J Hum Genet</em>. 102(1):142-155.</p>
+</div>
+<div id="ref-yu:2013aa">
+<p>99. Yu D, Huber W, Vitek O. Shrinkage estimation of dispersion in negative binomial models for rna-seq experiments with small sample size. <em>Bioinformatics</em>. 29(10):1275-1282.</p>
+</div>
+<div id="ref-benjamini:1995aa">
+<p>100. Benjamini Y, Hochberg Y. Controlling the false discovery rate: A practical and powerful approach to multiple testing. <em>Journal of the Royal Statistical Society: Series B (Methodological)</em>. 1995;57(1):289-300.</p>
+</div>
+<div id="ref-minka:2000aa">
+<p>101. Minka TP. <em>Estimating a Dirichlet Distribution</em>.; 2000.</p>
+</div>
+<div id="ref-matthews:1975aa">
+<p>102. Matthews BW. Comparison of the predicted and observed secondary structure of t4 phage lysozyme. <em>Biochim Biophys Acta</em>. 405(2):442-451.</p>
+</div>
+<div id="ref-neiman:2012aa">
+<p>103. Neiman M, Sundling S, Grönberg H, et al. Library preparation and multiplex capture for massive parallel sequencing applications made efficient and easy. <em>PLOS ONE</em>. 2012;7(11):1-6.</p>
+</div>
+<div id="ref-ramos:2012aa">
+<p>104. Ramos E, Levinson BT, Chasnoff S, et al. Population-based rare variant detection via pooled exome or custom hybridization capture with or without individual indexing. <em>BMC Genomics</em>. 13:683.</p>
+</div>
+<div id="ref-rohland:2012aa">
+<p>105. Rohland N, Reich D. Cost-effective, high-throughput dna sequencing libraries for multiplexed target capture. <em>Genome Res</em>. 22(5):939-946.</p>
+</div>
+<div id="ref-wesolowska:2011aa">
+<p>106. Wesolowska A, Dalgaard MD, Borst L, et al. Cost-effective multiplexing before capture allows screening of 25 000 clinically relevant snps in childhood acute lymphoblastic leukemia. <em>Leukemia</em>. 25(6):1001-1006.</p>
+</div>
+<div id="ref-shearer:2012aa">
+<p>107. Shearer AE, Hildebrand MS, Ravi H, et al. Pre-capture multiplexing improves efficiency and cost-effectiveness of targeted genomic enrichment. <em>BMC Genomics</em>. 13:618.</p>
+</div>
+<div id="ref-mackie:2017aa">
+<p>108. Mackie FL, Hemming K, Allen S, Morris RK, Kilby MD. The accuracy of cell-free fetal dna-based non-invasive prenatal testing in singleton pregnancies: A systematic review and bivariate meta-analysis. <em>BJOG</em>. 124(1):32-46.</p>
+</div>
+<div id="ref-zhang:2019aa">
+<p>109. Zhang J, Li J, Saucier JB, et al. Non-invasive prenatal sequencing for multiple mendelian monogenic disorders using circulating cell-free fetal dna. <em>Nat Med</em>.</p>
+</div>
+<div id="ref-tsao:2019ab">
+<p>110. Tsao DS, Silas S, Landry BP, et al. A novel high-throughput molecular counting method with single base-pair resolution enables accurate single-gene nipt. <em>Sci Rep</em>. 9(1):14382.</p>
+</div>
+<div id="ref-lo:2010aa">
+<p>111. Lo YMD, Chan KCA, Sun H, et al. Maternal plasma dna sequencing reveals the genome-wide genetic and mutational profile of the fetus. <em>Sci Transl Med</em>. 2(61):61ra91.</p>
+</div>
+<div id="ref-hui:2017aa">
+<p>112. Hui WWI, Jiang P, Tong YK, et al. Universal haplotype-based noninvasive prenatal testing for single gene diseases. <em>Clin Chem</em>. 63(2):513-524.</p>
+</div>
+<div id="ref-jang:2018aa">
+<p>113. Jang SS, Lim BC, Yoo S-K, et al. Targeted linked-read sequencing for direct haplotype phasing of maternal dmd alleles: A practical and reliable method for noninvasive prenatal diagnosis. <em>Sci Rep</em>. 8(1):8678.</p>
+</div>
+<div id="ref-vermeulen:2017aa">
+<p>114. Vermeulen C, Geeven G, Wit E de, et al. Sensitive monogenic noninvasive prenatal diagnosis by targeted haplotyping. <em>Am J Hum Genet</em>. 101(3):326-339.</p>
+</div>
+<div id="ref-chandler:2020aa">
+<p>115. Chandler NJ, Ahlfors H, Drury S, et al. Noninvasive prenatal diagnosis for cystic fibrosis: Implementation, uptake, outcome, and implications. <em>Clin Chem</em>. 66(1):207-216.</p>
+</div>
+<div id="ref-salomon:2019aa">
+<p>116. Salomon LJ, Sotiriadis A, Wulff CB, Odibo A, Akolekar R. Risk of miscarriage following amniocentesis or chorionic villus sampling: Systematic review of literature and updated meta-analysis. <em>Ultrasound Obstet Gynecol</em>. 54(4):442-451.</p>
+</div>
+<div id="ref-fan:2012aa">
+<p>117. Fan HC, Gu W, Wang J, Blumenfeld YJ, El-Sayed YY, Quake SR. Non-invasive prenatal measurement of the fetal genome. <em>Nature</em>. 487(7407):320-324.</p>
+</div>
+<div id="ref-kitzman:2012aa">
+<p>118. Kitzman JO, Snyder MW, Ventura M, et al. Noninvasive whole-genome sequencing of a human fetus. <em>Sci Transl Med</em>. 4(137):137ra76.</p>
+</div>
+<div id="ref-snyder:2013aa">
+<p>119. Snyder MW, Simmons LE, Kitzman JO, et al. Noninvasive fetal genome sequencing: A primer. <em>Prenat Diagn</em>. 33(6):547-554.</p>
+</div>
+<div id="ref-seaby:2016aa">
+<p>120. Seaby EG, Pengelly RJ, Ennis S. Exome sequencing explained: A practical guide to its clinical application. <em>Brief Funct Genomics</em>. 15(5):374-384.</p>
+</div>
+<div id="ref-r-core-team:2019aa">
+<p>121. R Core Team. <em>R: A Language and Environment for Statistical Computing</em>. R Foundation for Statistical Computing; 2019.</p>
+</div>
+<div id="ref-chan:2004aa">
+<p>122. Chan KCA, Zhang J, Hui ABY, et al. Size distributions of maternal and fetal dna in maternal plasma. <em>Clin Chem</em>. 50(1):88-92.</p>
+</div>
+<div id="ref-chan:2016aa">
+<p>123. Chan KCA, Jiang P, Sun K, et al. Second generation noninvasive fetal genome analysis reveals de novo mutations, single-base parental inheritance, and preferred dna ends. <em>Proc Natl Acad Sci U S A</em>. 113(50):E8159-E8168.</p>
+</div>
+<div id="ref-jiang:2016ab">
+<p>124. Jiang P, Lo YMD. The long and short of circulating cell-free dna and the ins and outs of molecular diagnostics. <em>Trends Genet</em>. 32(6):360-371.</p>
+</div>
+<div id="ref-rabinowitz:2019aa">
+<p>125. Rabinowitz T, Polsky A, Golan D, et al. Bayesian-based noninvasive prenatal diagnosis of single-gene disorders. <em>Genome Res</em>. 29(3):428-438.</p>
+</div>
+<div id="ref-kinnings:2015aa">
+<p>126. Kinnings SL, Geis JA, Almasri E, et al. Factors affecting levels of circulating cell-free fetal dna in maternal plasma and their implications for noninvasive prenatal testing. <em>Prenat Diagn</em>. 35(8):816-822.</p>
+</div>
+</div>
+
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="r-code.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": true,
+"twitter": true,
+"linkedin": true,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["DLFilerDissertation.pdf"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

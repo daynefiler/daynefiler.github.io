@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Shortcomings of exome sequencing in noninvasive prenatal genetics | Tools and statistical approaches for integrating DNA sequencing into clinical care</title>
+  <meta name="description" content="Dissertation by Dayne Filer for the degree of Doctorate of Philosophy in the UNC School of Medicine Curriculum in Bioinformatics and Computational Biology." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Shortcomings of exome sequencing in noninvasive prenatal genetics | Tools and statistical approaches for integrating DNA sequencing into clinical care" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://daynefiler.com/dissertation/_book/" />
+  
+  <meta property="og:description" content="Dissertation by Dayne Filer for the degree of Doctorate of Philosophy in the UNC School of Medicine Curriculum in Bioinformatics and Computational Biology." />
+  <meta name="github-repo" content="daynefiler/dissertation" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Shortcomings of exome sequencing in noninvasive prenatal genetics | Tools and statistical approaches for integrating DNA sequencing into clinical care" />
+  
+  <meta name="twitter:description" content="Dissertation by Dayne Filer for the degree of Doctorate of Philosophy in the UNC School of Medicine Curriculum in Bioinformatics and Computational Biology." />
+  
+
+<meta name="author" content="Dayne Lewis Filer" />
+
+
+<meta name="date" content="2020-01-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="a-novel-copy-number-variant-algorithm.html"/>
+<link rel="next" href="references.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Front matter</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#copyright"><i class="fa fa-check"></i>Copyright</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#abstract"><i class="fa fa-check"></i>Abstract</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#dedication"><i class="fa fa-check"></i>Dedication</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#preface"><i class="fa fa-check"></i>Preface</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#outline"><i class="fa fa-check"></i><b>1.1</b> Outline</a></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#humGenPrime"><i class="fa fa-check"></i><b>1.2</b> Human Genetics Primer</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="intro.html"><a href="intro.html#dnaDiscover"><i class="fa fa-check"></i><b>1.2.1</b> Discovery of DNA and the central dogma</a></li>
+<li class="chapter" data-level="1.2.2" data-path="intro.html"><a href="intro.html#genVar"><i class="fa fa-check"></i><b>1.2.2</b> Genetic variation in humans</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#sequencing"><i class="fa fa-check"></i><b>1.3</b> DNA Sequencing</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="intro.html"><a href="intro.html#firstGen"><i class="fa fa-check"></i><b>1.3.1</b> First-generation sequencing</a></li>
+<li class="chapter" data-level="1.3.2" data-path="intro.html"><a href="intro.html#secGen"><i class="fa fa-check"></i><b>1.3.2</b> Second-generation sequencing</a></li>
+<li class="chapter" data-level="1.3.3" data-path="intro.html"><a href="intro.html#illumina"><i class="fa fa-check"></i><b>1.3.3</b> Illumina sequencing</a></li>
+<li class="chapter" data-level="1.3.4" data-path="intro.html"><a href="intro.html#seqData"><i class="fa fa-check"></i><b>1.3.4</b> Processing short-read sequencing data</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="intro.html"><a href="intro.html#medGen"><i class="fa fa-check"></i><b>1.4</b> Development of Medical Genetics</a></li>
+<li class="chapter" data-level="1.5" data-path="intro.html"><a href="intro.html#prob"><i class="fa fa-check"></i><b>1.5</b> Rationale</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html"><i class="fa fa-check"></i><b>2</b> A novel copy number variant algorithm</a><ul>
+<li class="chapter" data-level="2.1" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#introduction"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#methods"><i class="fa fa-check"></i><b>2.2</b> Methods</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#exome-sequencing"><i class="fa fa-check"></i><b>2.2.1</b> Exome sequencing</a></li>
+<li class="chapter" data-level="2.2.2" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#genome-sequencing"><i class="fa fa-check"></i><b>2.2.2</b> Genome sequencing</a></li>
+<li class="chapter" data-level="2.2.3" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#simulating-targeted-sequencing"><i class="fa fa-check"></i><b>2.2.3</b> Simulating targeted sequencing</a></li>
+<li class="chapter" data-level="2.2.4" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#mccnv-algorithm"><i class="fa fa-check"></i><b>2.2.4</b> mcCNV algorithm</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#results"><i class="fa fa-check"></i><b>2.3</b> Results</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#multiplexed-capture-reduces-inter-sample-variance"><i class="fa fa-check"></i><b>2.3.1</b> Multiplexed capture reduces inter-sample variance</a></li>
+<li class="chapter" data-level="2.3.2" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#multiplexed-capture-provides-controls-for-exomedepth"><i class="fa fa-check"></i><b>2.3.2</b> Multiplexed capture provides controls for ExomeDepth</a></li>
+<li class="chapter" data-level="2.3.3" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#mccnv-exomedepth-perform-comparably-in-simulation-study"><i class="fa fa-check"></i><b>2.3.3</b> mcCNV &amp; ExomeDepth perform comparably in simulation study</a></li>
+<li class="chapter" data-level="2.3.4" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#mccnv-exomedepth-perform-comparably-on-wgs-pool"><i class="fa fa-check"></i><b>2.3.4</b> mcCNV &amp; ExomeDepth perform comparably on WGS pool</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="a-novel-copy-number-variant-algorithm.html"><a href="a-novel-copy-number-variant-algorithm.html#discussion"><i class="fa fa-check"></i><b>2.4</b> Discussion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><i class="fa fa-check"></i><b>3</b> Shortcomings of exome sequencing in noninvasive prenatal genetics</a><ul>
+<li class="chapter" data-level="3.1" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#introduction-1"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#methods-1"><i class="fa fa-check"></i><b>3.2</b> Methods</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#participant-selection"><i class="fa fa-check"></i><b>3.2.1</b> Participant selection</a></li>
+<li class="chapter" data-level="3.2.2" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#exome-sequencing-and-analysis"><i class="fa fa-check"></i><b>3.2.2</b> Exome sequencing and analysis</a></li>
+<li class="chapter" data-level="3.2.3" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#genotyping-algorithm"><i class="fa fa-check"></i><b>3.2.3</b> Genotyping algorithm</a></li>
+<li class="chapter" data-level="3.2.4" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#data-availability"><i class="fa fa-check"></i><b>3.2.4</b> Data availability</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#results-1"><i class="fa fa-check"></i><b>3.3</b> Results</a></li>
+<li class="chapter" data-level="3.4" data-path="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html"><a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#discussion-1"><i class="fa fa-check"></i><b>3.4</b> Discussion</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="r-code.html"><a href="r-code.html"><i class="fa fa-check"></i><b>A</b> R Code</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Tools and statistical approaches for integrating DNA sequencing into clinical care</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Shortcomings of exome sequencing in noninvasive prenatal genetics</h1>
+<div id="introduction-1" class="section level2">
+<h2><span class="header-section-number">3.1</span> Introduction</h2>
+<p>The beneficial health outcomes from newborn screening programs (NBS) are indisputable.
+We envision future NBS will begin with prenatal genetic testing to enable care in the immediate newborn period, and open up new possibilities for <em>in utero</em> and genetic therapies.
+During pregnancy, placental DNA is released into maternal circulation, enabling noninvasive interrogation of fetal genetics (noninvasive prenatal testing, NIPT).
+NIPT has a well-established clinical utility in screening for common chromosomal abnormalities such as Down syndrome with high sensitivity and specificity.<span class="citation"><sup><a href="references.html#ref-mackie:2017aa" role="doc-biblioref">108</a></sup></span>
+More recently, efforts have demonstrated sequencing-based testing for <em>de novo</em> pathogenic variants in a list of 30 genes associated with dominant Mendelian disorders<span class="citation"><sup><a href="references.html#ref-zhang:2019aa" role="doc-biblioref">109</a></sup></span> and PCR-based testing for a small number of recessive Mendelian disorders.<span class="citation"><sup><a href="references.html#ref-tsao:2019ab" role="doc-biblioref">110</a></sup></span>
+Using relative haplotype dosage analysis (RHDO),<span class="citation"><sup><a href="references.html#ref-lo:2010aa" role="doc-biblioref">111</a></sup></span> multiple groups have successfully diagnosed single gene disorders<span class="citation"><sup><a href="references.html#ref-hui:2017aa" role="doc-biblioref">112</a>–<a href="references.html#ref-vermeulen:2017aa" role="doc-biblioref">114</a></sup></span> including a new offering of noninvasive prenatal diagnosis for cystic fibrosis in the UK Public Health Service.<span class="citation"><sup><a href="references.html#ref-chandler:2020aa" role="doc-biblioref">115</a></sup></span>
+RHDO typically relies on collecting parental, and ideally proband, genetic information to resolve parental haplotypes; Jang et al. demonstrated success in diagnosing Duchenne muscular dystrophy by estimating haplotypes solely from maternal long-read sequencing.<span class="citation"><sup><a href="references.html#ref-jang:2018aa" role="doc-biblioref">113</a></sup></span>
+Scotchman et al. provide an excellent review summarizing the history of noninvasive testing.<span class="citation"><sup><a href="references.html#ref-scotchman:2020aa" role="doc-biblioref">84</a></sup></span>
+To date, no one has reported reliable fetal genotyping purely from maternal cell-free DNA using a sequencing-based approach.</p>
+<p>To begin NBS with prenatal genetic testing, we believe we first need a reliable noninvasive test only requiring a maternal sample.
+Others could reasonably argue the availability of carrier screening, and the immeasurably small risk of invasive testing,<span class="citation"><sup><a href="references.html#ref-salomon:2019aa" role="doc-biblioref">116</a></sup></span> removes the need for noninvasive testing.
+Such an argument, however, dismisses (1) the ethical and practical issues surrounding the necessity of involving the biological father, (2) the fact that many genetic disorders arise due to <em>de novo</em> mutations, and (3) the understandable fear and apprehension around invasive testing (especially for rare conditions).
+Additionally, we believe the prenatal diagnosis community should focus work on sequencing-based (as opposed to PCR-based) approaches.
+Sequencing generalizes across disorders more easily than PCR techniques, allows multiplexing to a degree not feasible using PCR, and will only continue to decrease in cost.</p>
+<p>Snyder et al. provide a review of previous attempts to perform noninvasive fetal genome sequencing, illustrating the cost-infeasibility and suggesting more targeted approaches such as exome sequencing (ES).<span class="citation"><sup><a href="references.html#ref-lo:2010aa" role="doc-biblioref">111</a>,<a href="references.html#ref-fan:2012aa" role="doc-biblioref">117</a>–<a href="references.html#ref-snyder:2013aa" role="doc-biblioref">119</a></sup></span>
+As an exploratory exercise, we performed ES on cell-free DNA (cfES) from three pregnant women with singleton fetuses.</p>
+</div>
+<div id="methods-1" class="section level2">
+<h2><span class="header-section-number">3.2</span> Methods</h2>
+<div id="participant-selection" class="section level3">
+<h3><span class="header-section-number">3.2.1</span> Participant selection</h3>
+<p>Genetic counselors identified pregnant women with suspected genetic disorders based either on family history or fetal sonographic findings.
+We enrolled three women, blinded to their family history and sonographic findings.
+All participants were consented and enrolled at UNC Hospitals by certified genetic counselors with approval from the UNC Institutional Review Board (IRB Number: 18-2618); we do not include any identifying information in this manuscript.</p>
+</div>
+<div id="exome-sequencing-and-analysis" class="section level3">
+<h3><span class="header-section-number">3.2.2</span> Exome sequencing and analysis</h3>
+<p>We collected cell-free DNA from maternal plasma, prepared sequencing libraries for the Illumina platform, and performed exome capture using the IDT xGen Exome Research Panel v1.0 (Cases 1 &amp; 2) or Agilent SureSelect Human All Exon v7 (Case 3).
+We processed the data using a novel analytic pipeline developed in Snakemake<span class="citation"><sup><a href="references.html#ref-koster:2012aa" role="doc-biblioref">97</a></sup></span> using Anaconda environments for reproducibility (provided in supplemental materials).
+Briefly, sequencing reads were aligned to hg38 (excluding alternate contigs) using BWA-MEM,<span class="citation"><sup><a href="references.html#ref-li:2013ab" role="doc-biblioref">96</a></sup></span> then base quality scores were re-calibrated using GATK4.<span class="citation"><sup><a href="references.html#ref-mckenna:2010aa" role="doc-biblioref">37</a>,<a href="references.html#ref-van-der-auwera:2013aa" role="doc-biblioref">40</a>,<a href="references.html#ref-poplin:2018aa" role="doc-biblioref">41</a></sup></span>
+We only retained non-duplicate, properly-paired reads with unambiguous mapping and mapping quality &gt;30 for each read.
+We called variants using bcftools,<span class="citation"><sup><a href="references.html#ref-li:2011aa" role="doc-biblioref">39</a></sup></span> requiring basepair quality scores &gt;20.
+We suggest the review by Seaby et al. for more information on the specifics of collecting and processing ES data for clinical use.<span class="citation"><sup><a href="references.html#ref-seaby:2016aa" role="doc-biblioref">120</a></sup></span>
+Analyses were restricted to the regions overlapping between the IDT and Agilent capture platforms.
+For cell-free analyses, we required 5 alternate allele-supporting read-pairs, and at least 80 total read-pairs.
+Using the identified single-nucleotide variants, we applied a novel empirical Bayesian procedure to estimate the fetal fraction (FF; the proportion of placental/fetal to maternal sequencing reads).
+We then estimated maternal and fetal genotypes using a maximal likelihood model incorporating the FF estimate and observed proportion of minor allele (alternate) reads (PMAR).</p>
+</div>
+<div id="genotyping-algorithm" class="section level3">
+<h3><span class="header-section-number">3.2.3</span> Genotyping algorithm</h3>
+
+<p>Represent maternal and fetal genotype pairs, given by the random variable <span class="math inline">\(G\)</span>, with capital and lowercase letters, where ‘A’ and ‘B’ represent the major and minor alleles (e.g. ‘AAab’ represents the fetus uniquely heterozygous for the minor allele).</p>
+<p>Let <span class="math inline">\(X,Y\)</span> be random variables for major and minor allele read counts.
+Define the fetal fraction and PMAR as the random variables <span class="math inline">\(F\)</span> and <span class="math inline">\(M\)</span>. Then, by definition, <span class="math inline">\(\text{E}[M] = \text{E}[Y/(X + Y)]\)</span>.
+It’s easily proven:</p>
+<p><span class="math display" id="eq:mBBab" id="eq:mABbb" id="eq:mABab" id="eq:mABaa" id="eq:mAAab">\[\begin{align}
+\text{E}[M \rvert G = \text{AAab}, F = f] &amp;= \frac{f}{2} \tag{3.1} \\
+\text{E}[M \rvert G = \text{ABaa}, F = f] &amp;= \frac{1 - f}{2} \tag{3.2} \\
+\text{E}[M \rvert G = \text{ABab}, F = f] &amp;= \frac{1}{2} \tag{3.3} \\
+\text{E}[M \rvert G = \text{ABbb}, F = f] &amp;= \frac{1 + f}{2} \tag{3.4} \\
+\text{E}[M \rvert G = \text{BBab}, F = f] &amp;= 1 - \frac{f}{2} \tag{3.5} 
+\end{align}\]</span></p>
+<p>We can then rearrange equations <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#eq:mAAab">(3.1)</a> and <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#eq:mBBab">(3.5)</a> and solve for the expected fetal fraction in terms of the PMAR:</p>
+<p><span class="math display" id="eq:fBBab" id="eq:fAAab">\[\begin{align}
+\text{E}[F \rvert G = \text{AAab}, M = m] &amp;= 2m \tag{3.6} \\
+\text{E}[F \rvert G = \text{BBab}, M = m] &amp;= 2 - 2m \tag{3.7} 
+\end{align}\]</span></p>
+<p>Given the average population allele frequency for sequenced variants, we know the probability distribution of maternal/fetal genotypes under Hardy-Weinberg, <span class="math inline">\(\text{Pr}\{G = g\}\)</span>.
+As shown above, given the fetal fraction, <span class="math inline">\(F = f\)</span>, we know the expected PMAR for each genotype, <span class="math inline">\(M\)</span>.
+We observe the major and minor allele reads, <span class="math inline">\(\mathbb{X}\)</span> and <span class="math inline">\(\mathbb{Y}\)</span> respectively, and wish to estimate <span class="math inline">\(\mathbb{G}, \hat{\mathbb{G}}\)</span>.</p>
+<p>We employ an empirical Bayesian expectation-maximization algorithm to identify loci with unique fetal heterozygosity, i.e. <span class="math inline">\(g \in \{\text{AAab}, \text{BBab}\}\)</span>.
+We pick reasonable starting values for the fetal fraction, <span class="math inline">\(F = f\)</span>, and the average minor allele frequency, then iteratively update the expected allele distribution and expected PMAR values until some convergence:</p>
+<ol style="list-style-type: decimal">
+<li><p>Initialize the genotype probabilities, <span class="math inline">\(p_g^* = \text{Pr}\{G = g\}\)</span>, and the expected PMAR, <span class="math inline">\(m_g^* = m_g\)</span>, based on reasonable estimates for the average minor allele frequency and fetal fraction</p></li>
+<li><p>Update <span class="math inline">\(\hat{\mathbb{G}}\)</span>:
+<span class="math display" id="eq:cfgUpdateML">\[
+ \hat{g}_i = \mathop{\text{argmax}}\limits_{g \in G}\left\{p_g^*\mathcal{L}(g \rvert m_g^*,x_i,y_i)\right\}, Y_{i} \sim \text{Bin}(x_i + y_i, m_g^*) \tag{3.8}
+  \]</span></p></li>
+<li><p>Update the genotype probabilities:
+<span class="math display" id="eq:cfgUpdateGenoProb">\[
+ p_g^* = \frac{\sum_i \text{I}(\hat{g} = g) + N\text{Pr}\{G = g\} - 1}{\sum_g\left\{\sum_i \text{I}(\hat{g} = g) + N\text{Pr}\{G = g\} - 2\right\}} \tag{3.9}
+  \]</span>
+where <span class="math inline">\(N\)</span> is the weight given to the initial estimate of the genotype probability, <span class="math inline">\(\text{Pr}\{G = g\}\)</span>.</p></li>
+<li><p>Update the expected PMAR:
+<span class="math display" id="eq:cfgUpdatePMAR">\[
+ m_g^* = \frac{\sum_i y_i\text{I}(\hat{g} = g) + Nm_g - 1}{\sum_i(x_i + y_i)\text{I}(\hat{g} = g) + N - 2} \tag{3.10}
+  \]</span>
+where <span class="math inline">\(N\)</span> is the weight given to the initial estimate of the PMAR, <span class="math inline">\(m_g\)</span>.</p></li>
+<li><p>Continue updating <span class="math inline">\(\hat{\mathbb{G}}\)</span> <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#eq:cfgUpdateML">(3.8)</a>, <span class="math inline">\(p_g^*\)</span> <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#eq:cfgUpdateGenoProb">(3.9)</a>, and <span class="math inline">\(m_g^*\)</span> <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#eq:cfgUpdatePMAR">(3.10)</a> until <span class="math inline">\(\hat{\mathbb{G}}\)</span> converges.</p></li>
+<li><p>For all loci <span class="math inline">\(j\)</span>, such that <span class="math inline">\(\hat{g} \in \{\text{AAab}, \text{BBab}\}\)</span>, calculate <span class="math inline">\(\hat{f}_j\)</span>:
+<span class="math display" id="eq:cfgEstFF">\[
+\hat{f}_j =
+  \begin{cases}
+    \displaystyle\frac{2y_j}{x_j + y_j}, &amp; \hat{g} = AAab \\[15pt]
+    2 - \displaystyle\frac{2y_j}{x_j + y_j}, &amp; \hat{g} = BBab
+  \end{cases} \tag{3.11}
+  \]</span></p></li>
+<li><p>Let
+<span class="math display" id="eq:cfgFFMed">\[
+\hat{f} = \text{median}\left(\hat{f}_j\right) \tag{3.12}
+  \]</span></p></li>
+<li><p>Calculate the expected PMAR using the fetal fraction estimate,
+<span class="math display" id="eq:cfgExpPMAR">\[
+ m_g = \text{E}[M|\hat{f},g] \tag{3.13}
+  \]</span></p></li>
+<li><p>Finally, for all loci, <span class="math inline">\(i\)</span>, estimate <span class="math inline">\(\hat{g}_i \in \hat{\mathbb{G}}\)</span>,
+<span class="math display" id="eq:cfgML">\[
+  \hat{g}_i = \mathop{\text{argmax}}\limits_{g \in G}\left\{\mathcal{L}(g \rvert m_g,x_i,y_i)\right\}, Y_{i} \sim \text{Bin}(x_i + y_i, m_g) \tag{3.14}
+  \]</span></p></li>
+</ol>
+</div>
+<div id="data-availability" class="section level3">
+<h3><span class="header-section-number">3.2.4</span> Data availability</h3>
+<p>The data that support the findings of this study are available on request from the corresponding author.
+The raw sequencing data are not publicly available due to privacy or ethical restrictions.
+Allele depths, with the alleles masked and genomic location rounded to 10 kilobases are available in the self-contained R<span class="citation"><sup><a href="references.html#ref-r-core-team:2019aa" role="doc-biblioref">121</a></sup></span> package reproducing the analysis herein (<a href="https://github.com/daynefiler/filer2020B" class="uri">https://github.com/daynefiler/filer2020B</a>).</p>
+</div>
+</div>
+<div id="results-1" class="section level2">
+<h2><span class="header-section-number">3.3</span> Results</h2>
+<p>Using the final set of filtered reads, we analyzed single nucleotide loci with &gt;80x coverage and at least 5 reads supporting the alternate allele.
+At each analyzed site, we alternate allele sequencing depth and total sequencing depth to estimate the fetal fraction and maternal-fetal genotypes using our novel algorithm (Figure <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#fig:alleleDep">3.1</a>).
+Table <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#tab:caseSmry">3.1</a> lists the known genetic diagnoses for the three cases presented.
+Genetic counselors recruited the three participants; investigators and cfES analysis was blinded to the eventual genetic diagnoses.
+In Cases 1 &amp; 2, specific gene sequencing based on family history and sonographic findings, respectively, provided genetic diagnoses.
+To date, Case 3 does not have a genetic diagnosis.
+We learned the mother in Case 1 carries a deletion of exon 1 in the gene most-often responsible for Menke’s syndrome (ATP7A).
+Neither exome capture platform targets ATP7A exon 1; therefore, cfES could not have identified the diagnosis for Case 1 with the platform used.
+In Case 2, we identified the causal variant using cfES.
+In this case, we correctly genotyped the fetus, but lacked the power to make the genotyping call with any level of confidence acceptable for clinical use (Figure <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#fig:alleleDep">3.1</a>B, note the widely-overlapping distributions at the causal variant).
+We did not identify any known pathogenic variants in the sequencing of Case 3, and despite performing genome sequencing on the newborn, we still do not have a genetic diagnosis for the family.</p>
+
+
+<div class="figure" style="text-align: center"><span id="fig:alleleDep"></span>
+<img src="DLFilerDissertation_files/figure-html/alleleDep-1.png" alt="Distribution of observed proportion of minor allele reads (PMAR) values for the three cases across the possible maternal-fetal genotype pairs. Uppercase letters give the estimated maternal genotype, lowercase letters give the estimated fetal genotype; ‘A/a’ indicates the reference allele, ‘B/b’ indicates the alternate allele. Solid lines show the normal approximation for the theoretical distribution of binomial probabilities, given the frequency of the estimated genotypes. The vertical line in (B) shows the observed PMAR for the known pathogenic variant, rs140468248." width="70%" />
+<p class="caption">
+Figure 3.1: Distribution of observed proportion of minor allele reads (PMAR) values for the three cases across the possible maternal-fetal genotype pairs. Uppercase letters give the estimated maternal genotype, lowercase letters give the estimated fetal genotype; ‘A/a’ indicates the reference allele, ‘B/b’ indicates the alternate allele. Solid lines show the normal approximation for the theoretical distribution of binomial probabilities, given the frequency of the estimated genotypes. The vertical line in (B) shows the observed PMAR for the known pathogenic variant, rs140468248.
+</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+<table class=" lightable-classic" style='font-family: "Arial Narrow", "Source Sans Pro", sans-serif; margin-left: auto; margin-right: auto;'>
+<caption>
+<span id="tab:caseSmry">Table 3.1: </span>Case summaries. GA: gestational age at the time of blood draw for cfES. FF: estimated fetal fraction. Depth: median depth used to estimate genotypes (does not include duplicated/filtered reads). %Dup: percentage of total mapped read pairs discarded as PCR and/or optical duplicates. %Filt: percentage of total mapped read pairs discarded for improper pairing and/or mapping quality.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+GA
+</th>
+<th style="text-align:left;">
+Clinical findings
+</th>
+<th style="text-align:left;">
+Genetic diagnosis
+</th>
+<th style="text-align:right;">
+FF
+</th>
+<th style="text-align:right;">
+Dep
+</th>
+<th style="text-align:right;">
+%Dup
+</th>
+<th style="text-align:right;">
+%Filt
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+32w2d
+</td>
+<td style="text-align:left;width: 10em; ">
+5 prior pregnancies affected with X-linked recessive Menke’s syndrome
+</td>
+<td style="text-align:left;width: 10em; ">
+Menke’s syndrome; del. ATP7A exon 1
+</td>
+<td style="text-align:right;">
+0.117
+</td>
+<td style="text-align:right;">
+241
+</td>
+<td style="text-align:right;">
+42.80
+</td>
+<td style="text-align:right;">
+21.96
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+24w5d
+</td>
+<td style="text-align:left;width: 10em; ">
+Fetal sonogram at 21w5d showed femoral bowing with shortened length (&lt;3% for GA) bilaterally
+</td>
+<td style="text-align:left;width: 10em; ">
+Osteogenesis imperfecta type VIII; P3H1 c.1120G&gt;T (rs140468248)
+</td>
+<td style="text-align:right;">
+0.122
+</td>
+<td style="text-align:right;">
+152
+</td>
+<td style="text-align:right;">
+33.32
+</td>
+<td style="text-align:right;">
+22.09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+34w0d
+</td>
+<td style="text-align:left;width: 10em; ">
+Fetal sonogram at 19w0d showed bilateral club foot with bilateral upper limb arthrogryposis
+</td>
+<td style="text-align:left;width: 10em; ">
+None, to date, despite exome and genome sequencing of newborn
+</td>
+<td style="text-align:right;">
+0.169
+</td>
+<td style="text-align:right;">
+330
+</td>
+<td style="text-align:right;">
+53.67
+</td>
+<td style="text-align:right;">
+32.65
+</td>
+</tr>
+</tbody>
+</table>
+<p>In Case 3, in addition to cfES, we performed exome sequencing (ES) on fetal, maternal, and paternal samples.
+Based on previous work demonstrating the differential length of maternal and fetal fragments,<span class="citation"><sup><a href="references.html#ref-chan:2004aa" role="doc-biblioref">122</a>–<a href="references.html#ref-rabinowitz:2019aa" role="doc-biblioref">125</a></sup></span> we interrogated the distribution of presumed maternal and fetal reads (Figure <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#fig:matVsFetLen">3.2</a>).
+We identified maternal and fetal reads by identifying sites with unique heterozygosity in the direct maternal and fetal ES results; at the informative sites, we extracted reads supporting the allele unique to the mother or fetus.
+In total, we identified 654,619 maternal reads and 279,508 fetal reads.
+We found, as others have, a higher proportion of fetal reads falling below 150 basepairs; however, we also observed a slightly higher proportion of longer reads, as well.</p>
+
+
+<div class="figure" style="text-align: center"><span id="fig:matVsFetLen"></span>
+<img src="DLFilerDissertation_files/figure-html/matVsFetLen-1.png" alt="Distribution of maternal versus fetal fragment length in Case 3. (A) shows the density; (B) shows the emperic cumulative distribution. The horiztonal axis shows the fragment length (insert size taken from aligned read-pairs). Blue lines show maternal reads, orange lines show fetal reads. We only included cfES reads supporting alleles unique to the mother or fetus, as identified from the direct maternal and fetal ES." width="70%" />
+<p class="caption">
+Figure 3.2: Distribution of maternal versus fetal fragment length in Case 3. (A) shows the density; (B) shows the emperic cumulative distribution. The horiztonal axis shows the fragment length (insert size taken from aligned read-pairs). Blue lines show maternal reads, orange lines show fetal reads. We only included cfES reads supporting alleles unique to the mother or fetus, as identified from the direct maternal and fetal ES.
+</p>
+</div>
+<p>Rabinowitz et al. proposed the Hoobari method which incorporates fragment lengths into fetal genotype estimates,<span class="citation"><sup><a href="references.html#ref-rabinowitz:2019aa" role="doc-biblioref">125</a></sup></span> finding the difference in accuracy varied from -0.25% to 1.89% when using versus not using fragment length in their exome analyses.
+To explore the utility of correcting for fragment length in our analysis, we interrogated the PMAR as a function of the short read proportion (fraction of reads with insert sizes less than 140 basepairs; Figure <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#fig:sratioByPmar">3.3</a>).
+We selected 140 as the cutoff based on the Hoobari algorithm.
+Overall, we found no meaningful relationship between the short read proportion and the observed PMAR and chose not to incorporate fragment length into our genotype estimates.</p>
+
+
+<div class="figure" style="text-align: center"><span id="fig:sratioByPmar"></span>
+<img src="DLFilerDissertation_files/figure-html/sratioByPmar-1.png" alt="Proportion of minor allele reads (PMAR) as a function of the short read proportion for genotypes estimated as `AAab.’ Short reads defined as fragments less than 140 basepairs. (A-C) show Cases 1 to 3, respectively. Gray points show the individual sites; blue contour lines show the two-dimensional distribution of values." width="33%" /><img src="DLFilerDissertation_files/figure-html/sratioByPmar-2.png" alt="Proportion of minor allele reads (PMAR) as a function of the short read proportion for genotypes estimated as `AAab.’ Short reads defined as fragments less than 140 basepairs. (A-C) show Cases 1 to 3, respectively. Gray points show the individual sites; blue contour lines show the two-dimensional distribution of values." width="33%" /><img src="DLFilerDissertation_files/figure-html/sratioByPmar-3.png" alt="Proportion of minor allele reads (PMAR) as a function of the short read proportion for genotypes estimated as `AAab.’ Short reads defined as fragments less than 140 basepairs. (A-C) show Cases 1 to 3, respectively. Gray points show the individual sites; blue contour lines show the two-dimensional distribution of values." width="33%" />
+<p class="caption">
+Figure 3.3: Proportion of minor allele reads (PMAR) as a function of the short read proportion for genotypes estimated as `AAab.’ Short reads defined as fragments less than 140 basepairs. (A-C) show Cases 1 to 3, respectively. Gray points show the individual sites; blue contour lines show the two-dimensional distribution of values.
+</p>
+</div>
+<p>Returning to Case 3, we interrogated the fetal genotyping accuracy at all sites with cell-free genotype estimates and reliable calls from the direct fetal sample.
+Overall, we found a 50.91% accuracy (Table <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#tab:c3FetByCf">3.2</a>).
+Table <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#tab:c3Calls">3.3</a> provides the full set of maternal, fetal, and cell-free calls.</p>
+
+
+<table class=" lightable-classic" style='font-family: "Arial Narrow", "Source Sans Pro", sans-serif; margin-left: auto; margin-right: auto;'>
+<caption>
+<span id="tab:c3FetByCf">Table 3.2: </span>Case 3 fetal versus cell-free genotype calls. ‘0’ represents the major allele; ‘1’ represents the minor allele. Sites with cell-free estimates and reliable direct fetal calls included (reliable defied as passing all quality checks and having a total sequencing depth greater than 30).
+</caption>
+<thead>
+<tr>
+<th style="empty-cells: hide;" colspan="2">
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #111111; margin-bottom: -1px; ">
+Cell-free
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+0/0
+</th>
+<th style="text-align:right;">
+0/1
+</th>
+<th style="text-align:right;">
+1/1
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
+Fetal
+</td>
+<td style="text-align:left;">
+0/0
+</td>
+<td style="text-align:right;">
+1,063
+</td>
+<td style="text-align:right;">
+1,857
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0/1
+</td>
+<td style="text-align:right;">
+3,598
+</td>
+<td style="text-align:right;">
+7,079
+</td>
+<td style="text-align:right;">
+1,454
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1/1
+</td>
+<td style="text-align:right;">
+76
+</td>
+<td style="text-align:right;">
+2,197
+</td>
+<td style="text-align:right;">
+1,391
+</td>
+</tr>
+</tbody>
+</table>
+
+<table class=" lightable-classic" style='font-family: "Arial Narrow", "Source Sans Pro", sans-serif; margin-left: auto; margin-right: auto;'>
+<caption>
+<span id="tab:c3Calls">Table 3.3: </span>Maternal, fetal, and cell-free genotype calls. ‘0’ represents the major allele; ‘1’ represents the minor allele. Sites with cell-free estimates and reliable direct fetal calls included (reliable defied as passing all quality checks and having a total sequencing depth greater than 30).
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Maternal
+</th>
+<th style="text-align:left;">
+Fetal
+</th>
+<th style="text-align:left;">
+Cell-free
+</th>
+<th style="text-align:right;">
+N
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="6">
+0/0
+</td>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
+0/0
+</td>
+<td style="text-align:left;">
+0/0
+</td>
+<td style="text-align:right;">
+468
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0/1
+</td>
+<td style="text-align:right;">
+1,159
+</td>
+</tr>
+<tr>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
+0/1
+</td>
+<td style="text-align:left;">
+0/0
+</td>
+<td style="text-align:right;">
+64
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0/1
+</td>
+<td style="text-align:right;">
+352
+</td>
+</tr>
+<tr>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
+1/1
+</td>
+<td style="text-align:left;">
+0/0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0/1
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="9">
+0/1
+</td>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
+0/0
+</td>
+<td style="text-align:left;">
+0/0
+</td>
+<td style="text-align:right;">
+387
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0/1
+</td>
+<td style="text-align:right;">
+107
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1/1
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
+0/1
+</td>
+<td style="text-align:left;">
+0/0
+</td>
+<td style="text-align:right;">
+3,072
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0/1
+</td>
+<td style="text-align:right;">
+1,967
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1/1
+</td>
+<td style="text-align:right;">
+713
+</td>
+</tr>
+<tr>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
+1/1
+</td>
+<td style="text-align:left;">
+0/0
+</td>
+<td style="text-align:right;">
+68
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0/1
+</td>
+<td style="text-align:right;">
+458
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1/1
+</td>
+<td style="text-align:right;">
+1,291
+</td>
+</tr>
+<tr>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="7">
+1/1
+</td>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
+0/0
+</td>
+<td style="text-align:left;">
+0/1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1/1
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
+0/1
+</td>
+<td style="text-align:left;">
+0/0
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0/1
+</td>
+<td style="text-align:right;">
+1,308
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1/1
+</td>
+<td style="text-align:right;">
+648
+</td>
+</tr>
+<tr>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
+1/1
+</td>
+<td style="text-align:left;">
+0/1
+</td>
+<td style="text-align:right;">
+1,601
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1/1
+</td>
+<td style="text-align:right;">
+23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="discussion-1" class="section level2">
+<h2><span class="header-section-number">3.4</span> Discussion</h2>
+<p>Without the ability to reliably exclude maternal DNA fragments, noninvasive sequencing-based methods to genotype the fetus either require additional sequencing of parental samples or distinguishing genotypes by the proportion of minor allele reads (PMAR).
+Here, we make no attempt to utilize parental genetic information and demonstrate the difficulty of inferring the genotypes directly from the PMAR.
+We model the PMAR as a binomial proportion; given the fetal fraction, one can prove the true PMAR defines the maternal and fetal genotypes (supplemental document).</p>
+<p>The theoretical bounds of the binomial distribution, therefore, confine our ability to discriminate maternal-fetal genotypes.
+Using the normal approximation for the binomial variance (valid when the number of observations, i.e. sequencing depth, times the binomial proportion, i.e. PMAR, is greater than 10), we can clearly explain the poor results we observed (Figures <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#fig:binCI">3.4</a> and <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#fig:binWeitzman">3.5</a>).
+At sequencing depths up to 500x, the 95% confidence intervals on PMAR distributions still overlap for fetal fractions up to roughly 0.17 (Figure <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#fig:binCI">3.4</a>).
+When we calculate the degree of distribution overlap (a proxy for classification error rate), we see required sequencing depths in excess of 8,000x for low fetal fraction samples (Figure <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#fig:binWeitzman">3.5</a>).
+We, therefore, cannot expect cell-free sequencing to reliably differentiate genotypes without substantially higher depth or additional genetic information.
+No amount of cleverness in the analysis can overcome the fundamental variance bounds when estimating binomial proportions.</p>
+
+
+<div class="figure" style="text-align: center"><span id="fig:binCI"></span>
+<img src="DLFilerDissertation_files/figure-html/binCI-1.png" alt="95% confidence intervals on the binomial proportions for possible maternal-fetal genotype pairs across increasing fetal fractions. Confidence intervals represent a sequencing depth of 500x. Average fetal fractions by gestational age (in weeks) given in light gray.126" width="70%" />
+<p class="caption">
+Figure 3.4: 95% confidence intervals on the binomial proportions for possible maternal-fetal genotype pairs across increasing fetal fractions. Confidence intervals represent a sequencing depth of 500x. Average fetal fractions by gestational age (in weeks) given in light gray.<span class="citation"><sup><a href="references.html#ref-kinnings:2015aa" role="doc-biblioref">126</a></sup></span>
+</p>
+</div>
+
+
+<div class="figure" style="text-align: center"><span id="fig:binWeitzman"></span>
+<img src="DLFilerDissertation_files/figure-html/binWeitzman-1.png" alt="Expected misclassification rate (Weitzman overlapping coefficient; i.e. the area of overlapping distributions in Figure 3.4) considering ABab versus ABbb as a function of sequencing depth and fetal fraction. The dashed horizontal line shows 5% error. The theoretical error rates for ABab vs ABaa are symmetric and equal; however, the frequency of errors will depend on the population frequency of the reference versus alternate allele." width="70%" />
+<p class="caption">
+Figure 3.5: Expected misclassification rate (Weitzman overlapping coefficient; i.e. the area of overlapping distributions in Figure <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#fig:binCI">3.4</a>) considering ABab versus ABbb as a function of sequencing depth and fetal fraction. The dashed horizontal line shows 5% error. The theoretical error rates for ABab vs ABaa are symmetric and equal; however, the frequency of errors will depend on the population frequency of the reference versus alternate allele.
+</p>
+</div>
+<p>The sequencing herein suffers from three problems: (1) inadequate sequencing depth; (2) biased PMAR values from the removal of duplicate reads; (3) errors in sequencing and/or PCR.
+We have already illustrated the inadequate depth, but emphasize that the theoretical results we present speak to the final depths (not the raw sequencing depth).
+In our three cases, we excluded over half the reads taken off the sequencer due to sequencing quality thresholds (Table <a href="shortcomings-of-exome-sequencing-in-noninvasive-prenatal-genetics.html#tab:caseSmry">3.1</a>).
+We observe the evidence of problems (2) and (3) by observing the high proportion of both duplicate reads and PMAR values outside the theoretic distributions.
+Additionally, we observed very poor accuracy in the Case 3 genotype estimates.</p>
+<p>Typical sequencing workflows start with randomly fragmenting DNA molecules to build sequencing libraries.
+Standard bioinformatic practices suggest we remove read-pairs with identical endpoints, because the duplicate read-pairs more likely represent PCR amplification of a single molecule than two molecules with the same fragmentation.
+Cell-free DNA molecules are shorter than nuclear DNA, not requiring manual fragmentation, and have a non-random distribution of endpoints.<span class="citation"><sup><a href="references.html#ref-chan:2016aa" role="doc-biblioref">123</a></sup></span>
+Therefore, compared to standard sequencing libraries, the likelihood of observing true duplicates in cell-free libraries increases and we cannot necessarily assume duplicates represent PCR amplification.
+However, for this work we have no way of differentiating reads representing true duplicate molecules versus PCR duplicates and thus excluded duplicate reads from our analysis.</p>
+<p>Assuming adequate depth and appropriate handling of duplicate reads and sequencing errors, incorporating the fragment length into the statistical model may prove more beneficial.
+The high variability of the binomial distribution for small <span class="math inline">\(n\)</span> obfuscates any meaningful relationship between fragment length and PMAR in our data.
+We reiterate, however, incorporating fragment length may give better estimates of the binomial proportion but cannot decrease variance beyond the distribution bounds.</p>
+<p>To solve the above issues, we advocate a more targeted approach with much greater sequencing depth and unique molecular identifiers.
+Unique molecular identifiers allow identification of sequencing errors and differentiate true versus artifactual duplicate reads.
+Given the depth requirements for estimating fetal genotypes by the PMAR, and the challenge of variants of uncertain clinical significance, we advocate against broad sequencing modalities on noninvasive samples.
+Recognizing that all capture methods introduce bias in the relative sequencing efficiency of different targeted regions,<span class="citation"><sup><a href="references.html#ref-seaby:2016aa" role="doc-biblioref">120</a></sup></span> the sequencing depths needed for noninvasive fetal genotyping necessitate a targeted approach.
+Despite the challenges raised by this work, we believe assessing hundreds to thousands of basepairs, rather than the tens of millions targeted in ES, will prove economical and clinically reliable.
+Doing so, we hope, will foster population-level screening for Mendelian disorders during the prenatal period and, ultimately, unlock new avenues in the treatment of these disorders.</p>
+
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="a-novel-copy-number-variant-algorithm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": true,
+"twitter": true,
+"linkedin": true,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["DLFilerDissertation.pdf"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

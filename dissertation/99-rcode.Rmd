@@ -1,0 +1,8 @@
+# (APPENDIX) Appendix {-}
+
+# R Code
+
+This appendix contains all of the R code to reproduce the work presented. 
+
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
