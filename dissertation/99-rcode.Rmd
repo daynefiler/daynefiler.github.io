@@ -4,5 +4,5 @@
 
 This appendix contains all of the R code to reproduce the work presented. 
 
-```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE,tidy=TRUE,tidy.opts=list(width.cutoff=80)}
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
