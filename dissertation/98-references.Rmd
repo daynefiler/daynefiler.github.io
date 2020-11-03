@@ -1,0 +1,11 @@
+\backmatter
+
+`r if (knitr::is_html_output()) '# References {-}'`
+
+<!-- This line tells Pandoc to put the references here -->
+\setlength{\parindent}{0ex}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{REFERENCES}
+\myonein{REFERENCES}
+<div id="refs"></div>

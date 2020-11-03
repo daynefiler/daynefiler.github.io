@@ -1,0 +1,462 @@
+# Shortcomings of exome sequencing in noninvasive prenatal genetics
+
+## Introduction
+
+The beneficial health outcomes from newborn screening programs (NBS) are indisputable.
+We envision future NBS will begin with prenatal genetic testing to enable care in the immediate newborn period, and open up new possibilities for *in utero* and genetic therapies.
+During pregnancy, placental DNA is released into maternal circulation, enabling noninvasive interrogation of fetal genetics (noninvasive prenatal testing, NIPT).
+NIPT has a well-established clinical utility in screening for common chromosomal abnormalities such as Down syndrome with high sensitivity and specificity [@mackie:2017aa].
+More recently, efforts have demonstrated sequencing-based testing for *de novo* pathogenic variants in a list of 30 genes associated with dominant Mendelian disorders [@zhang:2019aa] and PCR-based testing for a small number of recessive Mendelian disorders [@tsao:2019ab].
+Using relative haplotype dosage analysis (RHDO) [@lo:2010aa], multiple groups have successfully diagnosed single gene disorders [@hui:2017aa; @jang:2018aa; @vermeulen:2017aa] including a new offering of noninvasive prenatal diagnosis for cystic fibrosis in the UK Public Health Service [@chandler:2020aa].
+RHDO typically relies on collecting parental, and ideally proband, genetic information to resolve parental haplotypes; Jang et al. demonstrated success in diagnosing Duchenne muscular dystrophy by estimating haplotypes solely from maternal long-read sequencing [@jang:2018aa].
+Scotchman et al. provide an excellent review summarizing the history of noninvasive testing [@scotchman:2020aa].
+To date, no one has reported reliable fetal genotyping purely from maternal cell-free DNA using a sequencing-based approach.
+
+To begin NBS with prenatal genetic testing, we believe we first need a reliable noninvasive test only requiring a maternal sample.
+Others could reasonably argue the availability of carrier screening, and the immeasurably small risk of invasive testing [@salomon:2019aa], removes the need for noninvasive testing.
+Such an argument, however, dismisses (1) the ethical and practical issues surrounding the necessity of involving the biological father, (2) the fact that many genetic disorders arise due to *de novo* mutations, and (3) the understandable fear and apprehension around invasive testing (especially for rare conditions).
+Additionally, we believe the prenatal diagnosis community should focus work on sequencing-based (as opposed to PCR-based) approaches.
+Sequencing generalizes across disorders more easily than PCR techniques, allows multiplexing to a degree not feasible using PCR, and will only continue to decrease in cost.
+
+Snyder et al. provide a review of previous attempts to perform noninvasive fetal genome sequencing, illustrating the cost-infeasibility and suggesting more targeted approaches such as exome sequencing (ES) [@fan:2012aa; @kitzman:2012aa; @lo:2010aa; @snyder:2013aa].
+As an exploratory exercise, we performed ES on cell-free DNA (cfES) from three pregnant women with singleton fetuses.
+
+## Methods
+
+### Participant selection
+
+Genetic counselors identified pregnant women with suspected genetic disorders based either on family history or fetal sonographic findings.
+We enrolled three women, blinded to their family history and sonographic findings.
+All participants were consented and enrolled at UNC Hospitals by certified genetic counselors with approval from the UNC Institutional Review Board (IRB Number: 18-2618); we do not include any identifying information in this manuscript.
+
+### Exome sequencing and analysis
+
+We collected cell-free DNA from maternal plasma, prepared sequencing libraries for the Illumina platform, and performed exome capture using the IDT xGen Exome Research Panel v1.0 (Cases 1 & 2) or Agilent SureSelect Human All Exon v7 (Case 3).
+We processed the data using a novel analytic pipeline developed in Snakemake [@koster:2012aa] using Anaconda environments for reproducibility (provided in supplemental materials).
+Briefly, sequencing reads were aligned to hg38 (excluding alternate contigs) using BWA-MEM [@li:2013ab], then base quality scores were re-calibrated using GATK4 [@mckenna:2010aa; @poplin:2018aa; @van-der-auwera:2013aa].
+We only retained non-duplicate, properly-paired reads with unambiguous mapping and mapping quality >30 for each read.
+We called variants using bcftools [@li:2011aa], requiring basepair quality scores >20.
+We suggest the review by Seaby et al. for more information on the specifics of collecting and processing ES data for clinical use [@seaby:2016aa].
+Analyses were restricted to the regions overlapping between the IDT and Agilent capture platforms.
+For cell-free analyses, we required 5 alternate allele-supporting read-pairs, and at least 80 total read-pairs.
+Using the identified single-nucleotide variants, we applied a novel empirical Bayesian procedure to estimate the fetal fraction (FF; the proportion of placental/fetal to maternal sequencing reads).
+We then estimated maternal and fetal genotypes using a maximal likelihood model incorporating the FF estimate and observed proportion of minor allele (alternate) reads (PMAR).
+
+### Genotyping algorithm
+
+\newcommand{\Var}[2][]{\text{Var}_{#1}\left(#2\right)}
+\newcommand\I[1]{\text{I}\left(#1\right)}
+
+Represent maternal and fetal genotype pairs, given by the random variable $G$, with capital and lowercase letters, where 'A' and 'B' represent the major and minor alleles (e.g. 'AAab' represents the fetus uniquely heterozygous for the minor allele).
+
+Let $X,Y$ be random variables for major and minor allele read counts.
+Define the fetal fraction and PMAR as the random variables $F$ and $M$. Then, by definition, $\text{E}[M] = \text{E}[Y/(X + Y)]$.
+It's easily proven:
+
+\begin{align}
+\text{E}[M \rvert G = \text{AAab}, F = f] &= \frac{f}{2} (\#eq:mAAab) \\
+\text{E}[M \rvert G = \text{ABaa}, F = f] &= \frac{1 - f}{2} (\#eq:mABaa) \\
+\text{E}[M \rvert G = \text{ABab}, F = f] &= \frac{1}{2} (\#eq:mABab) \\
+\text{E}[M \rvert G = \text{ABbb}, F = f] &= \frac{1 + f}{2} (\#eq:mABbb) \\
+\text{E}[M \rvert G = \text{BBab}, F = f] &= 1 - \frac{f}{2} (\#eq:mBBab) 
+\end{align}
+
+We can then rearrange equations \@ref(eq:mAAab) and \@ref(eq:mBBab) and solve for the expected fetal fraction in terms of the PMAR:
+
+\begin{align}
+\text{E}[F \rvert G = \text{AAab}, M = m] &= 2m (\#eq:fAAab) \\
+\text{E}[F \rvert G = \text{BBab}, M = m] &= 2 - 2m (\#eq:fBBab) 
+\end{align}
+
+Given the average population allele frequency for sequenced variants, we know the probability distribution of maternal/fetal genotypes under Hardy-Weinberg, $\text{Pr}\{G = g\}$.
+As shown above, given the fetal fraction, $F = f$, we know the expected PMAR for each genotype, $M$.
+We observe the major and minor allele reads, $\mathbb{X}$ and $\mathbb{Y}$ respectively, and wish to estimate $\mathbb{G}, \hat{\mathbb{G}}$.
+
+We employ an empirical Bayesian expectation-maximization algorithm to identify loci with unique fetal heterozygosity, i.e. $g \in \{\text{AAab}, \text{BBab}\}$.
+We pick reasonable starting values for the fetal fraction, $F = f$, and the average minor allele frequency, then iteratively update the expected allele distribution and expected PMAR values until some convergence:
+
+1. Initialize the genotype probabilities, $p_g^* = \text{Pr}\{G = g\}$, and the expected PMAR, $m_g^* = m_g$, based on reasonable estimates for the average minor allele frequency and fetal fraction
+
+2. Update $\hat{\mathbb{G}}$:
+  $$
+    \hat{g}_i = \mathop{\text{argmax}}\limits_{g \in G}\left\{p_g^*\mathcal{L}(g \rvert m_g^*,x_i,y_i)\right\}, Y_{i} \sim \text{Bin}(x_i + y_i, m_g^*) (\#eq:cfgUpdateML)
+  $$
+
+3. Update the genotype probabilities:
+  $$
+    p_g^* = \frac{\sum_i \text{I}(\hat{g} = g) + N\text{Pr}\{G = g\} - 1}{\sum_g\left\{\sum_i \text{I}(\hat{g} = g) + N\text{Pr}\{G = g\} - 2\right\}} (\#eq:cfgUpdateGenoProb)
+  $$
+  where $N$ is the weight given to the initial estimate of the genotype probability, $\text{Pr}\{G = g\}$.
+
+4. Update the expected PMAR:
+  $$
+    m_g^* = \frac{\sum_i y_i\text{I}(\hat{g} = g) + Nm_g - 1}{\sum_i(x_i + y_i)\text{I}(\hat{g} = g) + N - 2} (\#eq:cfgUpdatePMAR)
+  $$
+  where $N$ is the weight given to the initial estimate of the PMAR, $m_g$.
+
+5.  Continue updating $\hat{\mathbb{G}}$ \@ref(eq:cfgUpdateML), $p_g^*$ \@ref(eq:cfgUpdateGenoProb), and $m_g^*$ \@ref(eq:cfgUpdatePMAR) until $\hat{\mathbb{G}}$ converges.
+
+6.  For all loci $j$, such that $\hat{g} \in \{\text{AAab}, \text{BBab}\}$, calculate $\hat{f}_j$:
+  $$
+    \hat{f}_j =
+      \begin{cases}
+        \displaystyle\frac{2y_j}{x_j + y_j}, & \hat{g} = AAab \\[15pt]
+        2 - \displaystyle\frac{2y_j}{x_j + y_j}, & \hat{g} = BBab
+      \end{cases} (\#eq:cfgEstFF)
+  $$
+
+7.  Let
+  $$
+    \hat{f} = \text{median}\left(\hat{f}_j\right) (\#eq:cfgFFMed)
+  $$
+
+8. Calculate the expected PMAR using the fetal fraction estimate,
+  $$
+    m_g = \text{E}[M|\hat{f},g] (\#eq:cfgExpPMAR)
+  $$
+
+9. Finally, for all loci, $i$, estimate $\hat{g}_i \in \hat{\mathbb{G}}$,
+  $$
+  \hat{g}_i = \mathop{\text{argmax}}\limits_{g \in G}\left\{\mathcal{L}(g \rvert m_g,x_i,y_i)\right\}, Y_{i} \sim \text{Bin}(x_i + y_i, m_g) (\#eq:cfgML)
+  $$
+
+### Data availability
+
+The data that support the findings of this study are available on request from the corresponding author.
+The raw sequencing data are not publicly available due to privacy or ethical restrictions.
+Allele depths, with the alleles masked and genomic location rounded to 10 kilobases are available in the self-contained R [@r-core-team:2019aa] package reproducing the analysis herein (https://github.com/daynefiler/filer2020B).
+
+## Results
+
+```{r callGenotypes}
+## Estimate maternal-fetal genotypes from cell-free exome sequencing
+data(gt)
+gt[ , udep := ref + alt]
+gt[ , use := udep > 80 & ref > 5 & alt > 5]
+for (s in c("S1", "S2", "FES-0034-4")) {
+  gt[smp == s & use,
+     c("ff", "gtCall", "gtLike") := callSmpl(alt, udep, .N, median(sdep/ldep))]
+}
+## Calculate median read depth & fetal fraction estimates by sample
+smry <- gt[(use), .(md = median(udep), ff = ff[1]), by = smp]
+setkey(smry, smp)
+```
+
+Using the final set of filtered reads, we analyzed single nucleotide loci with >80x coverage and at least 5 reads supporting the alternate allele.
+At each analyzed site, we alternate allele sequencing depth and total sequencing depth to estimate the fetal fraction and maternal-fetal genotypes using our novel algorithm (Figure \@ref(fig:alleleDep)).
+Table \@ref(tab:caseSmry) lists the known genetic diagnoses for the three cases presented.
+Genetic counselors recruited the three participants; investigators and cfES analysis was blinded to the eventual genetic diagnoses.
+In Cases 1 & 2, specific gene sequencing based on family history and sonographic findings, respectively, provided genetic diagnoses.
+To date, Case 3 does not have a genetic diagnosis.
+We learned the mother in Case 1 carries a deletion of exon 1 in the gene most-often responsible for Menke’s syndrome (ATP7A).
+Neither exome capture platform targets ATP7A exon 1; therefore, cfES could not have identified the diagnosis for Case 1 with the platform used.
+In Case 2, we identified the causal variant using cfES.
+In this case, we correctly genotyped the fetus, but lacked the power to make the genotyping call with any level of confidence acceptable for clinical use (Figure \@ref(fig:alleleDep)B, note the widely-overlapping distributions at the causal variant).
+We did not identify any known pathogenic variants in the sequencing of Case 3, and despite performing genome sequencing on the newborn, we still do not have a genetic diagnosis for the family.
+
+(ref:alleleDepCap) Distribution of observed proportion of minor allele reads (PMAR) values for the three cases across the possible maternal-fetal genotype pairs. Uppercase letters give the estimated maternal genotype, lowercase letters give the estimated fetal genotype; 'A/a' indicates the reference allele, 'B/b' indicates the alternate allele. Solid lines show the normal approximation for the theoretical distribution of binomial probabilities, given the frequency of the estimated genotypes. The vertical line in (B) shows the observed PMAR for the known pathogenic variant, rs140468248.
+
+(ref:alleleDepScap) PMAR distribution for cell-free exome sequencing cases.
+
+```{r alleleDep, fig.cap='(ref:alleleDepCap)', fig.scap='(ref:alleleDepScap)', fig.height=5, out.width=defOutWid}
+## Allele depth histograms
+# par(oma = c(3, 0, 0, 0), mfrow = c(3, 1))
+layout(matrix(1:4, ncol = 1), heights = c(rep(10, 3), 1))
+with(gt[use & smp == "S1"], cfPltFreqHist(alt, udep, gtCall, ff = ff[1]))
+title(ylab = "Case 1", line = 1)
+addfiglab("A")
+
+data(rs140468248)
+data(GenoMeta)
+with(gt[use & smp == "S2"], cfPltFreqHist(alt, udep, gtCall, ff = ff[1]))
+oiCall <- gt[varid == rs140468248, gtCall]
+oiPmar <- gt[varid == rs140468248, alt/(ref + alt)]
+abline(v = oiPmar, col = GenoMeta$color[GenoMeta$name == oiCall])
+text(x = oiPmar,
+     y = grconvertY(0.75, "nfc"),
+     "rs140468248",
+     srt = 90,
+     adj = c(0.5, 1.5),
+     col = GenoMeta$color[GenoMeta$name == oiCall])
+title(ylab = "Case 2", line = 1)
+addfiglab("B", units = 'nfc')
+
+with(gt[use & smp == "FES-0034-4"], cfPltFreqHist(alt, udep, gtCall, ff = ff[1]))
+title(ylab = "Case 3", line = 1)
+addfiglab("C", units = 'nfc')
+
+par(mar = rep(0, 4))
+plot.new()
+legend(x = grconvertX(0.5, from = "nfc"),
+       y = grconvertY(0.5, from = "nfc"),
+       legend = GenoMeta$name,
+       horiz = TRUE,
+       lwd = 4,
+       col = GenoMeta$color,
+       xjust = 0.5,
+       yjust = 0.5,
+       xpd = NA,
+       bty = "n")
+```
+
+
+```{r createReadSummary}
+## Collect read depth and filtering information into a table
+data(readSmry)
+rs <- readSmry$summary
+rs[ , pctDup := round(pctDup, 2)]
+rs[ , pctFlt := round(pctFlt, 2)]
+setkey(rs, smp)
+rs <- smry[rs]
+rs[ , ff := round(ff, 3)]
+rs[smp == "S1", case := "Case 1"]
+rs[smp == "S2", case := "Case 2"]
+rs[grepl("FES", smp), case := "Case 3"]
+```
+
+(ref:case1ga) 32w2d
+
+(ref:case1cc) 5 prior pregnancies affected with X-linked recessive Menke's syndrome
+
+(ref:case1gd) Menke's syndrome; del. ATP7A exon 1
+
+(ref:case2ga) 24w5d 
+
+(ref:case2cc) Fetal sonogram at 21w5d showed femoral bowing with shortened length (<3% for GA) bilaterally 
+
+(ref:case2gd) Osteogenesis imperfecta type VIII; P3H1 c.1120G>T (rs140468248) 
+
+(ref:case3ga) 34w0d 
+
+(ref:case3cc) Fetal sonogram at 19w0d showed bilateral club foot with bilateral upper limb arthrogryposis 
+
+(ref:case3gd) None, to date, despite exome and genome sequencing of newborn
+
+(ref:caseSmryCap) Case summaries. GA: gestational age at the time of blood draw for cfES. FF: estimated fetal fraction. Depth: median depth used to estimate genotypes (does not include duplicated/filtered reads). %Dup: percentage of total mapped read pairs discarded as PCR and/or optical duplicates. %Filt: percentage of total mapped read pairs discarded for improper pairing and/or mapping quality.
+
+```{r caseSmry}
+caseSmry <- rs[!is.na(ff)][order(case)][ , {
+  .(GA = sprintf('(ref:case%dga)', 1:3),
+    `Clinical findings` = sprintf('(ref:case%dcc)', 1:3),
+    `Genetic diagnosis` = sprintf('(ref:case%dgd)', 1:3),
+    FF = ff, 
+    Dep = md, 
+    `%Dup` = pctDup, 
+    `%Filt` = pctFlt)
+}]
+kable(caseSmry, 
+      row.names = TRUE,
+      caption = '(ref:caseSmryCap)',
+      label = "caseSmry",
+      format.args = list(big.mark = ",", scientific = FALSE),
+      booktabs = TRUE,
+      caption.short = "Cell-free exome sequencing case summaries") %>%
+  kable_classic() %>%
+  column_spec(3:4, width = "10em")
+```
+
+
+```{r loadC3MatFetReads}
+## Load c3MatFetReads
+data(c3MatFetReads)
+```
+
+In Case 3, in addition to cfES, we performed exome sequencing (ES) on fetal, maternal, and paternal samples.
+Based on previous work demonstrating the differential length of maternal and fetal fragments [@chan:2004aa; @chan:2016aa; @jiang:2016ab; @rabinowitz:2019aa], we interrogated the distribution of presumed maternal and fetal reads (Figure \@ref(fig:matVsFetLen)).
+We identified maternal and fetal reads by identifying sites with unique heterozygosity in the direct maternal and fetal ES results; at the informative sites, we extracted reads supporting the allele unique to the mother or fetus.
+In total, we identified `r c3MatFetReads[source == "maternal", formatC(.N, big.mark = ",")]` maternal reads and `r c3MatFetReads[source == "fetal", formatC(.N, big.mark = ",")]` fetal reads.
+We found, as others have, a higher proportion of fetal reads falling below 150 basepairs; however, we also observed a slightly higher proportion of longer reads, as well.
+
+(ref:matVsFetLenCap) Distribution of maternal versus fetal fragment length in Case 3. (A) shows the density; (B) shows the emperic cumulative distribution. The horiztonal axis shows the fragment length (insert size taken from aligned read-pairs). Blue lines show maternal reads, orange lines show fetal reads. We only included cfES reads supporting alleles unique to the mother or fetus, as identified from the direct maternal and fetal ES.
+
+(ref:matVsFetLenScap) Distribution of maternal versus fetal fragment length in Case 3.
+
+```{r matVsFetLen, fig.cap='(ref:matVsFetLenCap)', fig.scap='(ref:matVsFetLenScap)', fig.show='hold', out.width=defOutWid, fig.height=3}
+## Calculate density and ECDF for fragment read lengths
+matDen <- density(c3MatFetReads[source == "maternal", isize])
+fetDen <- density(c3MatFetReads[source == "fetal",    isize])
+matCdf <- ecdf(c3MatFetReads[source == "maternal", isize])
+fetCdf <- ecdf(c3MatFetReads[source == "fetal",    isize])
+
+## Generate plots
+par(mfrow = c(1, 2), oma = c(3, 0, 0, 0))
+par(mar = c(4, 4, 1, 1))
+plot.new()
+plot.window(xlim = range(c(matDen$x, fetDen$x)), range(c(matDen$y, fetDen$y)))
+lines(matDen, col = "darkblue", lwd = 2)
+lines(fetDen, col = "darkorange", lwd =2)
+axis(side = 1)
+title(xlab = "Fragment length (insert size)", ylab = "Density")
+addfiglab("A")
+plot.new()
+xv <- seq(50, 300, 1)
+plot.window(xlim = range(xv), ylim = 0:1)
+points(x = xv, y = matCdf(xv), col = "darkblue", lwd = 2, type = "l")
+points(x = xv, y = fetCdf(xv), col = "darkorange", lwd = 2, type = "l")
+addfiglab("B", units = 'nfc')
+axis(side = 1)
+axis(side = 2)
+title(xlab = "Fragment length (insert size)",
+      ylab = "Cumulative distribution")
+legend(x = grconvertX(0.5, from = "ndc"),
+       y = line2user(2, side = 1, outer = TRUE),
+       legend = c("Maternal", "Fetal"),
+       horiz = TRUE,
+       lwd = 2,
+       col = c("darkblue", "darkorange"),
+       xjust = 0.5,
+       yjust = 0.5,
+       xpd = NA,
+       bty = "n")
+```
+
+Rabinowitz et al. proposed the Hoobari method which incorporates fragment lengths into fetal genotype estimates [@rabinowitz:2019aa], finding the difference in accuracy varied from -0.25% to 1.89% when using versus not using fragment length in their exome analyses.
+To explore the utility of correcting for fragment length in our analysis, we interrogated the PMAR as a function of the short read proportion (fraction of reads with insert sizes less than 140 basepairs; Figure \@ref(fig:sratioByPmar)).
+We selected 140 as the cutoff based on the Hoobari algorithm.
+Overall, we found no meaningful relationship between the short read proportion and the observed PMAR and chose not to incorporate fragment length into our genotype estimates.
+
+(ref:sratioByPmarCap) Proportion of minor allele reads (PMAR) as a function of the short read proportion for genotypes estimated as `AAab.' Short reads defined as fragments less than 140 basepairs. (A-C) show Cases 1 to 3, respectively. Gray points show the individual sites; blue contour lines show the two-dimensional distribution of values.
+
+(ref:sratioByPmarScap) Relationship between PMAR and fraction of reads <140 basepairs.
+
+```{r sratioByPmar, fig.cap='(ref:sratioByPmarCap)', fig.scap='(ref:sratioByPmarScap)', fig.show='hold', fig.height=2.5, fig.width=2.5, out.width='33%'}
+gt[ , pmar := alt/(alt + ref)]
+gt[ , sratio := sdep/adep]
+pltSratioByPmar <- function(smpNm) {
+  par(mar = c(4, 4, 1, 1))
+  with(gt[gtCall == "AAab" & smp == smpNm], {
+    plot(pmar ~ sratio,
+         xlab = "Proportion of fragments < 140 bp",
+         ylab = "PMAR",
+         pch = 16,
+         cex = 0.5,
+         col = col2alpha('darkgray'),
+         bty = "n")
+  })
+  with(gt[gtCall == "AAab" & smp == smpNm], {
+    contour(kde2d(x = sratio, y = pmar, n = 500),
+            nlevels = 25,
+            add = TRUE,
+            drawlabels = FALSE,
+            col = "darkblue")
+  })
+}
+pltSratioByPmar("S1")
+addfiglab("A")
+pltSratioByPmar("S2")
+addfiglab("B")
+pltSratioByPmar("FES-0034-4")
+addfiglab("C")
+```
+
+```{r c3CallConcordance}
+## Calculate call concordance between cell-free and direct for Case 3
+c3 <- gt[(smp == "FES-0034-0" & udep > 30 & gt %in% c("0/0", "0/1", "1/1")) |
+           (smp == "FES-0034-1" & udep > 30 & gt %in% c("0/0", "0/1", "1/1")) |
+           (use & smp == "FES-0034-4")]
+c3[ , mrg := substr(gtCall, 3, 4)]
+c3[ , mrg := c("0/0", "0/1", "1/1")[match(mrg, c("aa", "ab", "bb"))]]
+c3[is.na(gtCall), mrg := gt]
+c3 <- dcast(c3, varid ~ smp, value.var = "mrg")
+setnames(c3, c("varid", "fet", "mat", "cff"))
+c3 <- c3[ , .N, by = .(mat, fet, cff)]
+## call by call matrix, cell-free calls in columns, fetal in rows
+c3FetByCf <- dcast(c3[!is.na(fet) & !is.na(cff)], 
+                   fet ~ cff,
+                   fun.aggregate = sum, 
+                   value.var = "N")
+setkey(c3FetByCf, fet)
+## all c3 calls
+c3Calls <- c3[!is.na(mat) & !is.na(fet) & !is.na(cff), ][order(mat, fet, cff)]
+```
+
+Returning to Case 3, we interrogated the fetal genotyping accuracy at all sites with cell-free genotype estimates and reliable calls from the direct fetal sample.
+Overall, we found a `r round(c3[!is.na(fet) & !is.na(cff), sum(N[fet == cff])/sum(N)*100], 2)`% accuracy (Table \@ref(tab:c3FetByCf)).
+Table \@ref(tab:c3Calls) provides the full set of maternal, fetal, and cell-free calls.
+
+(ref:c3FetByCfCap) Case 3 fetal versus cell-free genotype calls. 
+
+(ref:c3CallsBody) '0' represents the major allele; '1' represents the minor allele. Sites with cell-free estimates and reliable direct fetal calls included (reliable defied as passing all quality checks and having a total sequencing depth greater than 30).
+
+```{r c3FetByCfTbl}
+kable(c3FetByCf[ , .(" " = "Fetal", " " = fet, `0/0`, `0/1`, `1/1`)], 
+      row.names = FALSE,
+      caption = '(ref:c3FetByCfCap) (ref:c3CallsBody)',
+      label = "c3FetByCf",
+      format.args = list(big.mark = ",", scientific = FALSE),
+      booktabs = TRUE,
+      caption.short = '(ref:c3FetByCfCap)') %>%
+  kable_classic() %>%
+  collapse_rows(columns = 1, valign = "middle") %>%
+  add_header_above(c(" " = 2, "Cell-free" = 3))
+```
+
+(ref:c3Calls) Maternal, fetal, and cell-free genotype calls.
+
+```{r c3Calls}
+kable(c3Calls[ , .(Maternal = mat, Fetal = fet, `Cell-free` = cff, N)], 
+      row.names = FALSE,
+      caption = '(ref:c3Calls) (ref:c3CallsBody)',
+      label = "c3Calls",
+      format.args = list(big.mark = ",", scientific = FALSE),
+      booktabs = TRUE,
+      caption.short = '(ref:c3Calls)') %>%
+  kable_classic() %>%
+  collapse_rows(columns = 1:2, valign = "middle", latex_hline = "full") 
+```
+
+## Discussion
+
+Without the ability to reliably exclude maternal DNA fragments, noninvasive sequencing-based methods to genotype the fetus either require additional sequencing of parental samples or distinguishing genotypes by the proportion of minor allele reads (PMAR).
+Here, we make no attempt to utilize parental genetic information and demonstrate the difficulty of inferring the genotypes directly from the PMAR.
+We model the PMAR as a binomial proportion; given the fetal fraction, one can prove the true PMAR defines the maternal and fetal genotypes (supplemental document).
+
+The theoretical bounds of the binomial distribution, therefore, confine our ability to discriminate maternal-fetal genotypes.
+Using the normal approximation for the binomial variance (valid when the number of observations, i.e. sequencing depth, times the binomial proportion, i.e. PMAR, is greater than 10), we can clearly explain the poor results we observed (Figures \@ref(fig:binCI) and \@ref(fig:binWeitzman)).
+At sequencing depths up to 500x, the 95% confidence intervals on PMAR distributions still overlap for fetal fractions up to roughly 0.17 (Figure \@ref(fig:binCI)).
+When we calculate the degree of distribution overlap (a proxy for classification error rate), we see required sequencing depths in excess of 8,000x for low fetal fraction samples (Figure \@ref(fig:binWeitzman)).
+We, therefore, cannot expect cell-free sequencing to reliably differentiate genotypes without substantially higher depth or additional genetic information.
+No amount of cleverness in the analysis can overcome the fundamental variance bounds when estimating binomial proportions.
+
+(ref:binCICap) 95% confidence intervals on the binomial proportions for possible maternal-fetal genotype pairs across increasing fetal fractions. Confidence intervals represent a sequencing depth of 500x. Average fetal fractions by gestational age (in weeks) given in light gray [@kinnings:2015aa]. 
+
+(ref:binCIScap) 95% confidence intervals on the binomial proportions for possible maternal-fetal genotype pairs.
+
+```{r binCI, fig.cap='(ref:binCICap)', fig.scap='(ref:binCIScap)', out.width=defOutWid}
+pltExpMAF(500)
+```
+
+(ref:binWeitzmanCap) Expected misclassification rate (Weitzman overlapping coefficient; i.e. the area of overlapping distributions in Figure \@ref(fig:binCI)) considering ABab versus ABbb as a function of sequencing depth and fetal fraction. The dashed horizontal line shows 5% error. The theoretical error rates for ABab vs ABaa are symmetric and equal; however, the frequency of errors will depend on the population frequency of the reference versus alternate allele.
+
+(ref:biWeitzmanScap) Expected misclassification rate comparing maternal and fetal genotyping.
+
+```{r binWeitzman, fig.cap='(ref:binWeitzmanCap)', fig.scap='(ref:binWeitzmanScap)', out.width=defOutWid}
+pltMissclass()
+```
+
+
+The sequencing herein suffers from three problems: (1) inadequate sequencing depth; (2) biased PMAR values from the removal of duplicate reads; (3) errors in sequencing and/or PCR.
+We have already illustrated the inadequate depth, but emphasize that the theoretical results we present speak to the final depths (not the raw sequencing depth).
+In our three cases, we excluded over half the reads taken off the sequencer due to sequencing quality thresholds (Table \@ref(tab:caseSmry)).
+We observe the evidence of problems (2) and (3) by observing the high proportion of both duplicate reads and PMAR values outside the theoretic distributions.
+Additionally, we observed very poor accuracy in the Case 3 genotype estimates.
+
+Typical sequencing workflows start with randomly fragmenting DNA molecules to build sequencing libraries.
+Standard bioinformatic practices suggest we remove read-pairs with identical endpoints, because the duplicate read-pairs more likely represent PCR amplification of a single molecule than two molecules with the same fragmentation.
+Cell-free DNA molecules are shorter than nuclear DNA, not requiring manual fragmentation, and have a non-random distribution of endpoints [@chan:2016aa].
+Therefore, compared to standard sequencing libraries, the likelihood of observing true duplicates in cell-free libraries increases and we cannot necessarily assume duplicates represent PCR amplification.
+However, for this work we have no way of differentiating reads representing true duplicate molecules versus PCR duplicates and thus excluded duplicate reads from our analysis.
+
+Assuming adequate depth and appropriate handling of duplicate reads and sequencing errors, incorporating the fragment length into the statistical model may prove more beneficial.
+The high variability of the binomial distribution for small $n$ obfuscates any meaningful relationship between fragment length and PMAR in our data.
+We reiterate, however, incorporating fragment length may give better estimates of the binomial proportion but cannot decrease variance beyond the distribution bounds.
+
+To solve the above issues, we advocate a more targeted approach with much greater sequencing depth and unique molecular identifiers.
+Unique molecular identifiers allow identification of sequencing errors and differentiate true versus artifactual duplicate reads.
+Given the depth requirements for estimating fetal genotypes by the PMAR, and the challenge of variants of uncertain clinical significance, we advocate against broad sequencing modalities on noninvasive samples.
+Recognizing that all capture methods introduce bias in the relative sequencing efficiency of different targeted regions [@seaby:2016aa], the sequencing depths needed for noninvasive fetal genotyping necessitate a targeted approach.
+Despite the challenges raised by this work, we believe assessing hundreds to thousands of basepairs, rather than the tens of millions targeted in ES, will prove economical and clinically reliable.
+Doing so, we hope, will foster population-level screening for Mendelian disorders during the prenatal period and, ultimately, unlock new avenues in the treatment of these disorders.
+
+
+

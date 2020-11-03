@@ -1,0 +1,605 @@
+# A novel copy number variant algorithm
+
+## Introduction
+
+In human genetics, individuals normally have two copies of each locus in the genome (one inherited from each parent).
+Deviations from the normal diploid state, known broadly as copy number variation, can cause phenotypic changes and Mendelian disorders.
+Technologies, e.g. microarray, exist for reliably detecting large (greater than 100 kilobases) copy number variants (CNVs).
+Over the last decade, the availability short-read DNA sequencing compelled numerous efforts to identify and characterize smaller variants.
+Sequencing cost, data burden, and the problem of classifying intronic and non-coding variants have led to exome sequencing (ES) as the preferred clinical sequencing modality.
+ES analysis most often focuses on identifying pathogenic single-nucleotide variants and insertion/deletions.
+CNV analysis has demonstrated limited improvement in diagnostic yield [@marchuk:2018aa], but existing data/analysis lacks power to detect exon-level variation [@retterer:2015aa; @yao:2017aa].
+
+Current analytic methodologies adequately detect large CNVs, but require large amounts of data and lack resolution for intragenic exon-level variation [@fromer:2012aa; @jiang:2015aa; @krumm:2012aa; @plagnol:2012aa].
+The prevalence and clinical importance of exon-level CNVs remains largely unknown due to inadequate power in ES studies and limited access to clinical genome sequencing data.
+Recent work on a subset of 1507 genes suggests intragenic CNVs account for 1.9% of total variants, but 9.8% of pathogenic variants [@truty:2019aa].
+Additionally, the authors demonstrated 627/2844 (22%) of identified CNVs spanned a single (598) or partial (29) exon [@truty:2019aa].
+
+Targeted sequencing requires capturing the desired loci (e.g. exons) using sequence-specific oligonucleotide baits.
+The differential efficiency of baits, even when carefully designed and balanced, leads to variable read-depth across the exome.
+The GC content and length of targeted fragments both contribute to the observed variable read-depth [@benjamini:2012aa]; most ES analysis platforms incorporate correction for GC content and exon length [@kadalayil:2015aa].
+The variable read-depth in ES precludes the single-sample window-smoothing approaches successfully applied in GS data [@chiang:2009aa], therefore we must rely on comparative analysis for interrogating copy number.
+
+Comparing multiple samples, each captured independently, compounds the variable read-depth problem.
+The capture probability for each exon correlates between samples but with high variability [@plagnol:2012aa].
+In other words, we can gain information from similarly captured samples, but independent captures introduce significant noise.
+ExomeDepth attempts to circumvent the capture-to-capture variation by identifying a subset of samples from a large pool with low inter-sample variability [@plagnol:2012aa].
+Alternatively, CoNIFER [@krumm:2012aa], XHMM [@fromer:2012aa], and CODEX [@jiang:2015aa] use a latent factor model with spectral value decomposition to remove systematic noise, presumably introduced by capture-to-capture variation.
+These methods generally require very large sample sizes, and often still lack power for exon-level resolution (e.g. CODEX defines a "short" CNV as spanning 5 contiguous exons).
+
+Here, we explore how multiplexing the capture across samples reduces inter-sample variance, increasing the power to detect CNVs.
+We also introduce our own algorithm, mcCNV ("multiplexed capture CNV"), specifically designed to utilize multiplexed capture exome data for estimating exon-level variation without prior information.
+
+## Methods
+
+### Exome sequencing
+
+We performed sequencing on human samples of purified DNA obtained from the Wilhelmsen laboratory collection, the NCGENES cohort [@foreman:2013aa], and the Coriell Institute in compliance with the UNC Institutional Review Board.
+We also utilized existing read-level data from the NCGENES [@foreman:2013aa] project.
+We compared the performance of two capture platforms: (1) Agilent SureSelect XT2 (multiplexed capture)/Agilent SureSelect XT (independent capture); (2) Integrated DNA Technologies (IDT) xGen Lockdown Probes.
+We utilized Human All Exome v4 baits (Agilent) and Exome Research Panel v1 baits (IDT).
+All captures performed according to manufacturer protocol, with the following exceptions: (1) we multiplexed 16 samples versus the recommended 8 for the XT2 protocol for some pools; (2) for Pool2, we performed the fragmentation step 5 times, to test whether a more uniform fragment length distribution would improve capture.
+
+All sequencing performed with Illumina paired-end chemistry.
+We aligned paired reads to hg19v0 (GATK resource bundle) using BWA-MEM [@li:2013ab] and removed duplicate reads using Picard tools.
+We then used our novel R package, mcCNV, to count the number of overlapping molecules (read-pairs) per exon.
+For inclusion, we required properly-paired molecules with unambiguous mapping for one read and mapping quality greater than or equal to 20 for both reads.
+Full Snakemake [@koster:2012aa] pipeline provided in supplemental materials.
+Table \@ref(tab:poolSummary) provides an overview of the exome sequencing included.
+
+### Genome sequencing
+
+For the 16 samples in the "WGS" pool, we performed genome sequencing to an average 50x coverage.
+We followed Trost et al. recommendations for making read-depth based CNV calls [@trost:2018aa].
+Briefly, we mapped paired-reads identical to our targeted sequencing data.
+We then interrogated the read depth interquartile range using samtools depth [@li:2009aa], recalibrated base-quality scores and called sequence variants using GATK [@van-der-auwera:2013aa], and called copy number variants using the ERDS [@zhu:2012aa] and cnvpytor (updated implementation of CNVnator) [@abyzov:2011aa] algorithms.
+Full Snakemake [@koster:2012aa] pipeline provided in supplemental materials.
+
+### Simulating targeted sequencing
+
+To simulate targeted capture, we represent the capture process as a large multinomial distribution defining the probability of capture at each target.
+We use an alternate definition of copy state, such that 1 represents the normal diploid state.
+Let $N$ represent the total number of molecules (read pairs) and $e_j \in \mathbb{E}$ represent the  probability of capturing target $j$, then for each subject, $i$:
+
+1. Randomly select $s_{ij} \in \mathbb{S}_i$ from $S = \{0.0, 0.5, 1, 1.5, 2\}$ as the copy number at target $j$
+
+2. Adjust the subject-specific capture probabilities by the copy number, $\mathbb{E}_i = \frac{\mathbb{E} \odot \mathbb{S}_{i}}{\sum_j \mathbb{E} \odot \mathbb{S}_{i}}$
+
+3. Draw $N$ times from $\text{Multinomial}(\mathbb{E}_i)$, giving the molecule counts at each target $j$ for sample $i$, $c_{ij} \in \mathbb{C}_i$
+
+We provide functionality within the mcCNV R package for producing reproducible simulations.
+
+### mcCNV algorithm
+
+The mcCNV algorithm was adapted from the sSEQ method for quantifying differential expression in RNA-seq experiments with small sample sizes [@yu:2013aa].
+Yu et al. provide detailed theoretical background of the negative binomial model and using shrinkage to improve dispersion estimates.
+The mcCNV algorithm adjusts the sSEQ probability model by adding a multiplier for the copy state:
+$$
+  C_{ij} \sim \mathcal{NB}(f_is_{ij}\hat\mu_j, \tilde\phi_j/f_i)
+$$
+where the random variable $C_{ij}$ represents observed molecule counts for subject $i$ at target $j$, $f_i$ is the size factor for subject $i$, $s_{ij}$ is the copy state, $\mu_j$ is the expected mean under the diploid state at target $j$, and $\tilde\phi_j$ is the shrunken phi at target $j$.
+We observe $c_{ij}$ and wish to estimate $s_{ij}$, $\hat{s}_{ij}$.
+Initialize by setting $\hat{s}_{ij} = 1$ for all $i,j$. Then,
+
+1. Adjust the observed values for the estimated copy-state,
+  $$
+  c_{ij}^{\prime} = \frac{c_{ij}}{\hat{s}_{ij}}.
+  $$
+
+2. Subset $c_{ij}^{\prime}$ such that $c_{ij}^{\prime} > 10, ~ \hat{s}_{ij} > 0$
+
+3. Calculate the size-factor for each subject
+  $$
+  f_i = \text{median}\left(\frac{c_{ij}^{\prime}}{g_j}\right),
+  $$
+  where $g_j$ is the geometric mean at each exon.
+
+4. Use method of moments to calculate the expected dispersion
+  $$
+  \hat\phi_j = \max\left(0, \frac{\hat\sigma_j^2 - \hat{\mu}_j}{\hat{\mu}_j^2}\right)
+  $$
+  where $\hat{\mu}_j$ and $\hat{\sigma}_j^2$ are the sample mean and variance of $c_{ij}^{\prime}/f_i$.
+
+5. Let $J$ represent the number of targets. Shrink the phi values to
+  $$
+  \tilde\phi_j = (1 - \delta)\hat\phi_j + \delta\hat{\xi}
+  $$
+  such that
+  $$
+  \delta = \frac{\sum\limits_j\left(\hat\phi_j - \frac{1}{n_j}\sum\limits_j \hat\phi_j\right)^2/(J - 1)}
+  {\sum\limits_j\left(\hat\phi_j - \hat{\xi}\right)^2/(n_j - 2)}
+  $$
+  and
+  $$
+  \hat{\xi} = \mathop{\text{argmin}}\limits_{\xi}\left\{
+  \frac{d}{d\xi}\frac{1}{\sum\limits_j \left(\hat\phi_j - \xi\right)^2}
+  \right\}.
+  $$
+
+6. Update $\hat{s}_{ij}$,
+  $$
+  \mathop{\text{argmax}}\limits_{s \in S}\left\{
+  \mathcal{L}(s \rvert c_{ij},f_i,\hat\mu_j,\tilde\phi_j)
+  \right\}
+  $$
+  where $S = \{0.001, 0.5, 1, 1.5, 2\}$.
+
+7. Repeat until the number of changed states falls below a threshold or a maximum number of iterations is reached.
+
+8. After convergence, calculate p-values for the diploid state, $\pi_{ij} = \text{Pr}(s_{ij} = 1)$.
+
+9. Adjust p-values using the Benjamini–Hochberg procedure [@benjamini:1995aa] and filter to a final call-set such that adjusted p-values fall below some threshold, $\alpha$.
+
+## Results
+
+### Multiplexed capture reduces inter-sample variance
+
+ES requires using molecular baits to "capture" the exonic DNA fragments during the library preparation (prior to sequencing).
+Most laboratories capture each sample individually.
+The capture efficiency varies with timing, temperature, and substrate concentrations, making identical capture reproduction impossible.
+Alternatively, one could multiplex (pool) samples prior to capture, capturing the pool of samples simultaneously.
+Here we profile the inter-sample variance of individual capture versus multiplexed capture.
+
+A multinomial process provides a logical framework for modeling targeted capture, each target represented by an individual outcome.
+We can estimate the multinomial probability simplex for an exome capture by dividing the observed counts at each exon by the total mapped reads for the exome.
+The dirichlet distribution, conjugate prior to the multinomial, defines distributions of probability simplexes.
+The dirichlet distribution is parameterized by $\boldsymbol{\alpha} = \{\alpha_1, \alpha_2, \dots, \alpha_n\}$, where the expected probability for outcome $i$ is given by $\alpha_i/\alpha_0,~\alpha_0 = \sum \boldsymbol\alpha$.
+If $\boldsymbol\pi$ is a probability simplex drawn from a dirichlet with $\boldsymbol\alpha$, then the variance of $\boldsymbol\pi$ is inversely proportional to $\alpha_0$.
+Therefore, we can approximate the inter-sample variance by fitting the dirichlet distribution to each pool and interrogating the mean $\alpha$.
+
+(ref:poolSummaryCap) Summary of whole-exome sequencing. "pool" indicates the name of the pool of samples; "capture" indicates the capture platform for the pool; "N" gives the number of samples in the pool; "medExon" gives the pool median of the subject median mapped molecule count per exon; "medTotal" gives the median by pool of total mapped molecule counts per subject; "minTotal" and "maxTotal" give the minimum and maximum total mapped molecules; "rsdTotal" gives the relative standard deviation (SD/mean*100) of total mapped molecules. $^\dagger$ indicates captures were performed independently on each sample within the pool, otherwise captures were multiplexed across all samples within the pool.
+
+```{r poolSummary}
+data(subjectMeta)
+poolTbl <- subjectMeta[ ,
+                       .(N = .N,
+                         medExon = round(median(medIntMolCount), 0),
+                         medTotal = round(median(totalMolCount), 0),
+                         minTotal = min(totalMolCount),
+                         maxTotal = max(totalMolCount),
+                         rsdTotal = sd(totalMolCount)/mean(totalMolCount)*100),
+                       by = .(pool, capture, multiplexCapture)]
+poolTbl[ , rsdTotal := round(rsdTotal, 1)]
+poolTbl[(!multiplexCapture), pool := paste0(pool, "$^\\dagger$")]
+kable(poolTbl[ , .(pool, capture, N, medExon, medTotal, minTotal, maxTotal, rsdTotal)], 
+      row.names = FALSE, 
+      caption = '(ref:poolSummaryCap)',
+      label = "poolSummary",
+      format.args = list(big.mark = ",", scientific = FALSE),
+      booktabs = TRUE,
+      caption.short = "Summary of whole-exome sequencing for CNV project.",
+      escape = FALSE) %>%
+  kable_classic()
+```
+
+Using multiplexed capture, we sequenced 3 16-sample pools and 2 8-sample pools with Agilent baits and 2 16-sample pools with IDT baits (Table \@ref(tab:poolSummary)).
+To compare to individually-captured Agilent data, we randomly-selected 5 16-sample pools from the NCGENES cohort.
+For numeric stability, we subset to exons with at least 5 and no greater than 2000 counts across all samples within a pool.
+We then used a Newton-Raphson algorithm [@minka:2000aa] to fit the dirichlet distribution to each pool; all pools converged to stable estimates.
+We found, with one exception, multiplexed capture pools had greater $\alpha_0$ of their independently-captured counterparts (Figure \@ref(fig:alpha0)).
+
+(ref:alpha0) Multiplexed capture (MC) decreases variance with respect to independent captures (IC), as estimated by fitting the dirichlet distribution. Total counts/sample given on the horizontal axis; mean $\alpha$ given on the vertical axis. $\alpha_0$ is inversely proportional to inter-sample variance. Each line/point represents a single pool. The point indicates the median total counts across the pool, with the range given by the line. Orange indicates a multiplexed capture; blue indicates independent captures. Triangles indicate pools using Agilent (AGL) capture; squares indicate Integrated DNA Technologies (IDT).
+
+(ref:alpha0Scap) Multiplexed capture decreases variance with respect to independent captures, as estimated by fitting the dirichlet distribution.
+
+```{r makeICpools}
+## Create IC pools
+smplSubject <- function(poolName, n) {
+  data(subjectMeta, envir = environment())
+  subjectMeta[pool == poolName, sample(subject, n, replace = FALSE)]
+}
+set.seed(1234)
+pools <- c(replicate(5, smplSubject("NCGENES", 16), simplify = FALSE))
+names(pools) <- c(sprintf("randNCG_%d", 1:5))
+pools <- c(pools,
+           with(subjectMeta[pool != "NCGENES"], split(subject, pool)))
+```
+
+```{r calcMnVrAlpha0}
+## Calculate mean-variance by pool
+mnvr <- mclapply(pools, subsetCounts, mc.cores = length(pools))
+mnvr <- mclapply(mnvr, calcIntStats, mc.cores = length(mnvr))
+for (i in seq_along(mnvr)) {
+  mnvr[[i]][ , pool := names(mnvr)[i]]
+}
+mnvr <- rbindlist(mnvr)
+setkey(mnvr, pool); setcolorder(mnvr)
+
+## Estimate alpha0
+alpha0 <- mclapply(pools, estAlpha0, mc.cores = length(pools))
+```
+
+```{r alpha0,fig.cap='(ref:alpha0)',fig.scap='(ref:alpha0Scap)',out.width=defOutWid}
+a0tbl <- data.table(pool = names(alpha0),
+                    a0 = sapply(alpha0, "[[", "a0"),
+                    N = sapply(alpha0, "[[", "N"))
+a0tbl[ , aMn := a0/N]
+calcRange <- function(x) {
+  subjectMeta[subject %in% x,
+              .(mnCount = min(totalMolCount),
+                mdCount = median(totalMolCount),
+                mxCount = max(totalMolCount),
+                rsCount = sd(totalMolCount)/mean(totalMolCount)*100)]
+}
+poolCts <- lapply(pools, calcRange)
+poolCts <- lapply(names(poolCts), function(x) poolCts[[x]][ , pool := x])
+poolCts <- rbindlist(poolCts)
+a0tbl <- merge(a0tbl, poolCts)
+a0tbl[ , mc := !grepl("IDT-IC|rand", pool)]
+a0tbl[ , idt := grepl("IDT", pool)]
+pltAlpha0(a0tbl)
+```
+
+The multiplexed pool without decreased inter-sample variance, IDT-MC, had a much larger spread in sequencing depth across the pool (Table \@ref(tab:poolSummary), Figure \@ref(fig:alpha0)).
+Looking at the total mapped molecules, the IDT-MC pool had a relative standard deviation of `r poolTbl[pool == "IDT-MC", rsdTotal]`%, over double the next highest pool.
+We hypothesized the absent reduction in variation stemmed from poor library balance during the multiplexing step.
+We subsequently captured a new pool using the same DNA input, IDT-RR, and found comparable reductions in inter-sample variance (the pool with the highest $\alpha_0$ in Figure \@ref(fig:alpha0)).
+
+Examining the mean-variance relationship demonstrated the same inter-sample variance reduction suggested by the dirichlet parameter estimates (Figures \@ref(fig:mnVrAgl) and \@ref(fig:mnVrIdt)).
+The Agilent pools (Figure \@ref(fig:mnVrAgl)) segregated cleanly, with less dispersion in the multiplexed capture pools.
+Again, we found no variance reduction for the IDT-MC pool, overlapping with independently-captured IDT-IC pool (Figure \@ref(fig:mnVrAgl)).
+We did, however, observe near-complete reduction in dispersion for the better-balanced IDT-RR pool.
+
+(ref:mnVrBody) Mean counts per exon given on the horizontal axis; mean variance per exon given on the vertical axis. Contours show the distribution of points by pool. Dotted lines show the ordinary least squares regression fit. Orange indicates multiplexed capture pools; blue indicates independently captured pools. The dashed gray line represents the 1:1 relationship expected under a Poisson process. Lines above the plot show the density of mean values by pool; lines to the right of the plot show the density of variance values by pool.
+
+(ref:mnVrAgl) Mean-variance relationship for Agilent (AGL) pools.
+
+```{r mnVrAgl, fig.cap='(ref:mnVrAgl) (ref:mnVrBody)', fig.scap='(ref:mnVrAgl)', out.width=defOutWid}
+aglPools <- c(sprintf("randNCG_%d", 1:5), "Pool1", "Pool2", "WGS", "SMA1", "SMA2")
+with(mnvr[pool %in% aglPools], {
+  pltMnVrCont(dat = as.data.table(as.list(environment())),
+              grpVec = factor(pool, levels = aglPools),
+              colVec = c(rep('darkblue', 5), rep('darkorange', 5)),
+              lgnd = FALSE)
+})
+```
+
+(ref:mnVrIdt) Mean-variance relationship for Integrated DNA Technologies (IDT) pools.
+
+```{r mnVrIdt, fig.cap='(ref:mnVrIdt) (ref:mnVrBody)', fig.scap='(ref:mnVrIdt)', out.width=defOutWid}
+idtPools <- c("IDT-MC", "IDT-IC", "IDT-RR")
+with(mnvr[pool %in% idtPools], {
+  pltMnVrCont(dat = as.data.table(as.list(environment())),
+              grpVec = factor(pool, levels = idtPools),
+              colVec = c("darkorange", "darkblue", "darkorange"),
+              lgnd = FALSE)
+})
+```
+
+(ref:mnVrComp) Comparison of mean-variance relationship between WGS pool (blue) and IDT-RR pool (orange). Mean count by exon given on horizontal axis; variance of exon counts given on horizontal axis. Dotted lines show the ordinary least-squares fit. Lines above plot show the distribution of mean values; lines to the right of the plot show the distribution of variance values.
+
+(ref:mnVrCompScap) Comparison of mean-variance relationship between WGS pool and IDT-RR pool.
+
+```{r mnVrComp, fig.cap='(ref:mnVrComp)', fig.scap='(ref:mnVrCompScap)', out.width=defOutWid}
+with(mnvr[pool %in% c("WGS", "IDT-RR")], {
+  pltMnVrCont(dat = as.data.table(as.list(environment())),
+              grpVec = factor(pool, levels = c("WGS", "IDT-RR")),
+              colVec = c("darkblue", "darkorange"))
+})
+```
+
+### Multiplexed capture provides controls for ExomeDepth
+
+ExomeDepth requires a set of control subjects, summed into a reference vector of counts at each exon.
+ExomeDepth provides functionality to select appropriate controls from a set of subjects, often requiring large numbers of subjects to identify appropriate controls.
+Smaller research groups and clinical laboratories may struggle building large databases of exomes, with the difficulty compounded by lot-to-lot variation and regular improvements to capture and sequencing chemistries.
+We wanted to know if the reduced inter-sample variance with multiplexed capture could provide an appropriate control set for ExomeDepth, eliminating the need for large databases of similarly-captured exomes.
+We found the reduced inter-sample variance with multiplexed capture leads to appropriate control selection for ExomeDepth (Figures \@ref(fig:edSelMed)).
+Pool2, where we repeated the initial fragmentation 5 times, did not perform as well as the other multiplexed pools.
+We also found two samples within the WGS pool did not correlate well with the rest of the pool.
+
+(ref:edSelBody) Each point represents a single sample, with samples grouped by pool. Triangles indicate independently-captured samples; circles indiciate a single multiplexed capture within the pool. Dotted vertical line separates the two capture platforms.
+
+(ref:edSelMed) Median count per exon.
+
+```{r edSelMed, fig.cap='(ref:edSelMed) (ref:edSelBody)', fig.scap='(ref:edSelMed)', out.width=defOutWid}
+pltSubjectStatByPool("medIntMolCount", ylab = "Median count per exon")
+```
+
+(ref:edSelTot) Total number of controls selected by ExomeDepth.
+
+```{r edSelTot, fig.cap='(ref:edSelTot) (ref:edSelBody)', fig.scap='(ref:edSelTot)', out.width=defOutWid}
+pltSubjectStatByPool("nSelected", ylab = "Number of controls selected")
+```
+
+(ref:edSelProp) Proportion of available samples selected by ExomeDepth as a control.
+
+```{r edSelProp, fig.cap='(ref:edSelProp) (ref:edSelBody)', fig.scap='(ref:edSelProp)', out.width=defOutWid}
+pltSubjectStatByPool("propSelected", ylab = "Proportion of controls selected")
+```
+
+(ref:edSelPhi) Estimated phi parameter from ExomeDepth.
+
+```{r edSelPhi, fig.cap='(ref:edSelPhi) (ref:edSelBody)', fig.scap='(ref:edSelPhi)', out.width=defOutWid}
+pltSubjectStatByPool("overallPhi", ylab = "Overdispersion (phi)")
+```
+
+```{r loadSubjectCorr}
+setkey(subjectMeta, subject)
+data(subjectCorr)
+setkey(subjectCorr, subject)
+subjectCorr <- subjectMeta[subjectCorr]
+```
+
+When we looked at independently-captured subjects, we found appropriate control sets for most of the `r subjectMeta[pool == "NCGENES", .N]` NCGENES subjects (Figure \@ref(fig:edSelTot)).
+However, ExomeDepth only selected `r unique(subjectCorr[ , .(subject, pool, propSelected)])[pool == "NCGENES", round(mean(propSelected)*100, 1)]`% of available samples as controls, on average (Figure \@ref(fig:edSelProp)).
+Similarly, with the independently-captured IDT-IC pool we find low control numbers for most samples.
+While possible to select the same number of controls but exhibit differing dispersion, we observed little difference in the dispersion between independent and multiplexed capture (Figure \@ref(fig:edSelPhi)).
+Overall, multiplexed capture provided appropriate controls for most samples tested, however an adequately-large set of available controls delivered comparable performance.
+
+### mcCNV & ExomeDepth perform comparably in simulation study
+
+To compare our mcCNV algorithm and ExomeDepth, we created synthetic pools of data across different sequencing depths.
+Based on our observations with the real data, we selected the total number of molecules for each sample from a uniform distribution defined as a 30% window on either side of the specified depth; for example, for a specified depth of 10 million molecules, we drew the molecules per sample from 7 to 13 million molecules.
+For each depth ranging from 5 to 100 million molecules, we simulated 200 16-sample pools with single-exon variants.
+We allowed for homozygous and heterozygous deletions and duplications (0 to 4 copies), such that all variants were equally likely and the total variant probability was $1/1,000$.
+We used, as the starting capture probabilities ($\mathbb{E}$), the empiric capture probabilities observed by summing across the Pool1 pool.
+
+We analyzed each of the 4,000 pools (200 replicates by 20 depths) using our algorithm and two iterations of ExomeDepth.
+For the first iteration of ExomeDepth, we used the default values for transition probability ($1/10,000$) and expected variant length (50 kb).
+For the second iteration, we used the true simulated variant prior for the transition probability ($1/1,000$) and an expected variant length of 1 kb.
+As expected, the sensitivity increased and false discovery rate decreased as the sequencing depth increased (Figures \@ref(fig:simRes)).
+In both comparisons, mcCNV demonstrated a superior false-discovery rate.
+When interrogating Matthew's correlation coefficient [@matthews:1975aa] and the sensitivity, we found mcCNV had marginal performance over ExomeDepth with default parameters and marginal performance under ExomeDepth with simulation-matched parameters. Table \@ref(tab:simResTbl) provides the actual values.
+
+```{r procSimRes}
+data(simRes)
+procSimRes <- lapply(simRes, function(x) procRes(x$clpRes))
+
+simResTbl <- lapply(procSimRes,
+                    function(x) x$mnDat[ , .(mcc, tpr, fdr), keyby = dep])
+simResTbl <- Reduce(merge, simResTbl)
+setnames(simResTbl,
+         c("dep",
+           "mcMCC", "mcTPR", "mcFDR",  ## mcCNV
+           "edMCC", "edTPR", "edFDR",  ## ExomeDepthDefault
+           "ebMCC", "ebTPR", "ebFDR")) ## ExomeDepthBest
+setcolorder(simResTbl,
+            c("dep", "mcMCC", "edMCC", "ebMCC", "mcTPR",
+              "edTPR", "ebTPR", "mcFDR", "edFDR", "ebFDR"))
+simResTbl <- simResTbl[ , lapply(.SD, signif, 3), by = dep]
+```
+
+(ref:simResCap) Algorithm performance comparing mcCNV and ExomeDepth on simulated exomes. (A-C) mcCNV versus ExomeDepth with default parameters, $1/10,000$ transition probability and 50 kb expected variant length. (D-F) mcCNV versus ExomeDepth with simulation-matched parameters, $1/1,000$ transition probability and 1 kb expected variant length. Numbered points indicate the simulated depth in millions of molecules. 'MCC' indicates Matthew's correlation coefficient; 'TPR' indicates true positive rate/sensitivity; 'FDR' indicates false discovery rate. Dashed black line shows the 1:1 relationship.
+
+(ref:simResScap) Algorithm performance comparing mcCNV and ExomeDepth on simulated exomes.
+
+```{r simRes, fig.cap='(ref:simResCap)', fig.scap='(ref:simResScap)', fig.height=2.5, fig.width=2.5, fig.show='hold', out.width='32%'}
+pltStatCompare(xRes = procSimRes$ExomeDepthDefault, yRes = procSimRes$mcCNV,
+               stat = "mcc", xlab = "ExomeDepth (default)", ylab = "mcCNV")
+addfiglab("A")
+pltStatCompare(xRes = procSimRes$ExomeDepthDefault, yRes = procSimRes$mcCNV,
+               stat = "tpr", xlab = "ExomeDepth (default)", ylab = "mcCNV")
+addfiglab("B")
+pltStatCompare(xRes = procSimRes$ExomeDepthDefault, yRes = procSimRes$mcCNV,
+               stat = "fdr", xlab = "ExomeDepth (default)", ylab = "mcCNV")
+addfiglab("C")
+pltStatCompare(xRes = procSimRes$ExomeDepthBest, yRes = procSimRes$mcCNV,
+               stat = "mcc", xlab = "ExomeDepth (correct)", ylab = "mcCNV")
+addfiglab("D")
+pltStatCompare(xRes = procSimRes$ExomeDepthBest, yRes = procSimRes$mcCNV,
+               stat = "tpr", xlab = "ExomeDepth (correct)", ylab = "mcCNV")
+addfiglab("E")
+pltStatCompare(xRes = procSimRes$ExomeDepthBest, yRes = procSimRes$mcCNV,
+               stat = "fdr", xlab = "ExomeDepth (correct)", ylab = "mcCNV")
+addfiglab("F")
+```
+
+(ref:simResTbl) Simulation results by algorithm. ED-def: ExomeDepth with default parameters; ED-sim: ExomeDepth with simulation-matched parameters. Values represent the mean over 200 simulations.
+
+```{r simResTbl}
+kable(simResTbl,
+      col.names = c("dep", rep(c("mcCNV", "ED-def", "ED-sim"), 3)),
+      row.names = FALSE, 
+      caption = '(ref:simResTbl)',
+      label = "simResTbl",
+      format.args = list(big.mark = ",", scientific = FALSE),
+      booktabs = TRUE,
+      caption.short = '(ref:simResScap)') %>%
+  kable_classic() %>%
+  add_header_above(c(" " = 1, "MCC" = 3, "TPR" = 3, "FDR" = 3))
+```
+
+
+### mcCNV & ExomeDepth perform comparably on WGS pool
+
+```{r calcWgsCallsBySbj}
+data(wgsPoolCalls)
+mergeAll <- function(x, y) merge(x, y, all = TRUE)
+wgs <- Reduce(mergeAll, wgsPoolCalls)
+data(intAgl)
+xpandInt <- function(int, sbjVec) {
+  lst <- vector(mode = "list", length = length(sbjVec))
+  names(lst) <- sbjVec
+  for (s in sbjVec) {
+    lst[[s]] <- copy(int)
+    lst[[s]][ , subject := s]
+  }
+  rbindlist(lst)
+}
+wgsAgl <- xpandInt(intAgl, wgs[ , unique(subject)])
+setkeyv(wgsAgl, key(wgs))
+wgs <- wgs[wgsAgl]
+rm(wgsAgl)
+wgs <- wgs[!(rlcr),
+           .(mcDup = !is.na(passFilter) & CN > 1,
+             edDup = !is.na(type) & type == "duplication",
+             wgDup = !is.na(erds) & !is.na(cnvpytor) & erds == "dup",
+             mcDel = !is.na(passFilter) & CN < 1,
+             edDel = !is.na(type) & type == "deletion",
+             wgDel = !is.na(erds) & !is.na(cnvpytor) & erds == "del"),
+           by = .(subject, seqnames, start, end)]
+wgs[ , mc := mcDup | mcDel]
+wgs[ , ed := edDup | edDel]
+wgs[ , wg := wgDup | wgDel]
+setcolorder(wgs, c(key(wgs), 'mc', 'ed', 'wg'))
+wgsCallBySbj <- wgs[ , lapply(.SD, sum), .SDcols = is.logical, by = subject]
+```
+
+
+To establish a truth set on real data, we performed matched genome sequencing on the subjects included in the WGS pool.
+Following the best practices suggested by Trost et al. [@trost:2018aa], we performed read-depth based CNV calling using the genome data.
+In line with recommendations by Trost et al., we excluded from comparative  analysis any exons overlapping repetitive or low-complexity regions (`r intAgl[(rlcr), formatC(.N, big.mark = ",")]` out of `r intAgl[ , formatC(.N, big.mark = ",")]`).
+We then compared the exome calls using mcCNV and ExomeDepth to the genome calls using the overlap of ERDS and cnvpytor.
+Table \@ref(tab:wgsCallSbj) lists the total calls by subject.
+Overall, mcCNV predicted the largest number of variants; however, `r wgsCallBySbj[ , .(N = c(mcDup, mcDel))][ , .(p = N/sum(N))][order(-p), round(cumsum(p)[2]*100, 1)]`% of predicted variants were deletions from two samples (NCG_00790 and NCG_00851).
+ExomeDepth also predicted a disproportionate number of deletions for NCG_00790 and NCG_00851, totaling `r wgsCallBySbj[ , .(N = c(edDup, edDel))][ , .(p = N/sum(N))][order(-p), round(cumsum(p)[2]*100, 1)]`% of calls.
+
+(ref:wgsCallSbjCap) Number of CNV calls by subject and algorithm for the 'WGS' pool. 'MC' indicates the mcCNV algorithm; 'ED' indicates the ExomeDepth algorithm; 'WG' indicates the overlap of ERDS/cnvpytor calls from matched whole-genome sequencing. Exons with any overlap of the repetitive and low-complexity regions, as defined in the Trost et al. manuscript [@trost:2018aa], omitted from analysis.
+
+```{r wgsCallSbj}
+kable(wgsCallBySbj,
+      col.names = c("subject", rep(c("MC", "ED", "WG"), 3)),
+      row.names = FALSE, 
+      caption = '(ref:wgsCallSbjCap)',
+      label = "wgsCallSbj",
+      format.args = list(big.mark = ",", scientific = FALSE),
+      booktabs = TRUE,
+      caption.short = "Number of CNV calls by subject and algorithm for the 'WGS' pool.") %>%
+  kable_classic() %>%
+  add_header_above(c(" " = 1, "Total" = 3, "Duplications" = 3, "Deletions" = 3))
+```
+
+Looking at the control selection, for NCG_00790 and NCG_00851 ExomeDepth only selected 2 and 3 controls, respectively.
+Furthermore, NCG_00790 and NCG_00851 had substantially higher dispersion than the rest of the pool (two outliers in Figure \@ref(fig:edSelPhi)).
+
+Recognizing the genome calls do not represent an accurate truth set, we looked at the ability of mcCNV and ExomeDepth to predict the genome calls.
+Due to the large number of deletions called for NCG_00790 and NCG_00851, both algorithms performed poorly in predicting the genome calls (Table \@ref(tab:predMet)).
+When we excluded NCG_00790 and NCG_00851 from the analysis, mcCNV had comparable, but uniformly better performance.
+Both algorithms demonstrated greater power to detect deletions.
+Figures \@ref(fig:wgsVennAll) and \@ref(fig:wgsVennSub) show the call overlap between the three approaches, including and excluding NCG_00790 and NCG_00851, respectively.
+
+```{r calcPredMet}
+pmLst <- list()
+pmLst$mc <- with(wgs, evalPred(mc, wg))
+pmLst$ed <- with(wgs, evalPred(ed, wg))
+pmLst$mcSub <- with(wgs[!grepl("790|851", subject)], evalPred(mc, wg))
+pmLst$edSub <- with(wgs[!grepl("790|851", subject)], evalPred(ed, wg))
+pmLst$mcDup <- with(wgs, evalPred(mcDup, wgDup))
+pmLst$edDup <- with(wgs, evalPred(edDup, wgDup))
+pmLst$mcSubDup <- with(wgs[!grepl("790|851", subject)],
+                       evalPred(mcDup, wgDup))
+pmLst$edSubDup <- with(wgs[!grepl("790|851", subject)],
+                       evalPred(edDup, wgDup))
+pmLst$mcDel <- with(wgs, evalPred(mcDel, wgDel))
+pmLst$edDel <- with(wgs, evalPred(edDel, wgDel))
+pmLst$mcSubDel <- with(wgs[!grepl("790|851", subject)],
+                       evalPred(mcDel, wgDel))
+pmLst$edSubDel <- with(wgs[!grepl("790|851", subject)],
+                       evalPred(edDel, wgDel))
+predMetrics <- as.data.table(do.call(rbind, pmLst), keep.rownames = "PredSet")
+```
+
+(ref:predMetCap) mcCNV (MC)/ExomeDepth (ED) calls for 'WGS' pool (used as prediction) versus the ERDS/cnvpytor calls from matched genome sequencing (used as truth). Calls are subdivided by duplications (DUP) and deletions (DEL). 'Full' gives performance across the full pool; 'Sub' gives the performance excluding the poorly correlated samples NCG_00790 and NCG_00851 (gray rows). 'MCC' is Matthew's correlation coefficient, 'TPR' is true positive rate/sensitivity, 'FDR' is false discovery rate, 'PPV' is positive predictive value, 'BalAcc' is balanced accuracy. Exons with any overlap of the repetitive and low-complexity regions, as defined in the Trost et al. manuscript [@trost:2018aa], omitted from analysis.
+
+```{r predMet}
+predMetrics[ , typ := rep(c("ALL", "DUP", "DEL"), each = 4)]
+predMetrics[ , set := ifelse(grepl("Sub", PredSet), "Sub", "Total")]
+predMetrics[ , alg := ifelse(grepl("mc", PredSet), "MC", "ED")]
+setcolorder(predMetrics, c("typ", "set", "alg"))
+kable(predMetrics[ , .(typ, set, alg, MCC, TPR, FDR, PPV)],
+      col.names = c(rep("", 3), "MCC", "TPR", "FDR", "PPV"),
+      row.names = FALSE, 
+      caption = '(ref:predMetCap)',
+      label = "predMet",
+      format.args = list(big.mark = ",", scientific = FALSE),
+      booktabs = TRUE,
+      caption.short = "mcCNV and ExomeDepth performance predicting calls from genome sequencing.") %>%
+  kable_classic() %>%
+  collapse_rows(columns = 1:3, valign = "middle")
+```
+
+
+```{r makeVenns}
+ctsAll <- euler(wgs[ , .(mc, ed, wg)])
+ctsSub <- euler(wgs[!grepl("790|851", subject), .(mc, ed, wg)])
+ctsAllDup <- euler(wgs[ , .(mcDup, edDup, wgDup)])
+ctsSubDup <- euler(wgs[!grepl("790|851", subject), .(mcDup, edDup, wgDup)])
+ctsAllDel <- euler(wgs[ , .(mcDel, edDel, wgDel)])
+ctsSubDel <- euler(wgs[!grepl("790|851", subject), .(mcDel, edDel, wgDel)])
+eulerr_options(fills = list(fill = c("#E9E9E9", "#7F7FC4", "#FFC57F")),
+               quantities = list(cex = 0.5))
+gridFigLab <- function(lab) {
+  grid.text(lab, x = 0, y = 1, hjust = 0, vjust = 1, gp = gpar(font = 2))
+}
+```
+
+(ref:wgsVennAllCap) Copy number variant call concordance for the WGS pool. 
+
+(ref:wgsVennBody) (A) predicted duplications; (B) predicted deletions. mcCNV in grey; ExomeDepth in blue; ERDS/cnvpytor in orange. Values within overlaps give the number of variants.
+
+```{r wgsVennAll, fig.cap='(ref:wgsVennAllCap) (ref:wgsVennBody)', fig.scap='(ref:wgsVennAllCap)', out.width=dblOutWid, fig.show='hold', fig.width=3, fig.height=3}
+eulerr_options(fills = list(fill = c("#E9E9E9", "#7F7FC4", "#FFC57F")),
+               quantities = list(cex = 0.5))
+plot(ctsAllDup, quantities = TRUE, labels = FALSE, main = "")
+gridFigLab("A")
+grid.text("DUPLICATIONS", x = 0.5, y = 0.9)
+plot(ctsAllDel, quantities = TRUE, labels = FALSE, main = "")
+gridFigLab("B")
+grid.text("DELETIONS", x = 0.5, y = 0.9)
+
+```
+
+(ref:wgsVennSubCap) Copy number variant call concordance for the WGS pool, excluding subjects NCG_00790 and NCG_00851 due to poor correlation to the rest of the pool. 
+
+```{r wgsVennSub, fig.cap='(ref:wgsVennSubCap) (ref:wgsVennBody)', fig.scap='(ref:wgsVennSubCap)', out.width=dblOutWid, fig.show='hold', fig.width=3, fig.height=3}
+eulerr_options(fills = list(fill = c("#E9E9E9", "#7F7FC4", "#FFC57F")),
+               quantities = list(cex = 0.5))
+plot(ctsSubDup, quantities = TRUE, labels = FALSE, main = "")
+gridFigLab("A")
+grid.text("DUPLICATIONS", x = 0.5, y = 0.9)
+plot(ctsSubDel, quantities = TRUE, labels = FALSE, main = "")
+gridFigLab("B")
+grid.text("DELETIONS", x = 0.5, y = 0.9)
+```
+
+## Discussion
+
+The medical genetics community still lacks robust exome-wide information about small (exon-level) variant prevalence.
+Others have established the reliability and cost-efficiency of pre-capture multiplexing [@neiman:2012aa; @ramos:2012aa; @rohland:2012aa; @wesolowska:2011aa; @shearer:2012aa], and most commercial exome capture platforms have protocols for pre-capture multiplexing.
+Here, we demonstrate the reduction in inter-sample variance when pre-capture multiplexing, leading to increased power to detect exon-level copy number variation.
+Despite the benefits, many clinical laboratories do not employ a multiplexed capture protocol because multiplexing requires waiting to fill a pool and may delay results.
+While we understand the increased complexity, multiplexed capture may uncover otherwise missed copy number variation and increase the diagnostic yield for patients.
+
+Multiplexed capture is not without limitations.
+We presented an example (pool IDT-MC) where multiplexed capture provided little to no improvement over independently-captured samples.
+We concluded the absent improvement in inter-sample variance stemmed from the poor library balance prior to capture.
+Rebuilding a more-balanced pool with the same samples (pool IDT-RR) demonstrated a large reduction in inter-sample variance.
+
+In assessing the inter-sample variance, we compared two capture platforms: (1) Agilent SureSelectXT2 and (2) Integrated DNA Technologies xGen Lockdown Probes.
+We do not have enough data to suggest definitively one over the other.
+Comparing the mean-variance relationship, the IDT-RR pool appeared to have less dispersion overall (Figure \@ref(fig:mnVrComp)); however, the sample-specific dispersion estimates from ExomeDepth suggest better performance by the WGS pool (Figure \@ref(fig:edSelPhi)) and the higher pool-wide dispersion comes entirely from the two poorly correlated samples.
+
+Our results suggest having a sufficiently large database of samples most-often provides appropriate control samples to estimate copy number variation (Figure \@ref(fig:edSelMed)).
+However, we show laboratories can circumvent the need for large samples by multiplexing the capture step.
+Defining the capture pool as the set of controls both limits the need for regular reanalysis as the database grows and eliminates potential over-selecting of samples with the same variants.
+
+At the depth of the WGS pool, our simplistic simulation study would suggest both mcCNV and ExomeDepth have the power to detect single-exon variants with >85% sensitivity while maintaining a low false-discovery rate (Figure \@ref(fig:simRes), Table \@ref(tab:simResTbl)).
+However, comparing the exome calls to the genome calls for the WGS pool revealed lackluster concordance.
+As Trost et al. point out, the genome CNV callers still struggle with variants less than 1 kb [@trost:2018aa].
+We do not dismiss the possibility of exome calls providing greater reliability than the genome calls, given multiplexed capture and adequate sequencing depth.
+However, given the distribution of calls throughout the exome, we doubt the thousands of excess deletions called for NCG_00790 and NCG_00851.
+Confirmation of the individual calls is beyond the scope of this work.
+
+Unsurprisingly, both mcCNV and ExomeDepth failed to call many of the duplications called from the genome data.
+The variance for the negative binomial increases as the mean increases; we expect greater variation in read depth from duplicated loci, making duplications more difficult to distinguish.
+Similarly, the variance of the binomial proportion increases monotonically over [0, 0.5).
+More sensitive detection of duplications will likely require greater sequencing depth.
+
+The simulation study emphasizes the importance of sequencing depth (in terms of absolute molecules).
+We can collect increased basepair coverage for less money by sequencing longer reads (e.g. 2x150 versus 2x50), but doing so decreases power for depth-based CNV calling.
+Typically, exome sequencing targets 30-50x coverage to ensure most targets have sufficient coverage for accurate basepair calling.
+We demonstrate the need for much deeper sequencing if we wish to establish exon-level variants.
+
+Taken together, we recommend the following:
+(1) research and clinical endeavors consider adjusting protocols to multiplex samples prior to any targeted capture;
+(2) prior to capture, we suggest checking the library balance and adjusting as necessary (we achieved reasonable performance with relative standard deviation values less than 25%);
+(3) collecting an average of 225 filtered read-pairs per target.
+We then provide a simple-to-use and efficient R package to estimate copy number utilizing the negative bionimal distribution.
+
+We believe the uncertainty about the prevalence and clinical significance of exon-level variants warrants a large undertaking.
+Even if we take the conservative approach and looking only at concordant calls between genome and exome sequencing (Figure \@ref(fig:wgsVennSub)), we have an average of 40 variants per sample to contend with.
+Two possibilities exist: (1) the algorithms all fail over specific regions, or (2) some genes can tolerate intrageneic copy-number variation better than others.
+Having eliminated calls from repetitive and low-complexity regions, we believe possibility (2) is more likely.
+To truly determine the prevalence (and therefore, clinical significance) of exon-level variants we need to interrogate exon-level variants on a large cohort.
+Confirmation testing for the tens to thousands of predicted variants from the exome and genome calls would allow true determination of algorithm performance and inform the clinical utility.
