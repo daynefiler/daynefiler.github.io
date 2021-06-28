@@ -125,7 +125,7 @@
 \renewcommand\thecourse{\arabic{course}.}
 \newcommand{\course}[3]{
   \stepcounter{course}
-  \begin{tabularx}{\linewidth}{ >{\hsize=0.1\hsize}L >{\hsize=1.9\hsize}X >{\hsize=1.4\hsize}X >{\hsize=0.6\hsize}X }
+  \begin{tabularx}{\linewidth}{ >{\hsize=0.1\hsize}L >{\hsize=1.6\hsize}X >{\hsize=1.0\hsize}X >{\hsize=1.3\hsize}X }
     \thecourse & #1 & #2 & \hfill \textit{#3}
   \end{tabularx}
 }
@@ -174,8 +174,8 @@
 \newcommand{\educationsection}{
   \begin{mysection}{education}
     \textbf{UNC School of Medicine, Chapel Hill, NC} \newline
-    \dateitem{Doctor of Medicine}{2023 (expected)}
-    \dateitem{Doctor of Philosophy, Bioinformatics \& Computational Biology}{2021 (expected)}
+    \dateitem{Doctor of Medicine}{2022 (expected)}
+    \dateitem{Doctor of Philosophy, Bioinformatics \& Computational Biology}{2020}
     \newline
     \textbf{The College of Idaho, Caldwell, ID} \newline
     \dateitem{B.S. Mathematics, Human Biology and Political Economy Minors (\textit{summa cum laude})}{2012} 
@@ -187,12 +187,12 @@
 \begin{mysection}{experience}
   
   \textbf{UNC School of Medicine, Chapel Hill, NC} \newline
-  \dateitem{Graduate Research Assistant, Wilhelmsen Laboratory}{2017 -- }
+  \dateitem{Graduate Research Assistant, Wilhelmsen Laboratory}{2017 -- 2020}
   \dateitem{Graduate Rotation Student, Wilhelmsen Laboratory}{2016} 
   \dateitem{Graduate Rotation Student, Juliano Laboratory}{2016} 
   
   \textbf{US EPA National Center for Computational Toxicology, Research Triangle Park, NC} \newline
-  \dateitem{ORISE Research Fellow}{2012 -- 2016} 
+  \dateitem{ORISE Research Fellow, Reif \& Judson Laboratories}{2012 -- 2016} 
   
   \textbf{Mount Desert Island Biological Laboratory, Salisbury Cove, ME} \newline
   \dateitem{REU Summer Fellow, Boyer Laboratory}{2011} 
@@ -206,17 +206,14 @@
 
 \newcommand{\teachsection}{
 \begin{mysection}{teaching}
-  \course{Practical R for Scientists}{UNC School of Medicine}{Spring, 2020}
-  \course{How to Learn to Code}{UNC School of Medicine}{Summer, 2019}
-  \course{How to Learn to Code}{UNC School of Medicine}{Summer, 2018}
-  \course{How to Learn to Code}{UNC School of Medicine}{Summer, 2016} 
-  \course{MAT123, Applied Mathematics (TA)}{College of Idaho}{Spring, 2012}
-  \course{MAT152, Calculus II (TA)}{College of Idaho}{Fall, 2011}
-  \course{BIO330, Cell Biology (TA)}{College of Idaho}{Fall, 2011}
-  \course{MAT151, Calculus I (TA)}{College of Idaho}{Spring, 2011}
-  \course{BIO220, Freshman Biology II (TA)}{College of Idaho}{Spring, 2011}
-  \course{MAT151, Calculus I (TA)}{College of Idaho}{Fall, 2010}
-  \course{BIO120, Freshman Biology I (TA)}{College of Idaho}{Fall, 2010}
+  \course{Practical R for Scientists}{UNC School of Medicine}{Spring 2020}
+  \course{How to Learn to Code}{UNC School of Medicine}{Summers 2016, 2018, 2019}
+  \course{MAT123, Applied Mathematics (TA)}{College of Idaho}{Spring 2012}
+  \course{MAT152, Calculus II (TA)}{College of Idaho}{Fall 2011}
+  \course{BIO330, Cell Biology (TA)}{College of Idaho}{Fall 2011}
+  \course{BIO220, Freshman Biology II (TA)}{College of Idaho}{Spring 2011}
+  \course{MAT151, Calculus I (TA)}{College of Idaho}{Fall 2010, Spring 2011}
+  \course{BIO120, Freshman Biology I (TA)}{College of Idaho}{Fall 2010}
 \end{mysection}
 }
 
@@ -235,21 +232,28 @@
 \end{mysection}
 }
 
+\newcommand{\awardsection}{
+\begin{mysection}{honors and awards}
+  \bulletDateItem{Eugene S. Mayer Honor Society for Community Service}{2018}
+  \bulletDateItem{Bioinformatics and Computational Biology Fellowship Award}{2018}
+  \bulletDateItem{Outstanding INBRE Student}{2012}
+  \bulletDateItem{Best Graduate/Undergraduate Oral Presentation, 54\textsuperscript{th} Idaho Academy of Science Meeting}{2012}
+  \bulletDateItem{Nel Tobias Travel Award}{2011}
+  \bulletDateItem{Second-Year Calculus Student of the Year}{2009}
+  \bulletDateItem{College of Idaho Heritage Scholarship}{2008 -- 2012}
+  \bulletDateItem{College of Idaho Dean's List}{2008 -- 2012}
+\end{mysection}
+}
+
 \newcommand{\servicesection}{
-\begin{mysection}{service and awards}
+\begin{mysection}{Professional Service}
   \bulletDateItem{Board of Directors for Come to the Table, Inc.}{2018 -- 2019}
   \bulletDateItem{Emergency Department Volunteer, UNC Hospital, Chapel Hill, NC}{2013 -- 2014}
   \bulletDateItem{Member, NIEHS 2013 Career Fair Planning Committee}{2012 -- 2013}
   \bulletDateItem{Citizen Teacher, Citizen Schools, Durham, NC}{2012}
-  \bulletDateItem{Outstanding INBRE Student}{2012}
-  \bulletDateItem{Best Graduate/Undergraduate Oral Presentation, 54\textsuperscript{th} Idaho Academy of Science Meeting}{2012}
   \bulletDateItem{Member, College Budget Committee}{2010 -- 2012}
   \bulletDateItem{Member, Student Research Committee}{2010 -- 2012}
-  \bulletDateItem{Nel Tobias Travel Award}{2011}
   \bulletDateItem{Member, Tenure Track Math Faculty Search Committee}{2010 -- 2011}
-  \bulletDateItem{Second-Year Calculus Student of the Year}{2009}
-  \bulletDateItem{College of Idaho Heritage Scholarship}{2008 -- 2012}
-  \bulletDateItem{College of Idaho Dean's List}{2008 -- 2012}
 \end{mysection}
 }
 
@@ -311,9 +315,9 @@ Sara J. Heggland, PhD\mydot The College of Idaho\mydot(208) 459 5063\mydot  \ema
 \begin{mysection}{Complete Works}
   \printbibliography[keyword=cv,keyword=article,title={Publications},heading=mybibhead] 
   \leavevmode \\
-  \printbibliography[keyword=cv,keyword=software,title={Software},heading=mybibhead] 
-  \leavevmode \\
   \printbibliography[keyword=cv,keyword=conference,title={Conference Abstracts},heading=mybibhead] 
+  \leavevmode \\
+  \printbibliography[keyword=cv,keyword=software,title={Software},heading=mybibhead] 
 \end{mysection}
 }
 
@@ -322,14 +326,15 @@ Sara J. Heggland, PhD\mydot The College of Idaho\mydot(208) 459 5063\mydot  \ema
 \mytitle
 \educationsection
 \experiencesection
+\awardsection
 %\skillssection
-\servicesection
 %\selectedwork
 %\profrefsection
 %\truncated
-\teachsection
-\fundsection
 \completework
+\fundsection
+\teachsection
+\servicesection
 \end{document}
 
 

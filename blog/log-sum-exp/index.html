@@ -110,9 +110,9 @@ p_i = \frac{x_i}{\sum_j x_j}
 \]</span></p>
 </div>
 <p>As Robert Eisele very nicely discusses in <a href="https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/">his blog post</a>, we can run into underflow issues. Suppose you have the following vector of logged likelihoods.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">9000</span>, <span class="dv">-3000</span>, <span class="dv">-1000</span>)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">exp</span>(x)<span class="op">/</span><span class="kw">sum</span>(<span class="kw">exp</span>(x))</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># [1] NaN NaN NaN</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">9000</span>, <span class="sc">-</span><span class="dv">3000</span>, <span class="sc">-</span><span class="dv">1000</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(x)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(x))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] NaN NaN NaN</span></span></code></pre></div>
 <p>As we can see, all the values will be zero. However, consider making the calculation in log-space.</p>
 <div>
 <p><span class="math display">\[\begin{align}
@@ -141,18 +141,18 @@ p_i &amp; = \text{exp}\left\{
 \end{align}\]</span></p>
 </div>
 <p>Finally, a simple R function to do the work:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>getPost &lt;-<span class="st"> </span><span class="cf">function</span>(l) {</span>
-<span id="cb2-2"><a href="#cb2-2"></a>  <span class="co">## l: vector of logged-likelihood values</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a>  <span class="kw">exp</span>(l <span class="op">-</span><span class="st"> </span>(<span class="kw">log</span>(<span class="kw">sum</span>(<span class="kw">exp</span>(l <span class="op">-</span><span class="st"> </span><span class="kw">max</span>(l)))) <span class="op">+</span><span class="st"> </span><span class="kw">max</span>(l)))</span>
-<span id="cb2-4"><a href="#cb2-4"></a>}</span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="kw">getPost</span>(x)</span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="co"># [1] 0 0 1</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>getPost <span class="ot">&lt;-</span> <span class="cf">function</span>(l) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="do">## l: vector of logged-likelihood values</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">exp</span>(l <span class="sc">-</span> (<span class="fu">log</span>(<span class="fu">sum</span>(<span class="fu">exp</span>(l <span class="sc">-</span> <span class="fu">max</span>(l)))) <span class="sc">+</span> <span class="fu">max</span>(l)))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">getPost</span>(x)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 0 0 1</span></span></code></pre></div>
 <p>and we see it gives the exact same values for tractable likelihoods:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">9</span>, <span class="dv">-3</span>, <span class="dv">-1</span>)</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">exp</span>(y)<span class="op">/</span><span class="kw">sum</span>(<span class="kw">exp</span>(y))</span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="co"># [1] 0.0002953872 0.1191677110 0.8805369018</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="kw">getPost</span>(y)</span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># [1] 0.0002953872 0.1191677110 0.8805369018</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">9</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(y)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(y))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 0.0002953872 0.1191677110 0.8805369018</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">getPost</span>(y)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 0.0002953872 0.1191677110 0.8805369018</span></span></code></pre></div>
 
   </div>
 </section>
@@ -193,7 +193,7 @@ p_i &amp; = \text{exp}\left\{
   <div class="row">
     <h6 class="col text-center">
       
-      <i class="far fa-copyright"></i> 2018-2020 Dayne Lewis Filer
+      <i class="far fa-copyright"></i> 2018-2021 Dayne Lewis Filer
       
     </h6>
   </div>

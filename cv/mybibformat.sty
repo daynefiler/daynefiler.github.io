@@ -84,6 +84,10 @@
 \DeclareFieldFormat{shorthandwidth}{#1}
 \DeclareFieldFormat{extradate}{}
 
+\AtEveryBibitem{%
+  \clearlist{language}%
+}
+
 \DeclareLabeldate[software]{%
   \field{date}
   \field{year}
