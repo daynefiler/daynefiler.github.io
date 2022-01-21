@@ -18,11 +18,14 @@
 <base href="https://daynefiler.github.io">
 
 <title>
-    DL Filer - Log-Sum-Exp trick for getting posterior probabilities from small likelihoods. 
+    DL Filer - Setting up private GitHub R package repo with covr/codecov 
 </title>
 
 <meta name="generator" content="Hugo 0.92.0" />
 
+
+
+  
 
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400|Roboto+Slab:400,700|Roboto:300,300i,400,400i,500,500i,700,700i">
@@ -66,23 +69,23 @@
 
 
 <header>
-  <h1>Log-Sum-Exp trick for getting posterior probabilities from small likelihoods.</h1>
+  <h1>Setting up private GitHub R package repo with covr/codecov</h1>
 </header>
 
 <section id="category-pane" class="row">
   
   <div class="col-md-12">
     <h6 class="text-left">
-       PUBLISHED ON OCT 10, 2019 
+       PUBLISHED ON JAN 21, 2022 
       
       
       
       —
       
       
-      <a href="/categories/bioinformatics">BIOINFORMATICS</a>, 
+      <a href="/categories/github">GITHUB</a>, 
       
-      <a href="/categories/statistics">STATISTICS</a>
+      <a href="/categories/r">R</a>
       
       
       
@@ -94,85 +97,30 @@
 <section id="content-pane" class="row">
   <div class="col-md-12 padded20">
     
-    
-To formulate the problem, consider calculating the posterior probability given a series of weighted likelihoods.
-Let
-
-<div>
-$$
-x_i
-$$
-</div>
-
-be the likelihood for observation *i*. We wish to calculate the posterior probability as:
-
-<div>
-$$
-p_i = \frac{x_i}{\sum_j x_j}
-$$
-</div>
-
-As Robert Eisele very nicely discusses in [his blog post](https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/), we can run into underflow issues. Suppose you have the following vector of logged likelihoods.
-
-```r
-x <- c(-9000, -3000, -1000)
-exp(x)/sum(exp(x))
-# [1] NaN NaN NaN
-```
-
-As we can see, all the values will be zero. However, consider making the calculation in log-space.
-
-<div>
-\begin{align}
-\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &= \text{log}x_i - \text{log}\sum_j x_j \\
-&= \text{log}x_i - \text{log}\sum_j e^{\text{log}x_j} \\
-
-\end{align}
-</div>
-
-Given the proof from Robert Eisele, we know:
-
-<div>
-$$
-\text{log}\sum_i e^{y_i} = \text{log}\sum_i e^{y_i - a} + a
-$$
-</div>
-
-for arbitrary *a*. Let *a* be the maximum log-likelihood value, and we get:
-
-<div>
-\begin{align}
-\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &= \text{log}x_i -
-\left(\text{log}\sum_j e^{\text{log}x_j - \operatorname{max}_j(\text{log}x_j)} +
-\operatorname{max}_j(\text{log}x_j) \right) \\
-p_i & = \text{exp}\left\{
-  \text{log}x_i -
-  \left(\text{log}\sum_j e^{\text{log}x_j - \operatorname{max}_j(\text{log}x_j)} +
-  \operatorname{max}_j(\text{log}x_j) \right)
-\right\}
-\end{align}
-</div>
-
-Finally, a simple R function to do the work:
-
-```r
-getPost <- function(l) {
-  ## l: vector of logged-likelihood values
-  exp(l - (log(sum(exp(l - max(l)))) + max(l)))
-}
-getPost(x)
-# [1] 0 0 1
-```
-
-and we see it gives the exact same values for tractable likelihoods:
-
-```r
-y <- c(-9, -3, -1)
-exp(y)/sum(exp(y))
-# [1] 0.0002953872 0.1191677110 0.8805369018
-getPost(y)
-# [1] 0.0002953872 0.1191677110 0.8805369018
-```
+    <p>Thanks to the <a href="https://usethis.r-lib.org">usethis</a>, <a href="https://testthat.r-lib.org">testthat</a>, and <a href="https://covr.r-lib.org">covr</a> packages, integrating testing and code coverage into your R package is easier than ever.
+After installing the packages, the <code>usethis</code> package will setup the infrastructure for you:</p>
+<pre tabindex="0"><code>library(usethis)
+library(testthat)
+library(covr)
+usethis::use_testthat()
+usethis::use_coverage()
+usethis::use_github_action(&quot;test-coverage&quot;)
+</code></pre><p>You can then start writing tests and monitor your coverage.
+If you&rsquo;re using this on a private repository, you need to take a couple extra steps, which is where I got hung up.
+You first need to go to <a href="https://about.codecov.io">codecov.io</a> and login with GitHub, allowing codecov access to your repositories.
+Then, find the repository on codecov and activate the repository under settings.
+Add the webhook, copy the token, and head back to GitHub.
+Under the repo settings on GitHub, add the token as a new &lsquo;Secret&rsquo; and name it &lsquo;CODECOV_TOKEN&rsquo;.
+This is where I got stuck.
+GitHub and codecov still were not communicating as expected.
+I incorrectly assumed from the <code>covr::codecov</code> man page that it would find the GitHub secret &ndash; it does not.
+I finally found this <a href="https://github.com/r-lib/covr/issues/430">helpful post</a>.</p>
+<p>You need to edit the <code>.github/workflows/test-coverage.yaml</code> file created by the call to <code>use_github_action()</code>, replacing the line</p>
+<pre tabindex="0"><code>run: covr::codecov()
+</code></pre><p>with</p>
+<pre tabindex="0"><code>run: covr::codecov(token = &quot;${{ secrets.CODECOV_TOKEN }}&quot;)
+</code></pre><p>The two should now communicate like expected.
+The last step is to make sure your badge has the token; see the badges page under the codecov repo settings to get a link that works!</p>
 
   </div>
 </section>
@@ -188,13 +136,11 @@ getPost(y)
     <div class="col">
       
         
-          <a href="https://daynefiler.github.io/blog/downloadgnomad/">&lt; prev </a> |
+          <a href="https://daynefiler.github.io/blog/smfm2020/">&lt; prev </a> |
         
         
           <a href="/blog">blog</a>
         
-        
-          | <a href="https://daynefiler.github.io/blog/smfm2020/"> next &gt;</a>
         
       
     </div>
@@ -220,6 +166,16 @@ getPost(y)
 </footer>
 
 
+
+  
+  
+  
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js//highlight.min.js"></script>
+    
+    
+    
+    <script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+  
 
 
 

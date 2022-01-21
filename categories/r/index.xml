@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R on DL Filer</title>
+    <link>https://daynefiler.github.io/categories/r/</link>
+    <description>Recent content in R on DL Filer</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Fri, 21 Jan 2022 12:05:26 -0500</lastBuildDate><atom:link href="https://daynefiler.github.io/categories/r/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Setting up private GitHub R package repo with covr/codecov</title>
+      <link>https://daynefiler.github.io/blog/privaterepocovr/</link>
+      <pubDate>Fri, 21 Jan 2022 12:05:26 -0500</pubDate>
+      
+      <guid>https://daynefiler.github.io/blog/privaterepocovr/</guid>
+      <description>Thanks to the usethis, testthat, and covr packages, integrating testing and code coverage into your R package is easier than ever. After installing the packages, the usethis package will setup the infrastructure for you:
+library(usethis) library(testthat) library(covr) usethis::use_testthat() usethis::use_coverage() usethis::use_github_action(&amp;quot;test-coverage&amp;quot;) You can then start writing tests and monitor your coverage. If you&amp;rsquo;re using this on a private repository, you need to take a couple extra steps, which is where I got hung up.</description>
+    </item>
+    
+  </channel>
+</rss>

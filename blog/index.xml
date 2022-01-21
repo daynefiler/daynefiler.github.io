@@ -6,10 +6,16 @@
     <description>Recent content in Blog on DL Filer</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Wed, 22 Jan 2020 10:41:12 -0500</lastBuildDate>
-    
-	<atom:link href="https://daynefiler.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Fri, 21 Jan 2022 12:05:26 -0500</lastBuildDate><atom:link href="https://daynefiler.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Setting up private GitHub R package repo with covr/codecov</title>
+      <link>https://daynefiler.github.io/blog/privaterepocovr/</link>
+      <pubDate>Fri, 21 Jan 2022 12:05:26 -0500</pubDate>
+      
+      <guid>https://daynefiler.github.io/blog/privaterepocovr/</guid>
+      <description>Thanks to the usethis, testthat, and covr packages, integrating testing and code coverage into your R package is easier than ever. After installing the packages, the usethis package will setup the infrastructure for you:
+library(usethis) library(testthat) library(covr) usethis::use_testthat() usethis::use_coverage() usethis::use_github_action(&amp;quot;test-coverage&amp;quot;) You can then start writing tests and monitor your coverage. If you&amp;rsquo;re using this on a private repository, you need to take a couple extra steps, which is where I got hung up.</description>
+    </item>
     
     <item>
       <title>SMFM Pregnancy Meeting 2020</title>
@@ -27,12 +33,7 @@
       <pubDate>Thu, 10 Oct 2019 11:29:37 -0400</pubDate>
       
       <guid>https://daynefiler.github.io/blog/log-sum-exp/</guid>
-      <description>To formulate the problem, consider calculating the posterior probability given a series of weighted likelihoods. Let
- \[ x_i \]
- be the likelihood for observation i. We wish to calculate the posterior probability as:
- \[ p_i = \frac{x_i}{\sum_j x_j} \]
- As Robert Eisele very nicely discusses in his blog post, we can run into underflow issues. Suppose you have the following vector of logged likelihoods.
-x &amp;lt;- c(-9000, -3000, -1000) exp(x)/sum(exp(x)) # [1] NaN NaN NaN As we can see, all the values will be zero.</description>
+      <description>To formulate the problem, consider calculating the posterior probability given a series of weighted likelihoods. Let  $$ x_i $$  be the likelihood for observation *i*. We wish to calculate the posterior probability as:  $$ p_i = \frac{x_i}{\sum_j x_j} $$  As Robert Eisele very nicely discusses in [his blog post](https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/), we can run into underflow issues. Suppose you have the following vector of logged likelihoods. ```r x \begin{align} \text{log}\left(\frac{x_i}{\sum_j x_j}\right) &amp;= \text{log}x_i - \text{log}\sum_j x_j \\ &amp;= \text{log}x_i - \text{log}\sum_j e^{\text{log}x_j} \\ \end{align}  Given the proof from Robert Eisele, we know:  $$ \text{log}\sum_i e^{y_i} = \text{log}\sum_i e^{y_i - a} + a $$  for arbitrary *a*.</description>
     </item>
     
     <item>

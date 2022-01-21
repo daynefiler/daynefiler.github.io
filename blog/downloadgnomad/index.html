@@ -21,7 +21,7 @@
     DL Filer - Downloading gnomAD 
 </title>
 
-<meta name="generator" content="Hugo 0.70.0" />
+<meta name="generator" content="Hugo 0.92.0" />
 
 
 
@@ -100,11 +100,11 @@
     <nav id="TableOfContents"></nav>
     
     <p>Here is a concise guide to downloading <a href="https://gnomad.broadinstitute.org">gnomAD</a> using <a href="https://cloud.google.com/storage/docs/gsutil">gsutil</a>. I am typically working on a server, and (begrudgingly) use conda to manage software. The only real trick here is getting the conda environment setup &ndash; I could have easily called this &ldquo;Using gsutil with conda.&rdquo; &ndash; the actual gsutil utility is pretty easy to use. gsutil, needed for accessing the gnomAD data, is buried within the &lsquo;google-cloud-sdk&rsquo; conda package, not to be confused with the numerous other &lsquo;google-cloud-&rsquo; conda packages. (A conda search for gsutil will not, at the time of writing, find the correct google-cloud-sdk package.) The Google Cloud SDK requires python v2, so I think it makes sense to create a dedicated conda environment:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Create a new conda env with gsutil AND crcmod -- which will allow for</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Create a new conda env with gsutil AND crcmod -- which will allow for</span>
 <span style="color:#75715e"># &#34;sliced&#34; downloads.</span>
 conda create --name GoogleCloud python<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> google-cloud-sdk crcmod
 </code></pre></div><p>You can now activate the new environment and use <code>gsutil</code> to download gnomAD data:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">conda activate GoogleCloud
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">conda activate GoogleCloud
 gsutil ls gs://gnomad-public/release
 <span style="color:#75715e"># gs://gnomad-public/release/</span>
 <span style="color:#75715e"># gs://gnomad-public/release/2.0.1/</span>
@@ -112,7 +112,7 @@ gsutil ls gs://gnomad-public/release
 <span style="color:#75715e"># gs://gnomad-public/release/2.1.1/</span>
 <span style="color:#75715e"># gs://gnomad-public/release/2.1/</span>
 </code></pre></div><p>Before starting the download, make sure <code>crcmod</code> is correctly compiled. Doing so will speed up the download significantly (days to hours, in my case).</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">gsutil version -l
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">gsutil version -l
 <span style="color:#75715e">#gsutil version: 4.38</span>
 <span style="color:#75715e">#checksum: 58d3e78c61e7e0e80813a6ebc26085f6 (OK)</span>
 <span style="color:#75715e">#boto version: 2.49.0</span>
@@ -127,7 +127,7 @@ gsutil ls gs://gnomad-public/release
 <span style="color:#75715e">#installed via package manager: False</span>
 <span style="color:#75715e">#editable install: False</span>
 </code></pre></div><p>Make sure <code>complied crcmod</code> is <code>True</code>. We can now download data from the desired release. Here, I will show how to download</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p gnomAD/r2.1.1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p gnomAD/r2.1.1
 gsutil -m cp gs://gnomad-public/release/2.1.1/liftover_grch38/vcf/exomes/gnomad.exomes.r2.1.1.sites.liftover_grch38* gnomAD/r2.1.1/
 gsutil -m cp gs://gnomad-public/release/2.1.1/liftover_grch38/vcf/genomes/gnomad.genomes.r2.1.1.sites.liftover_grch38* gnomAD/r2.1.1/
 </code></pre></div><p><strong>Note: not all releases have the same subdirectory structure.</strong> Use the <code>-r</code> flag with the <code>gsutil</code> call to copy a whole subdirectory. Also, these take awhile, so submit it to the scheduler or use a screen session if you&rsquo;re working on a server.</p>
@@ -171,7 +171,7 @@ gsutil -m cp gs://gnomad-public/release/2.1.1/liftover_grch38/vcf/genomes/gnomad
   <div class="row">
     <h6 class="col text-center">
       
-      <i class="far fa-copyright"></i> 2018-2021 Dayne Lewis Filer
+      <i class="far fa-copyright"></i> 2018-2022 Dayne Lewis Filer
       
     </h6>
   </div>
