@@ -105,11 +105,11 @@
 <p>Genotype-indexing works by first indexing the reference and alternative alleles, starting with the reference allele at 0. The order of the alternative alleles is given by the order listed under the ALT field in the VCF. Consider the following variant: A/B,C,D (where A is the reference allele, and B, C, and D represent the ordered alternative alleles.) Then, the <em><strong>allele</strong></em> indices are 0, 1, 2, and 3 (respectively).</p>
 <p>For the haploid case, the genotype index equals the allele index, because there is only one allele per individual: <code>G(a_i) = a_i</code> where <code>a_i</code> is the allele index. For the diploid case, the equation is <code>G(a_i, a_j) = a_i + choose(a_j + 1, 2)</code> where <code>a_i</code> and <code>a_j</code> are the allele indices and <code>a_i &lt;= a_j</code>.</p>
 <p>A simple R function to calculate the diploid G-index based on the 0-based allele indices:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-R" data-lang="R">G <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(i , j) {
-  <span style="color:#a6e22e">stopifnot</span>(i <span style="color:#f92672">&lt;=</span> j <span style="color:#f92672">&amp;&amp;</span> i <span style="color:#f92672">%%</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span> j <span style="color:#f92672">%%</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
-  i <span style="color:#f92672">+</span> <span style="color:#a6e22e">choose</span>(j <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+<pre tabindex="0"><code>G &lt;- function(i , j) {
+  stopifnot(i &lt;= j &amp;&amp; i %% 1 == 0 &amp;&amp; j %% 1 == 0)
+  i + choose(j + 1, 2)
 }
-</code></pre></div><!-- raw HTML omitted -->
+</code></pre><!-- raw HTML omitted -->
 <table>
 <thead>
 <tr>
@@ -197,9 +197,9 @@
 <!-- raw HTML omitted -->
 <p>Such that the final genotype ordering in the VCF would be: [A/A, A/B, B/B, A/C, B/C, C/C, A/D, B/D, C/D, D/D]. Ordering the genotypes in this format guarantees the same ordering despite the number of alleles.</p>
 <p>This lines up with the <code>G</code> function given above. Consider the B/D genotype with the G-index of 7:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-R" data-lang="R"><span style="color:#a6e22e">G</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>)
-<span style="color:#75715e">## [1] 7</span>
-</code></pre></div>
+<pre tabindex="0"><code>G(1, 3)
+## [1] 7
+</code></pre>
   </div>
 </section>
 

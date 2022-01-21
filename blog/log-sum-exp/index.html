@@ -25,6 +25,9 @@
 
 
 
+  
+
+
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400|Roboto+Slab:400,700|Roboto:300,300i,400,400i,500,500i,700,700i">
 
 
@@ -94,7 +97,63 @@
 <section id="content-pane" class="row">
   <div class="col-md-12 padded20">
     
-    
+    <p>To formulate the problem, consider calculating the posterior probability given a series of weighted likelihoods. Let</p>
+<div>
+<p><span class="math display">\[
+x_i
+\]</span></p>
+</div>
+<p>be the likelihood for observation <em>i</em>. We wish to calculate the posterior probability as:</p>
+<div>
+<p><span class="math display">\[
+p_i = \frac{x_i}{\sum_j x_j}
+\]</span></p>
+</div>
+<p>As Robert Eisele very nicely discusses in <a href="https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/">his blog post</a>, we can run into underflow issues. Suppose you have the following vector of logged likelihoods.</p>
+<pre><code>x &lt;- c(-9000, -3000, -1000)
+exp(x)/sum(exp(x))
+# [1] NaN NaN NaN</code></pre>
+<p>As we can see, all the values will be zero. However, consider making the calculation in log-space.</p>
+<div>
+<p><span class="math display">\[\begin{align}
+\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &amp;= \text{log}x_i - \text{log}\sum_j x_j \\
+&amp;= \text{log}x_i - \text{log}\sum_j e^{\text{log}x_j} \\
+
+\end{align}\]</span></p>
+</div>
+<p>Given the proof from Robert Eisele, we know:</p>
+<div>
+<p><span class="math display">\[
+\text{log}\sum_i e^{y_i} = \text{log}\sum_i e^{y_i - a} + a
+\]</span></p>
+</div>
+<p>for arbitrary <em>a</em>. Let <em>a</em> be the maximum log-likelihood value, and we get:</p>
+<div>
+<p><span class="math display">\[\begin{align}
+\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &amp;= \text{log}x_i -
+\left(\text{log}\sum_j e^{\text{log}x_j - \operatorname{max}_j(\text{log}x_j)} +
+\operatorname{max}_j(\text{log}x_j) \right) \\
+p_i &amp; = \text{exp}\left\{
+  \text{log}x_i -
+  \left(\text{log}\sum_j e^{\text{log}x_j - \operatorname{max}_j(\text{log}x_j)} +
+  \operatorname{max}_j(\text{log}x_j) \right)
+\right\}
+\end{align}\]</span></p>
+</div>
+<p>Finally, a simple R function to do the work:</p>
+<pre><code>getPost &lt;- function(l) {
+  ## l: vector of logged-likelihood values
+  exp(l - (log(sum(exp(l - max(l)))) + max(l)))
+}
+getPost(x)
+# [1] 0 0 1</code></pre>
+<p>and we see it gives the exact same values for tractable likelihoods:</p>
+<pre><code>y &lt;- c(-9, -3, -1)
+exp(y)/sum(exp(y))
+# [1] 0.0002953872 0.1191677110 0.8805369018
+getPost(y)
+# [1] 0.0002953872 0.1191677110 0.8805369018</code></pre>
+
   </div>
 </section>
 
@@ -142,8 +201,21 @@
 
 
 
+  
+  
+  
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js//highlight.min.js"></script>
+    
+    
+    
+    <script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+  
 
 
+
+
+  <script src="/js/math-code.js"></script>
+  <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
 
 
