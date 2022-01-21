@@ -95,85 +95,6 @@
   <div class="col-md-12 padded20">
     
     
-To formulate the problem, consider calculating the posterior probability given a series of weighted likelihoods.
-Let
-
-<div>
-$$
-x_i
-$$
-</div>
-
-be the likelihood for observation *i*. We wish to calculate the posterior probability as:
-
-<div>
-$$
-p_i = \frac{x_i}{\sum_j x_j}
-$$
-</div>
-
-As Robert Eisele very nicely discusses in [his blog post](https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/), we can run into underflow issues. Suppose you have the following vector of logged likelihoods.
-
-```r
-x <- c(-9000, -3000, -1000)
-exp(x)/sum(exp(x))
-# [1] NaN NaN NaN
-```
-
-As we can see, all the values will be zero. However, consider making the calculation in log-space.
-
-<div>
-\begin{align}
-\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &= \text{log}x_i - \text{log}\sum_j x_j \\
-&= \text{log}x_i - \text{log}\sum_j e^{\text{log}x_j} \\
-
-\end{align}
-</div>
-
-Given the proof from Robert Eisele, we know:
-
-<div>
-$$
-\text{log}\sum_i e^{y_i} = \text{log}\sum_i e^{y_i - a} + a
-$$
-</div>
-
-for arbitrary *a*. Let *a* be the maximum log-likelihood value, and we get:
-
-<div>
-\begin{align}
-\text{log}\left(\frac{x_i}{\sum_j x_j}\right) &= \text{log}x_i -
-\left(\text{log}\sum_j e^{\text{log}x_j - \operatorname{max}_j(\text{log}x_j)} +
-\operatorname{max}_j(\text{log}x_j) \right) \\
-p_i & = \text{exp}\left\{
-  \text{log}x_i -
-  \left(\text{log}\sum_j e^{\text{log}x_j - \operatorname{max}_j(\text{log}x_j)} +
-  \operatorname{max}_j(\text{log}x_j) \right)
-\right\}
-\end{align}
-</div>
-
-Finally, a simple R function to do the work:
-
-```r
-getPost <- function(l) {
-  ## l: vector of logged-likelihood values
-  exp(l - (log(sum(exp(l - max(l)))) + max(l)))
-}
-getPost(x)
-# [1] 0 0 1
-```
-
-and we see it gives the exact same values for tractable likelihoods:
-
-```r
-y <- c(-9, -3, -1)
-exp(y)/sum(exp(y))
-# [1] 0.0002953872 0.1191677110 0.8805369018
-getPost(y)
-# [1] 0.0002953872 0.1191677110 0.8805369018
-```
-
   </div>
 </section>
 
@@ -223,9 +144,6 @@ getPost(y)
 
 
 
-
-  <script src="/js/math-code.js"></script>
-  <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
 
 
