@@ -1,0 +1,6 @@
+Best to run biber & pdflatex manually:
+
+biber filer_cv
+pdflatex filer_cv
+
+Would be ideal to figure out how to actually sync the bibs submodule and not point to the bib file locally
